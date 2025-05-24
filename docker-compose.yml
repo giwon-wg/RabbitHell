@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+    rabbithell-backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - "8080:8080"
+        env_file:
+            - ./backend/.env
+        volumes:
+            - ./backend:/app
+        depends_on:
+            - rabbithell-db
+            - rabbithell-redis
+
+    rabbithell-db:
+        image: mysql:8.0
+        container_name: rabbithell-db
+        restart: always
+        environment:
+            MYSQL_DATABASE: RabbitHell
+            MYSQL_ROOT_PASSWORD: root1234
+            MYSQL_USER: rabbit
+            MYSQL_PASSWORD: rabbit1234
+        ports:
+            - "3307:3306"
+        volumes:
+            - dbdata:/var/lib/mysql
+
+    rabbithell-redis:
+        image: redis:alpine
+        container_name: rabbithell-redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redisdata:/data
+
+volumes:
+    dbdata:
+    redisdata:
