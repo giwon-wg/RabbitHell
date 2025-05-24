@@ -14,7 +14,7 @@ public class RabbitHellApplication {
 	public static void main(String[] args) {
 
 		// dotenv 환경변수 설정
-		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+		Dotenv dotenv = Dotenv.configure().directory("backend").ignoreIfMissing().load();
 
 		// 모든 항목 시스템 속성으로 설정
 		dotenv.entries().forEach(entry ->

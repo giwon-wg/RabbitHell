@@ -34,6 +34,13 @@ docker-compose up --build
 
 ---
 
+### 5. 포트 점유
+1. 도커 : 8081
+2. Local : 8080
+
+
+---
+
 ## 디렉토리 구조
 ```
 /RabbitHell
