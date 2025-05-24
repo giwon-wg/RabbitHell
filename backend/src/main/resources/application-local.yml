@@ -1,0 +1,70 @@
+# 개발 서버 포트 설정
+server:
+    port: 8080
+    shutdown: graceful
+
+spring:
+    application:
+        name: rabbithell
+
+    mvc:
+        pathmatch:
+            matching-strategy: ant_path_matcher
+
+    jackson: {}
+
+    # 데이터베이스 연결 정보
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${LOCAL_MYSQL_URL}
+        username: ${LOCAL_MYSQL_USERNAME}
+        password: ${LOCAL_MYSQL_PASSWORD}
+
+    # JPA 설정
+    jpa:
+        hibernate:
+            ddl-auto: update
+        open-in-view: false
+        properties:
+            hibernate:
+                show_sql: true
+                format_sql: true
+            use_sql_comments: true
+
+    # Redis 설정
+    data:
+        redis:
+            host: ${LOCAL_REDIS_HOST:127.0.0.1}
+            port: ${LOCAL_REDIS_PORT:6379}
+
+    # 카카오 OAuth2 설정
+    security:
+        oauth2:
+            client:
+                registration:
+                    kakao:
+                        client-id: ${KAKAO_CLIENT_ID}
+                        client-secret: ${KAKAO_CLIENT_SECRET}
+                        redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
+                        authorization-grant-type: authorization_code
+                        scope:
+                            - profile_nickname
+                            - account_email
+                        client-name: kakao
+                provider:
+                    kakao:
+                        authorization-uri: https://kauth.kakao.com/oauth/authorize
+                        token-uri: https://kauth.kakao.com/oauth/token
+                        user-info-uri: https://kapi.kakao.com/v2/user/me
+                        user-name-attribute: id
+
+    # JWT 설정
+    jwt:
+        token:
+            header: Authorization
+            prefix: Bearer
+            access:
+                minute: 15
+            refresh:
+                minute: 20160
+        secret: ${SECRET_KEY}
