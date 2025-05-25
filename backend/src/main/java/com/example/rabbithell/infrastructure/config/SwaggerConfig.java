@@ -1,4 +1,4 @@
-package com.example.rabbithell.interfaces.config;
+package com.example.rabbithell.infrastructure.config;
 
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
