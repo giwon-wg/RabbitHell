@@ -1,7 +1,7 @@
 # 프로파일을 사용할지 지정 (local, dev, prod)
 spring:
     profiles:
-        active: local
+        active: dev
 
 # Swagger 설정
 springdoc:
