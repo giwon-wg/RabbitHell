@@ -30,12 +30,18 @@ checkstyle {
     toolVersion = "8.24"
 }
 
+def generatedDir = "$buildDir/generated/querydsl"
+
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', 'build/generated']
+            srcDirs = ["src/main/java", generatedDir]
         }
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorGeneratedSourcesDirectory = file(generatedDir)
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -64,32 +70,31 @@ tasks.withType(Checkstyle) {
 }
 
 dependencies {
-
-    // spring boot starter data
+    // Spring Boot Starter
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // spring boot starter
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter'
 
-    // jwt, password encode
+    // JWT, 암호화
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'at.favre.lib:bcrypt:0.10.2'
 
-    // redisson, dotenv
+    // Redis, dotenv
     implementation 'org.redisson:redisson-spring-boot-starter:3.23.4'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
 
-    // swagger
+    // Swagger, OpenAI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
-
-    //OpenAI (챗봇 용)
     implementation 'com.theokanning.openai-gpt3-java:service:0.18.2'
 
-    // MapStruct (DTO Entity 매핑 최적화)
+    // MapStruct
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
@@ -99,7 +104,7 @@ dependencies {
     annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 
-    // MySQL (DB)
+    // DB
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     // Test
@@ -115,23 +120,4 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
-
-    // redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
-    // WebSocket (체팅 용)
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
-    // OAuth2 - 카카오 로그인용
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
-    // 스케줄링
-    implementation 'org.springframework.boot:spring-boot-starter'
-
 }
-
-
-
-
-
-
