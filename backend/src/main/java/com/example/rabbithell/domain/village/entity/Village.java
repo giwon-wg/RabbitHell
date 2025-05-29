@@ -31,6 +31,7 @@ public class Village {
     @Column(nullable = false)
     private String villageName;
 
+    @Builder.Default
     @OneToMany(mappedBy = "fromVillage")
     private List<VillageConnection> connections = new ArrayList<>();
 }
