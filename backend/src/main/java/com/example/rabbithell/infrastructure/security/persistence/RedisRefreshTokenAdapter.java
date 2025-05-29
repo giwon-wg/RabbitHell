@@ -16,12 +16,12 @@ public class RedisRefreshTokenAdapter {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void save(String userId, String refreshToken) {
+    public void save(Long userId, String refreshToken) {
         String key = generateKey(userId);
         redisTemplate.opsForValue().set(key, refreshToken);
     }
 
-    public Optional<String> getByUserId(String userId) {
+    public Optional<String> getByUserId(Long userId) {
         String key = generateKey(userId);
         String token = redisTemplate.opsForValue().get(key);
         return Optional.ofNullable(token);
