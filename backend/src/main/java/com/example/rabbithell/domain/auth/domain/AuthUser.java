@@ -33,11 +33,7 @@ public class AuthUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userId.toString();
-    }
-
-    public Long getUserId() {
-        return userId;
+        return String.valueOf(userId);
     }
 
     @Override

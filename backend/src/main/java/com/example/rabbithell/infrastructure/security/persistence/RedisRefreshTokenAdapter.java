@@ -27,12 +27,12 @@ public class RedisRefreshTokenAdapter {
         return Optional.ofNullable(token);
     }
 
-    public void delete(String userId) {
+    public void delete(Long userId) {
         String key = generateKey(userId);
         redisTemplate.delete(key);
     }
 
-    private String generateKey(String userId) {
+    private String generateKey(Long userId) {
         return KEY_PREFIX + userId;
     }
 }

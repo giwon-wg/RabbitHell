@@ -47,7 +47,7 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name());
         String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
 
-        redisRefreshTokenAdapter.save(user.getId().toString(), refreshToken);
+        redisRefreshTokenAdapter.save(user.getId(), refreshToken);
 
         return new LoginResponse(accessToken, refreshToken);
     }
@@ -57,23 +57,25 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않은 리프레시 토큰");
         }
 
-        String userId = jwtUtil.extractSubject(refreshToken);
+        Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
+
         String saved = redisRefreshTokenAdapter.getByUserId(userId)
+
             .orElseThrow(() -> new IllegalArgumentException("리프레시 토큰 없음"));
 
         if (!refreshToken.equals(saved)) {
             throw new IllegalArgumentException("리프레시 토큰 불일치");
         }
 
-        String newAccessToken = jwtUtil.generateAccessToken(userId, jwtUtil.extractRole(refreshToken));
-        String newRefreshToken = jwtUtil.generateRefreshToken(userId);
+        String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken));
+        String newRefreshToken = jwtUtil.generateRefreshToken(userId.toString());
 
         redisRefreshTokenAdapter.save(userId, newRefreshToken);
 
         return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
-    public void logout(String userId) {
+    public void logout(Long userId) {
         redisRefreshTokenAdapter.delete(userId);
     }
 
