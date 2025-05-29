@@ -48,9 +48,6 @@ public class Item extends BaseEntity {
 
     private Long weight;
 
-    @Column(nullable = false, length = 20)
-    private String skill; // TODO: 따로 테이블로 빼야 함 (ItemEffect)
-
     private Integer durability;
 
     @Column(nullable = false)
