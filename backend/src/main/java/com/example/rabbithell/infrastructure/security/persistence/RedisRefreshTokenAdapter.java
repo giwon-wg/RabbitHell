@@ -16,23 +16,23 @@ public class RedisRefreshTokenAdapter {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void save(String userId, String refreshToken) {
+    public void save(Long userId, String refreshToken) {
         String key = generateKey(userId);
         redisTemplate.opsForValue().set(key, refreshToken);
     }
 
-    public Optional<String> getByUserId(String userId) {
+    public Optional<String> getByUserId(Long userId) {
         String key = generateKey(userId);
         String token = redisTemplate.opsForValue().get(key);
         return Optional.ofNullable(token);
     }
 
-    public void delete(String userId) {
+    public void delete(Long userId) {
         String key = generateKey(userId);
         redisTemplate.delete(key);
     }
 
-    private String generateKey(String userId) {
+    private String generateKey(Long userId) {
         return KEY_PREFIX + userId;
     }
 }
