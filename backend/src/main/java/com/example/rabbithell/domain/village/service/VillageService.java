@@ -1,10 +1,60 @@
 package com.example.rabbithell.domain.village.service;
 
-import org.springframework.stereotype.Service;
+import java.util.Objects;
+import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.character.entity.Character;
+import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.character.service.CharacterService;
+import com.example.rabbithell.domain.village.entity.Village;
+import com.example.rabbithell.domain.village.exception.VillageException;
+import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
+import com.example.rabbithell.domain.village.repository.VillageRepository;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class VillageService {
+
+    private final VillageRepository villageRepository;
+    private final CharacterRepository characterRepository;
+    private final CharacterService characterService;
+
+
+    @Transactional
+    public void moveVillage(AuthUser authUser, Long characterId, Long villageId) {
+        Character character = verifyCharacter(authUser, characterId);
+
+        Village currentVillage = villageRepository.findByIdOrElseThrow(Long.valueOf(character.getCurrentVillage()));
+        Village targetVillage = villageRepository.findByIdOrElseThrow(villageId)
+
+        boolean isConnected = currentVillage.getConnections().stream()
+            .anyMatch(conn -> conn.getToVillage().getId().equals(targetVillage.getId()));
+
+        if (!isConnected) {
+            throw new VillageException(VillageExceptionCode.VILLAGE_NOT_CONNECTED);
+        }
+
+        character.updateCurrentVillage(targetVillage);
+    }
+
+
+
+
+    private Character verifyCharacter(AuthUser authUser, Long characterId) {
+
+        Character character = characterRepository.findByIdOrElseThrow(characterId);
+
+        if(!Objects.equals(character.getUser().getId(), authUser.getUserId())){
+            throw new VillageException(VillageExceptionCode.CHARACTER_FORBIDDEN);
+        }
+
+        return character;
+    }
 }
