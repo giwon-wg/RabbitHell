@@ -47,6 +47,10 @@ tasks.withType(JavaCompile).configureEach {
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
+tasks.named('checkstyleMain') {
+    dependsOn tasks.named('compileTestJava')
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
