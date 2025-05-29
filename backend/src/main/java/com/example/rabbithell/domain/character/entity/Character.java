@@ -115,10 +115,6 @@ public class Character extends BaseEntity {
         return unlockedRareMaps.contains(rareMap);
     }
 
-    public Set<BattleFieldType> getUnlockedRareMaps() {
-        return unlockedRareMaps;
-    }
-
     public void updateCurrentVillage(Village currentVillage) {
         this.currentVillage = currentVillage.getId();
     }
