@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.community.comment.service;
 
+import static com.example.rabbithell.domain.community.comment.exception.code.CommentExceptionCode.*;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -35,10 +37,10 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     public CommentResponse create(Long postId, Long userId, CommentRequest request) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new CommentException(CommentExceptionCode.POST_NOT_FOUND));
+            .orElseThrow(() -> new CommentException(POST_NOT_FOUND));
 
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new CommentException(CommentExceptionCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new CommentException(USER_NOT_FOUND));
 
         Comment comment = Comment.builder()
             .post(post)
@@ -55,10 +57,10 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     public CommentResponse update(Long commentId, Long userId, CommentRequest request) {
         Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new CommentException(CommentExceptionCode.COMMENT_NOT_FOUND));
+            .orElseThrow(() -> new CommentException(COMMENT_NOT_FOUND));
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new CommentException(CommentExceptionCode.USER_MISMATCH);
+            throw new CommentException(USER_MISMATCH);
         }
 
         comment.update(request.content());
@@ -70,13 +72,13 @@ public class CommentServiceImpl implements CommentService{
     public void delete(Long postId, Long commentId, Long userId) {
 
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new CommentException(CommentExceptionCode.POST_NOT_FOUND));
+            .orElseThrow(() -> new CommentException(POST_NOT_FOUND));
 
         Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new CommentException(CommentExceptionCode.COMMENT_NOT_FOUND));
+            .orElseThrow(() -> new CommentException(COMMENT_NOT_FOUND));
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new CommentException(CommentExceptionCode.USER_MISMATCH);
+            throw new CommentException(USER_MISMATCH);
         }
 
         post.decreaseCommentCount();

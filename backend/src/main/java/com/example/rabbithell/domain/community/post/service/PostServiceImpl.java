@@ -17,6 +17,8 @@ import com.example.rabbithell.domain.community.post.repository.PostRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
 
+import static com.example.rabbithell.domain.community.post.exception.code.PostExceptionCode.*;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,7 +32,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse createPost(Long userId, PostRequest postRequest) {
 
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new PostException(PostExceptionCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new PostException(USER_NOT_FOUND));
 
         Post post = Post.builder()
             .title(postRequest.title())
@@ -48,7 +50,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getPostById(Long postId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new PostException(PostExceptionCode.POST_NOT_FOUND));
+            .orElseThrow(() -> new PostException(POST_NOT_FOUND));
         return PostResponse.fromEntity(post);
     }
 
@@ -68,10 +70,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long userId, Long postId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new PostException(PostExceptionCode.POST_NOT_FOUND));
+            .orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
         if (!post.getUser().getId().equals(userId)) {
-            throw new PostException(PostExceptionCode.USER_MISMATCH);
+            throw new PostException(USER_MISMATCH);
         }
 
         post.markAsDeleted();
@@ -82,10 +84,10 @@ public class PostServiceImpl implements PostService {
     public PostResponse updatePost(Long userId, Long postId, PostRequest postRequest) {
 
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new PostException(PostExceptionCode.POST_NOT_FOUND));
+            .orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
         if (!post.getUser().getId().equals(userId)) {
-            throw new PostException(PostExceptionCode.USER_MISMATCH);
+            throw new PostException(USER_MISMATCH);
         }
 
         post.update(postRequest.title(), postRequest.content());

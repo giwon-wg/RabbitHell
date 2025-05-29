@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.auth.service;
 
+import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode.*;
+
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,10 +45,10 @@ public class AuthService {
 
     public LoginResponse login(String email, String rawPassword) {
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
-            .orElseThrow(() -> new AuthException(AuthExceptionCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new AuthException(AuthExceptionCode.INVALID_PASSWORD);
+            throw new AuthException(INVALID_PASSWORD);
         }
 
         String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name());
@@ -59,19 +61,19 @@ public class AuthService {
 
     public TokenResponse reissue(String refreshToken) {
         if (!jwtUtil.validateToken(refreshToken)) {
-            throw new AuthException(AuthExceptionCode.REFRESH_TOKEN_MISMATCH);
+            throw new AuthException(REFRESH_TOKEN_MISMATCH);
         }
 
         Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
 
         userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new AuthException(AuthExceptionCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 
         String saved = redisRefreshTokenAdapter.getByUserId(userId)
-            .orElseThrow(() -> new AuthException(AuthExceptionCode.REFRESH_TOKEN_NOT_FOUND));
+            .orElseThrow(() -> new AuthException(REFRESH_TOKEN_NOT_FOUND));
 
         if (!refreshToken.equals(saved)) {
-            throw new AuthException(AuthExceptionCode.REFRESH_TOKEN_MISMATCH);
+            throw new AuthException(REFRESH_TOKEN_MISMATCH);
         }
 
         String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken));
@@ -84,7 +86,7 @@ public class AuthService {
 
     public void logout(Long userId) {
         userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new AuthException(AuthExceptionCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 
         redisRefreshTokenAdapter.delete(userId);
     }
