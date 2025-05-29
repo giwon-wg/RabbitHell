@@ -44,4 +44,3 @@ jobs:
               with:
                   name: app-jar
                   path: backend/build/libs/*.jar
-
