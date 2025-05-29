@@ -1,7 +1,9 @@
 package com.example.rabbithell.domain.shop.service;
 
-import org.springframework.stereotype.Service;
+import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 
-@Service
-public class ShopService {
+public interface ShopService {
+
+    ShopResponse findShopById(Long shopId);
+
 }

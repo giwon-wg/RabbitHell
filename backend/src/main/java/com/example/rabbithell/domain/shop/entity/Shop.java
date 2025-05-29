@@ -2,6 +2,7 @@ package com.example.rabbithell.domain.shop.entity;
 
 import com.example.rabbithell.domain.village.entity.Village;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,5 +31,8 @@ public class Shop {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "village_id")
     private Village village;
+
+    @Column(nullable = false, length = 20)
+    private String name;
 
 }
