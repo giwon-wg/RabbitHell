@@ -60,7 +60,6 @@ public class EffectAdminController {
 		@RequestParam(defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-		PageResponse<EffectResponse> response = effectService.getAllEffects(pageable);
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
