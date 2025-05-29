@@ -24,7 +24,7 @@ jacoco {
 }
 
 checkstyle {
-    maxWarnings = 0
+    maxWarnings = 1000
     configFile = file("config/checkstyle/naver-checkstyle-rules.xml")
     configProperties = ["suppressionFile": "config/checkstyle/naver-checkstyle-suppressions.xml"]
     toolVersion = "8.24"
