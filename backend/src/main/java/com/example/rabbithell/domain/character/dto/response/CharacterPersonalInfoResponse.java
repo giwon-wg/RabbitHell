@@ -3,14 +3,14 @@ package com.example.rabbithell.domain.character.dto.response;
 import com.example.rabbithell.domain.character.entity.Character;
 
 public record CharacterPersonalInfoResponse(
-    Long id,
+    Long characterId,
     Long userId,
     String userName,
     Long kingdomId,
     String kingdomName,
     Long speciesId,
     String speciesName,
-    String name,
+    String characterName,
     String job,
     int level,
     int exp,
