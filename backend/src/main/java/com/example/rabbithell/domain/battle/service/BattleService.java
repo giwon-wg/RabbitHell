@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.battle.service;
 
+import static com.example.rabbithell.domain.character.exception.code.CharacterExceptionCode.*;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -9,8 +11,8 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.dto.response.GetBattleFieldsResponse;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.character.entity.Character;
+import com.example.rabbithell.domain.character.exception.CharacterException;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
-import com.example.rabbithell.domain.village.exception.VillageException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BattleService {
 
-    BattleService battleService;
     CharacterRepository characterRepository;
 
 
@@ -38,7 +39,7 @@ public class BattleService {
         Character character = characterRepository.findByIdOrElseThrow(characterId);
 
         if (!Objects.equals(character.getUser().getId(), authUser.getUserId())) {
-            throw new VillageException(CHARACTER_FORBIDDEN);
+            throw new CharacterException(CHARACTER_NOT_FOUND);
         }
 
         return character;

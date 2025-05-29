@@ -1,8 +1,10 @@
 package com.example.rabbithell.domain.character.entity;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import com.example.rabbithell.common.audit.BaseEntity;
+import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.user.model.User;

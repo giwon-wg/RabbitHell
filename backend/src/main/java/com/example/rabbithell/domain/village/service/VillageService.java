@@ -1,5 +1,6 @@
 package com.example.rabbithell.domain.village.service;
 
+import static com.example.rabbithell.domain.character.exception.code.CharacterExceptionCode.*;
 import static com.example.rabbithell.domain.village.exception.code.VillageExceptionCode.*;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.character.entity.Character;
+import com.example.rabbithell.domain.character.exception.CharacterException;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.village.entity.Village;
 import com.example.rabbithell.domain.village.exception.VillageException;
@@ -45,7 +47,7 @@ public class VillageService {
         Character character = characterRepository.findByIdOrElseThrow(characterId);
 
         if (!Objects.equals(character.getUser().getId(), authUser.getUserId())) {
-            throw new VillageException(CHARACTER_FORBIDDEN);
+            throw new CharacterException(CHARACTER_NOT_FOUND);
         }
 
         return character;
