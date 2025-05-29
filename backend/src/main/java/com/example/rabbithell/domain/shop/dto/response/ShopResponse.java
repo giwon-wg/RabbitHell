@@ -7,7 +7,6 @@ public record ShopResponse(
     Long villageId,
     String shopName
 ) {
-
     public static ShopResponse fromEntity(Shop shop) {
         return new ShopResponse(
             shop.getId(),
@@ -15,5 +14,4 @@ public record ShopResponse(
             shop.getName()
         );
     }
-
 }
