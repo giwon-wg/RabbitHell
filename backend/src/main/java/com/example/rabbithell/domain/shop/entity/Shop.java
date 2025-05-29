@@ -43,7 +43,7 @@ public class Shop extends BaseEntity {
         this.name = name;
     }
 
-    public void markAsDelete() {
+    public void markAsDeleted() {
         this.isDeleted = true;
     }
 

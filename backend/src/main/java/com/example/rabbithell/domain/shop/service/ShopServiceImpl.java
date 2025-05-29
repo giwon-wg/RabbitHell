@@ -58,7 +58,7 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public void deleteShop(Long shopId) {
         Shop shop = shopRepository.findByIdOrElseThrow(shopId);
-        shop.markAsDelete();
+        shop.markAsDeleted();
     }
 
 }
