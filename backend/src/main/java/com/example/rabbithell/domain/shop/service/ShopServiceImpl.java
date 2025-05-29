@@ -1,5 +1,8 @@
 package com.example.rabbithell.domain.shop.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
@@ -8,9 +11,8 @@ import com.example.rabbithell.domain.village.entity.Village;
 import com.example.rabbithell.domain.village.exception.VillageException;
 import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +52,13 @@ public class ShopServiceImpl implements ShopService {
         shop.update(village, shopRequest.name());
 
         return ShopResponse.fromEntity(shop);
+    }
+
+    @Transactional
+    @Override
+    public void deleteShop(Long shopId) {
+        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+        shop.markAsDelete();
     }
 
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +47,19 @@ public class ShopAdminController {
             HttpStatus.OK.value(),
             "상점 수정 성공",
             shopService.updateShop(shopId, shopRequest)
+        ));
+    }
+
+    @DeleteMapping("/{shopId}")
+    public ResponseEntity<CommonResponse<Void>> deleteShop(
+        @PathVariable Long shopId
+    ) {
+        shopService.deleteShop(shopId);
+
+        return ResponseEntity.ok(CommonResponse.of(
+            true,
+            HttpStatus.OK.value(),
+            "상점 삭제 성공"
         ));
     }
 

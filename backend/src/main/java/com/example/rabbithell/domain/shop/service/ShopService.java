@@ -12,4 +12,6 @@ public interface ShopService {
 
     ShopResponse updateShop(Long shopId, @Valid ShopRequest shopRequest);
 
+    void deleteShop(Long shopId);
+
 }
