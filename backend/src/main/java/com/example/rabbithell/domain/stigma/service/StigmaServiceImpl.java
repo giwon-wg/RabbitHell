@@ -68,4 +68,11 @@ public class StigmaServiceImpl implements StigmaService{
         if (request.ratio() != null) stigma.changeRatio(request.ratio());
         if (request.description() != null) stigma.changeDescription(request.description());
     }
+
+    @Transactional
+    @Override
+    public void delete(Long stigmaId) {
+        Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
+        stigma.delete();
+    }
 }
