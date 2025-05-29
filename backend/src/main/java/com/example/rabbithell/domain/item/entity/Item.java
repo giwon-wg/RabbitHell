@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.item.entity;
 
 import com.example.rabbithell.common.audit.BaseEntity;
+import com.example.rabbithell.domain.item.enums.ItemType;
 import com.example.rabbithell.domain.item.enums.Rarity;
 import com.example.rabbithell.domain.shop.entity.Shop;
 
@@ -40,6 +41,9 @@ public class Item extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
+    private ItemType itemType;
+
+    @Enumerated(EnumType.STRING)
     private Rarity rarity; // enum
 
     private Long price;
@@ -48,9 +52,9 @@ public class Item extends BaseEntity {
 
     private Long weight;
 
-    @Column(nullable = false, length = 20)
-    private String skill; // enum?
-
     private Integer durability;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
 }

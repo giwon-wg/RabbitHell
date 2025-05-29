@@ -1,13 +1,9 @@
 package com.example.rabbithell.domain.inventory.entity;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-
+import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.item.entity.Item;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "inventory_item")
-public class InventoryItem {
+public class InventoryItem extends BaseEntity {
 
     @EmbeddedId
     private InventoryItemId id;
@@ -47,12 +43,5 @@ public class InventoryItem {
 
     @Enumerated(EnumType.STRING)
     private Slot slot; // enum
-
-    @CreatedDate
-    @Column(updatable = false, nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private boolean is_deleted;
 
 }
