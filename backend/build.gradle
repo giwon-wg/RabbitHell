@@ -35,7 +35,7 @@ def generatedDir = "$buildDir/generated/querydsl"
 sourceSets {
     main {
         java {
-            srcDirs = ["src/main/java", generatedDir]
+            srcDirs += ["src/main/java", generatedDir]
         }
     }
 }
@@ -53,8 +53,9 @@ tasks.named('test') {
     ignoreFailures = true
 }
 
-tasks.named('checkstyleMain') {
-    dependsOn tasks.named('compileJava')  // 또는 compileTestJava
+tasks.named("checkstyleMain") {
+    dependsOn tasks.named("compileJava")
+    mustRunAfter tasks.named("compileTestJava")
 }
 
 jacocoTestReport {
