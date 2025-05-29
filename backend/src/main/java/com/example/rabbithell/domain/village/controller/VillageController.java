@@ -3,6 +3,7 @@ package com.example.rabbithell.domain.village.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
-import com.example.rabbithell.domain.village.dto.request.CureRequest;
+import com.example.rabbithell.domain.village.dto.request.UserRequest;
 import com.example.rabbithell.domain.village.dto.request.MoveCharacterRequest;
 import com.example.rabbithell.domain.village.dto.request.MoneyRequest;
 import com.example.rabbithell.domain.village.service.VillageService;
@@ -59,10 +60,11 @@ public class VillageController {
     @PatchMapping("/hospitals/cure")
     public ResponseEntity<CommonResponse<Void>> cureCharacter(
         @AuthenticationPrincipal AuthUser authUser,
-        @Valid @RequestBody CureRequest request
+        @Valid @RequestBody UserRequest request
     ){
         villageService.cureCharacter(authUser, request.characterId());
 
         return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "치료가 완료되었습니다."));
     }
+
 }
