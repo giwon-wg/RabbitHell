@@ -5,26 +5,58 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
+import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
+import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.service.ItemService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/inventory/items")
-public class ItemUserController {
+@RequestMapping("/admin/items")
+@PreAuthorize("hasRole('ADMIN')")
+public class ItemController {
+
+    // cud
 
     private final ItemService itemService;
 
-    // 아이템 목록 조회
+    @PostMapping
+    public ResponseEntity<CommonResponse<ItemResponse>> createItem(
+        @Valid @RequestBody ItemRequest itemRequest
+    ) {
+        return ResponseEntity.ok(CommonResponse.of(
+            true,
+            HttpStatus.OK.value(),
+            "아이템 생성 성공",
+            itemService.createItem(itemRequest)
+        ));
+    }
+
+    @GetMapping("/{itemId}")
+    public ResponseEntity<CommonResponse<ItemResponse>> getPost(
+        @PathVariable Long itemId
+    ) {
+        return ResponseEntity.ok(CommonResponse.of(
+            true,
+            HttpStatus.OK.value(),
+            "아이템 단건 조회 성공",
+            itemService.getItemById(itemId)));
+    }
+
     @GetMapping
     public ResponseEntity<CommonResponse<PageResponse<ItemResponse>>> getAllItems(
         @RequestParam(defaultValue = "0") int page,
@@ -39,5 +71,7 @@ public class ItemUserController {
             itemService.getAllItems(pageable)
         ));
     }
+
+
 
 }

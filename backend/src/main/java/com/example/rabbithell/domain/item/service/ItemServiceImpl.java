@@ -12,6 +12,8 @@ import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.repository.ItemRepository;
+import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
+import com.example.rabbithell.domain.shop.entity.Shop;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +38,13 @@ public class ItemServiceImpl implements ItemService {
 
         Item savedItem = itemRepository.save(item);
         return ItemResponse.fromEntity(savedItem);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ItemResponse getItemById(Long itemId) {
+        Item item = itemRepository.findByIdOrElseThrow(itemId);
+        return ItemResponse.fromEntity(item);
     }
 
     @Transactional(readOnly = true)
