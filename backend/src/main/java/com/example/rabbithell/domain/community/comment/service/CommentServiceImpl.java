@@ -40,6 +40,7 @@ public class CommentServiceImpl implements CommentService{
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
             .orElseThrow(() -> new CommentException(CommentExceptionCode.USER_NOT_FOUND));
 
+
         Comment comment = Comment.builder()
             .post(post)
             .user(user)
