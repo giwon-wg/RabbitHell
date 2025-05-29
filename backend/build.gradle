@@ -53,6 +53,10 @@ tasks.named('test') {
     ignoreFailures = true
 }
 
+tasks.named('checkstyleMain') {
+    dependsOn tasks.named('compileJava')  // 또는 compileTestJava
+}
+
 jacocoTestReport {
     dependsOn test
     reports {
