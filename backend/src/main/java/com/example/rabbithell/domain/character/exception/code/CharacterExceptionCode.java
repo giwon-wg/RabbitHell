@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CharaterExceptionCode {
+public enum CharacterExceptionCode {
 
     ERROR_CODE_NAME(false, HttpStatus.NOT_FOUND, "에러 메시지"),
     ;
