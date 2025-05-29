@@ -19,7 +19,7 @@ public class ShopUserController {
     private final ShopService shopService;
 
     @GetMapping("/{shopId}")
-    public ResponseEntity<CommonResponse<ShopResponse>> enterShop(@PathVariable Long shopId) {
+    public ResponseEntity<CommonResponse<ShopResponse>> getShop(@PathVariable Long shopId) {
         return ResponseEntity.ok(CommonResponse.of(
             true,
             HttpStatus.OK.value(),
