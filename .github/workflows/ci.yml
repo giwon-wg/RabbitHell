@@ -36,6 +36,17 @@ jobs:
             - name: Grant execute permission to Gradle
               run: chmod +x gradlew
 
+            - name: Create .env from GitHub Secrets
+              run: |
+                  echo "LOCAL_MYSQL_URL=${{ secrets.LOCAL_MYSQL_URL }}" >> .env
+                  echo "LOCAL_MYSQL_USERNAME=${{ secrets.LOCAL_MYSQL_USERNAME }}" >> .env
+                  echo "LOCAL_MYSQL_PASSWORD=${{ secrets.LOCAL_MYSQL_PASSWORD }}" >> .env
+                  echo "LOCAL_REDIS_HOST=${{ secrets.LOCAL_REDIS_HOST }}" >> .env
+                  echo "LOCAL_REDIS_PORT=${{ secrets.LOCAL_REDIS_PORT }}" >> .env
+                  echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+                  echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+                  echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
+
             - name: Build with Gradle
               run: ./gradlew build
 
