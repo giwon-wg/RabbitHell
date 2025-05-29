@@ -8,8 +8,6 @@ import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.village.entity.Village;
-import com.example.rabbithell.domain.village.exception.VillageException;
-import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
 import lombok.RequiredArgsConstructor;
