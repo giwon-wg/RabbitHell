@@ -29,7 +29,7 @@ public class AuthService {
 
     public void signup(SignupRequest request) {
         if (userRepository.findByEmailAndIsDeletedFalse(request.email()).isPresent()) {
-            throw new AuthException(AuthExceptionCode.EMAIL_DUPLICATED);
+            throw new AuthException(EMAIL_DUPLICATED);
         }
 
         User user = User.builder()
