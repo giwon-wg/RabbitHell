@@ -8,8 +8,6 @@ import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.village.entity.Village;
-import com.example.rabbithell.domain.village.exception.VillageException;
-import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,13 +18,6 @@ public class ShopServiceImpl implements ShopService {
 
     private final ShopRepository shopRepository;
     private final VillageRepository villageRepository;
-
-    @Transactional(readOnly = true)
-    @Override
-    public ShopResponse findShopById(Long shopId) {
-        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
-        return ShopResponse.fromEntity(shop);
-    }
 
     @Override
     public ShopResponse createShop(ShopRequest shopRequest) {
@@ -39,6 +30,13 @@ public class ShopServiceImpl implements ShopService {
 
         Shop savedShop = shopRepository.save(shop);
         return ShopResponse.fromEntity(savedShop);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ShopResponse findShopById(Long shopId) {
+        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+        return ShopResponse.fromEntity(shop);
     }
 
     @Transactional

@@ -1,6 +1,4 @@
-package com.example.rabbithell.domain.inventory.entity;
-
-import java.io.Serializable;
+package com.example.rabbithell.domain.item.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -13,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class InventoryItemId implements Serializable {
-
-    private Long inventoryId;
+public class ItemEffectId {
 
     private Long itemId;
+
+    private Long effectId;
 
 }
