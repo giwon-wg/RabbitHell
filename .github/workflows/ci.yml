@@ -37,7 +37,7 @@ jobs:
               run: ./gradlew build -p backend
 
             - name: Upload JAR artifact
-              uses: actions/upload-artifact@v3.1.2
+              uses: actions/upload-artifact@v3
               with:
                   name: app-jar
                   path: backend/build/libs/*.jar
