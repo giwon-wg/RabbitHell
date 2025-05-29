@@ -42,8 +42,10 @@ public class CommentServiceImpl implements CommentService{
             .post(post)
             .user(user)
             .content(request.content())
+            .isDeleted(false)
             .build();
 
+        post.increaseCommentCount();
         return CommentResponse.fromEntity(commentRepository.save(comment));
     }
 
@@ -63,7 +65,11 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional
-    public void delete(Long commentId, Long userId) {
+    public void delete(Long postId, Long commentId, Long userId) {
+
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글 없음, 커스텀예외 추가 후 교체"));
+
         Comment comment = commentRepository.findById(commentId)
             .orElseThrow(() -> new IllegalArgumentException("댓글 없음, 커스텀예외 추가 후 교체"));
 
@@ -71,6 +77,7 @@ public class CommentServiceImpl implements CommentService{
             throw new IllegalArgumentException("작성자만 삭제 가능, 커스텀예외 추가 후 교체");
         }
 
+        post.decreaseCommentCount();
         comment.markAsDeleted();
     }
 

@@ -13,7 +13,7 @@ public interface CommentService {
 
     CommentResponse update(Long commentId, Long userId, CommentRequest request);
 
-    void delete(Long commentId, Long userId);
+    void delete(Long postId, Long commentId, Long userId);
 
     CursorPageResponse<CommentResponse> getCommentsByPostWithCursor(Long postId, CursorPageRequest pageRequest);
 
