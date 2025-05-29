@@ -13,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 @EqualsAndHashCode
 public class InventoryItemId implements Serializable {
 

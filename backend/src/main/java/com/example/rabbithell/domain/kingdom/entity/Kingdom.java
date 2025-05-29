@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Table(name = "kingdoms")
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Kingdom {
 
     @Id
@@ -33,8 +33,8 @@ public class Kingdom {
     @Column(nullable = false)
     private String kingdomDetail;
 
-    @OneToMany(mappedBy = "village")
+    @OneToMany
+    @JoinColumn(name = "kingdom_id")
     private List<Village> villages = new ArrayList<>();
-
 
 }
