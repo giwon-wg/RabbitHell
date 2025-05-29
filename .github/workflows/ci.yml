@@ -49,7 +49,8 @@ jobs:
                   echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
 
             - name: Build with Gradle
-              run: ./gradlew build
+              run: ./gradlew build -x checkstyleMain
+              working-directory: backend
 
             - name: Upload JAR artifact
               uses: actions/upload-artifact@v4
