@@ -1,17 +1,18 @@
 package com.example.rabbithell.domain.community.post.service;
 
-import com.example.rabbithell.common.dto.request.CursorPageRequest;
-import com.example.rabbithell.common.dto.response.CursorPageResponse;
+import org.springframework.data.domain.Pageable;
+
+import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.community.post.dto.request.PostRequest;
 import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
 
 public interface PostService {
 
-    PostResponse createPost(String userEmail, PostRequest postRequest);
+    PostResponse createPost(Long userId, PostRequest postRequest);
 
     PostResponse getPostById(Long postId);
 
-    CursorPageResponse<PostResponse> getPostByCursor(CursorPageRequest cursorPageRequest);
+    PageResponse<PostResponse> getAllPosts(Pageable pageable);
 
     void deletePost(Long userId, Long postId);
 
