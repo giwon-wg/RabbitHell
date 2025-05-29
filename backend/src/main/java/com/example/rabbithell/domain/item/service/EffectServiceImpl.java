@@ -27,6 +27,14 @@ public class EffectServiceImpl implements EffectService {
         return EffectResponse.fromEntity(savedEffect);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public EffectResponse getEffectById(Long effectId) {
+        Effect effect = effectRepository.findByIdOrElseThrow(effectId);
+
+        return EffectResponse.fromEntity(effect);
+    }
+
     @Transactional
     @Override
     public EffectResponse updateEffect(Long effectId, EffectRequest effectRequest) {

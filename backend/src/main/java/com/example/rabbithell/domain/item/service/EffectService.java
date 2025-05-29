@@ -9,6 +9,8 @@ public interface EffectService {
 
     EffectResponse createEffect(@Valid EffectRequest effectRequest);
 
+    EffectResponse getEffectById(Long effectId);
+
     EffectResponse updateEffect(Long effectId, @Valid EffectRequest effectRequest);
 
 }
