@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum VillageExceptionCode {
     VILLAGE_NOT_CONNECTED(false, HttpStatus.BAD_REQUEST, "인접하지 않은 마을로는 이동할 수 없습니다."),
-    SAVE_BELOW_MINIMUM(false, HttpStatus.BAD_REQUEST, "1000골드 이상부터 입금 가능합니다."),
+    BELOW_MINIMUM(false, HttpStatus.BAD_REQUEST, "1000골드 이상부터 가능합니다."),
     NOT_ENOUGH_MONEY(false, HttpStatus.BAD_REQUEST, "돈이 부족합니다."),
     ;
 

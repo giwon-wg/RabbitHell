@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.village.dto.request.MoveCharacterRequest;
-import com.example.rabbithell.domain.village.dto.request.SaveMoneyRequest;
+import com.example.rabbithell.domain.village.dto.request.MoneyRequest;
 import com.example.rabbithell.domain.village.service.VillageService;
 
 import jakarta.validation.Valid;
@@ -38,10 +38,20 @@ public class VillageController {
     @PatchMapping("/bank/save")
     public ResponseEntity<CommonResponse<Void>> saveMoney(
         @AuthenticationPrincipal AuthUser authUser,
-        @Valid @RequestBody SaveMoneyRequest request
+        @Valid @RequestBody MoneyRequest request
     ){
         villageService.saveMoney(authUser, request.characterId(), request.saveMoney());
 
         return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), request.saveMoney().toString()+"골드가 입금되었습니다."));
+    }
+
+    @PatchMapping("/bank/withdraw")
+    public ResponseEntity<CommonResponse<Void>> withdrawMoney(
+        @AuthenticationPrincipal AuthUser authUser,
+        @Valid @RequestBody MoneyRequest request
+    ){
+        villageService.withdrawMoney(authUser, request.characterId(), request.saveMoney());
+
+        return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), request.saveMoney().toString()+"골드가 출금되었습니다."));
     }
 }

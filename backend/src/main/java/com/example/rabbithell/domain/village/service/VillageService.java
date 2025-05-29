@@ -65,7 +65,7 @@ public class VillageService {
         Character character = verifyCharacter(authUser, characterId);
 
         if(saveMoney < 1000){
-            throw new VillageException(VillageExceptionCode.SAVE_BELOW_MINIMUM);
+            throw new VillageException(VillageExceptionCode.BELOW_MINIMUM);
         }
 
         if(character.getCash() < saveMoney){
@@ -73,5 +73,23 @@ public class VillageService {
         }
 
         character.saveToBank(saveMoney);
+    }
+
+
+    @Transactional
+    public void withdrawMoney(AuthUser authUser, Long characterId, Long withdrawMoney) {
+
+        Character character = verifyCharacter(authUser, characterId);
+
+        if(withdrawMoney < 1000){
+            throw new VillageException(VillageExceptionCode.BELOW_MINIMUM);
+        }
+
+        if(character.getSaving() < withdrawMoney){
+            throw new VillageException(VillageExceptionCode.NOT_ENOUGH_MONEY);
+        }
+
+        character.withdrawFromBank(withdrawMoney);
+
     }
 }
