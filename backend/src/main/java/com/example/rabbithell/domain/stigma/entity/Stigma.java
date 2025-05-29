@@ -40,11 +40,7 @@ public class Stigma extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
-    public void initIsDeleted () {
-        this.isDeleted = false;
-    }
-
-    public void delete() {
+    public void markAsDelete() {
         this.isDeleted = true;
     }
 
