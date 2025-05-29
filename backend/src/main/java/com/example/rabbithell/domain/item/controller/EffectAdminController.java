@@ -2,7 +2,9 @@ package com.example.rabbithell.domain.item.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,18 @@ public class EffectAdminController {
 			"특수 효과 생성 성공",
 			effectService.createEffect(effectRequest)
 		));
+	}
+
+	@PutMapping("/{effectId}")
+	public ResponseEntity<CommonResponse<EffectResponse>> updateEffect(
+		@PathVariable Long effectId,
+		@Valid @RequestBody EffectRequest effectRequest
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"특수 효과 수정 성공",
+			effectService.updateEffect(effectId, effectRequest)));
 	}
 
 }

@@ -37,6 +37,11 @@ public class Effect {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    public void update(EffectType effectType, Long power) {
+        this.effectType = effectType;
+        this.power = power;
+    }
+
     public void markAsDeleted() {
         this.isDeleted = true;
     }
