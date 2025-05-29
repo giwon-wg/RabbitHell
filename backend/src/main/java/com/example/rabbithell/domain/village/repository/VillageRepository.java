@@ -10,6 +10,6 @@ import com.example.rabbithell.domain.village.exception.VillageException;
 public interface VillageRepository extends JpaRepository<Village, Long> {
     default Village findByIdOrElseThrow(Long villageId){
         return findById(villageId)
-            .orElseThrow(() -> new VillageException(VILLAGE_NOT_EXIST));
+            .orElseThrow(() -> new VillageException(VILLAGE_NOT_FOUND));
     }
 }

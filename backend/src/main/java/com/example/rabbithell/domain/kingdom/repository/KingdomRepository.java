@@ -10,6 +10,6 @@ import com.example.rabbithell.domain.kingdom.exception.KingdomException;
 public interface KingdomRepository extends JpaRepository<Kingdom, Long> {
     default Kingdom findByIdOrElseThrow(Long kingdomId){
         return findById(kingdomId)
-            .orElseThrow(()-> new KingdomException(KINGDOM_NOT_EXIST));
+            .orElseThrow(()-> new KingdomException(KINGDOM_NOT_FOUND));
     }
 }
