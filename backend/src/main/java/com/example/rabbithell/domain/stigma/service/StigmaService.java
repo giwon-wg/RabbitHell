@@ -1,18 +1,18 @@
 package com.example.rabbithell.domain.stigma.service;
 
-import java.util.List;
-
+import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.stigma.dto.request.CreateStigmaRequest;
+import com.example.rabbithell.domain.stigma.dto.request.StigmaCond;
 import com.example.rabbithell.domain.stigma.dto.request.UpdateStigmaRequest;
-import com.example.rabbithell.domain.stigma.dto.response.StigamResponse;
+import com.example.rabbithell.domain.stigma.dto.response.StigmaResponse;
 
 public interface StigmaService {
 
-    StigamResponse create(CreateStigmaRequest request);
+    StigmaResponse create(CreateStigmaRequest request);
 
-    List<StigamResponse> findAll(int pageNumber, int size);
+    PageResponse<StigmaResponse> findAllByCond(int pageNumber, int size, StigmaCond cond);
 
-    StigamResponse findById(Long stigmaId);
+    StigmaResponse findById(Long stigmaId);
 
     void update(Long stigmaId, UpdateStigmaRequest request);
 
