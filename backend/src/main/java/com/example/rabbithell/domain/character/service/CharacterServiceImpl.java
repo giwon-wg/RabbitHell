@@ -3,6 +3,9 @@ package com.example.rabbithell.domain.character.service;
 import org.springframework.stereotype.Service;
 
 import com.example.rabbithell.domain.character.dto.request.CreateCharacterRequest;
+import com.example.rabbithell.domain.character.dto.response.CharacterInfoResponse;
+import com.example.rabbithell.domain.character.dto.response.CharacterPersonalInfoResponse;
+import com.example.rabbithell.domain.character.dto.response.CharacterPublicInfoResponse;
 import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
@@ -22,7 +25,7 @@ public class CharacterServiceImpl implements CharacterService{
     private final SpecieRepository specieRepository;
 
     @Override
-    public void createCharacter(User user, CreateCharacterRequest request) {
+    public Long createCharacter(User user, CreateCharacterRequest request) {
 
         Kingdom kingdom = kingdomRepository.findByIdOrElseThrow(request.kingdomId());
         Specie specie = specieRepository.findByIdOrElseThrow(request.speciesId());
@@ -35,7 +38,7 @@ public class CharacterServiceImpl implements CharacterService{
             .job("전사?")
             .level(0)
             .exp(0)
-            .stamina(2000)
+            .stamina(1000)
             .hp(100)
             .mp(50)
             .strength(10)
@@ -49,14 +52,26 @@ public class CharacterServiceImpl implements CharacterService{
             .archerPoint(0)
             .cash(0L)
             .saving(0L)
-            .skillPonint(0)
+            .skillPoint(0)
             .currentVillage(1)
             .build();
 
         characterRepository.save(character);
 
+        return character.getId();
     }
 
+    @Override
+    public CharacterInfoResponse characterInfo(Long characterId, User user) {
 
+        Character character = characterRepository.findByIdOrElseThrow(characterId);
 
+        boolean isOwner = character.getUser().getId().equals(user.getId());
+
+        if (isOwner) {
+            return CharacterPersonalInfoResponse.from(character);
+        } else {
+            return CharacterPublicInfoResponse.from(character);
+        }
+    }
 }

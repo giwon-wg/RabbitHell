@@ -16,13 +16,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "characters")
+@Table(name = "character")
 public class Character extends BaseEntity {
 
     @Id
@@ -75,7 +77,7 @@ public class Character extends BaseEntity {
     private Long saving;
 
     @Column(name = "skill_point")
-    private int skillPonint;
+    private int skillPoint;
 
     @Column(name = "current_village")
     private int currentVillage;
