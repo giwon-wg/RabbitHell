@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -82,6 +83,18 @@ public class PostController {
             HttpStatus.OK.value(),
             "게시글 수정 성공",
             postService.updatePost(authUser.getUserId(), postId, request)));
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<CommonResponse<PostController>> deletedPost(
+        @AuthenticationPrincipal AuthUser authUser,
+        @PathVariable Long postId
+    ) {
+        postService.deletePost(authUser.getUserId(), postId);
+        return ResponseEntity.ok(CommonResponse.of(
+            true,
+            HttpStatus.OK.value(),
+            "게시글 수정 성공"));
     }
 
 }
