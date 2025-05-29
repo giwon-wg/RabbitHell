@@ -10,7 +10,7 @@ import com.example.rabbithell.domain.specie.exception.SpecieException;
 public interface SpecieRepository extends JpaRepository<Specie, Long> {
     default Specie findByIdOrElseThrow(Long specieId){
         return findById(specieId)
-            .orElseThrow(() -> new SpecieException(SPECIE_NOT_EXIST));
+            .orElseThrow(() -> new SpecieException(SPECIE_NOT_FOUND));
     }
 
 }

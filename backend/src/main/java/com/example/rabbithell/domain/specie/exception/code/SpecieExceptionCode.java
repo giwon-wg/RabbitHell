@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SpecieExceptionCode {
-    SPECIE_NOT_EXIST(false, HttpStatus.NOT_FOUND, "존재하지 않는 종족입니다."),
+    SPECIE_NOT_FOUND(false, HttpStatus.NOT_FOUND, "존재하지 않는 종족입니다."),
     ;
 
     private final boolean success;
