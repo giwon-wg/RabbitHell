@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.user.model;
 
+import com.example.rabbithell.common.audit.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,11 +20,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -34,8 +39,14 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public enum Role {
         USER, ADMIN
     }
 
+    public void delete() {
+        this.isDeleted = true;
+    }
 }
