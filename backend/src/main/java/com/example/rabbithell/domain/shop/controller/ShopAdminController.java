@@ -27,7 +27,7 @@ public class ShopAdminController {
 
     @PostMapping
     public ResponseEntity<CommonResponse<ShopResponse>> createShop(
-        @RequestBody ShopRequest shopRequest
+        @Valid @RequestBody ShopRequest shopRequest
     ) {
         return ResponseEntity.ok(CommonResponse.of(
             true,
