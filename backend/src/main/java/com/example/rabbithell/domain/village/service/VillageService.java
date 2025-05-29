@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.village.service;
 
+import static com.example.rabbithell.domain.village.exception.code.VillageExceptionCode.*;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,7 +41,7 @@ public class VillageService {
             .anyMatch(conn -> conn.getToVillage().getId().equals(targetVillage.getId()));
 
         if (!isConnected) {
-            throw new VillageException(VillageExceptionCode.VILLAGE_NOT_CONNECTED);
+            throw new VillageException(VILLAGE_NOT_CONNECTED);
         }
 
         character.updateCurrentVillage(targetVillage);
@@ -53,7 +55,7 @@ public class VillageService {
         Character character = characterRepository.findByIdOrElseThrow(characterId);
 
         if(!Objects.equals(character.getUser().getId(), authUser.getUserId())){
-            throw new VillageException(VillageExceptionCode.CHARACTER_FORBIDDEN);
+            throw new VillageException(CHARACTER_FORBIDDEN);
         }
 
         return character;
@@ -65,11 +67,11 @@ public class VillageService {
         Character character = verifyCharacter(authUser, characterId);
 
         if(saveMoney < 1000){
-            throw new VillageException(VillageExceptionCode.BELOW_MINIMUM);
+            throw new VillageException(BELOW_MINIMUM);
         }
 
         if(character.getCash() < saveMoney){
-            throw new VillageException(VillageExceptionCode.NOT_ENOUGH_MONEY);
+            throw new VillageException(NOT_ENOUGH_MONEY);
         }
 
         character.saveToBank(saveMoney);
@@ -82,14 +84,34 @@ public class VillageService {
         Character character = verifyCharacter(authUser, characterId);
 
         if(withdrawMoney < 1000){
-            throw new VillageException(VillageExceptionCode.BELOW_MINIMUM);
+            throw new VillageException(BELOW_MINIMUM);
         }
 
         if(character.getSaving() < withdrawMoney){
-            throw new VillageException(VillageExceptionCode.NOT_ENOUGH_MONEY);
+            throw new VillageException(NOT_ENOUGH_MONEY);
         }
 
         character.withdrawFromBank(withdrawMoney);
+
+    }
+
+    @Transactional
+    public void cureCharacter(AuthUser authUser, Long characterId) {
+
+        Long cureCost = 10000L;
+
+        Character character = verifyCharacter(authUser, characterId);
+
+        if(cureCost > character.getSaving()){
+            if(cureCost > character.getCash()){
+                throw new VillageException(NOT_ENOUGH_MONEY);
+            }
+            character.useMoneyFromSaving(cureCost);
+        }else{
+            character.useMoneyFromCash(cureCost);
+        }
+
+        character.refill();
 
     }
 }

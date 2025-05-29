@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.village.dto.request.CureRequest;
 import com.example.rabbithell.domain.village.dto.request.MoveCharacterRequest;
 import com.example.rabbithell.domain.village.dto.request.MoneyRequest;
 import com.example.rabbithell.domain.village.service.VillageService;
@@ -53,5 +54,15 @@ public class VillageController {
         villageService.withdrawMoney(authUser, request.characterId(), request.saveMoney());
 
         return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), request.saveMoney().toString()+"골드가 출금되었습니다."));
+    }
+
+    @PatchMapping("/hospital/cure")
+    public ResponseEntity<CommonResponse<Void>> cureCharacter(
+        @AuthenticationPrincipal AuthUser authUser,
+        @Valid @RequestBody CureRequest request
+    ){
+        villageService.cureCharacter(authUser, request.characterId());
+
+        return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "치료가 완료되었습니다."));
     }
 }
