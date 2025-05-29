@@ -1,5 +1,6 @@
 package com.example.rabbithell.domain.character.entity;
 
+import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.user.model.User;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "characters")
-public class Character {
+public class Character extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

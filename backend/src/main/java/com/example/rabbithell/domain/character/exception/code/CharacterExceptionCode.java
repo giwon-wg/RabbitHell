@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CharacterExceptionCode {
 
-    ERROR_CODE_NAME(false, HttpStatus.NOT_FOUND, "에러 메시지"),
+    CHARACTER_NOT_FOUND(false, HttpStatus.NOT_FOUND, "해당 ID의 캐릭터를찾을 수 없습니다."),
     ;
 
     private final boolean success;
