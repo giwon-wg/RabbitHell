@@ -1,8 +1,13 @@
-package com.example.rabbithell.domain.auth.application;
+package com.example.rabbithell.domain.auth.service;
 
+import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode.*;
+
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.rabbithell.domain.auth.exception.AuthException;
+import com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
 import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
@@ -24,7 +29,7 @@ public class AuthService {
 
     public void signup(SignupRequest request) {
         if (userRepository.findByEmailAndIsDeletedFalse(request.email()).isPresent()) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            throw new AuthException(DUPLICATED_EMAIL);
         }
 
         User user = User.builder()
@@ -40,10 +45,10 @@ public class AuthService {
 
     public LoginResponse login(String email, String rawPassword) {
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
+            .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+            throw new AuthException(INVALID_PASSWORD);
         }
 
         String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name());
@@ -56,19 +61,19 @@ public class AuthService {
 
     public TokenResponse reissue(String refreshToken) {
         if (!jwtUtil.validateToken(refreshToken)) {
-            throw new IllegalArgumentException("유효하지 않은 리프레시 토큰");
+            throw new AuthException(REFRESH_TOKEN_MISMATCH);
         }
 
         Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
 
         userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
+            .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 
         String saved = redisRefreshTokenAdapter.getByUserId(userId)
-            .orElseThrow(() -> new IllegalArgumentException("리프레시 토큰 없음"));
+            .orElseThrow(() -> new AuthException(REFRESH_TOKEN_NOT_FOUND));
 
         if (!refreshToken.equals(saved)) {
-            throw new IllegalArgumentException("리프레시 토큰 불일치");
+            throw new AuthException(REFRESH_TOKEN_MISMATCH);
         }
 
         String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken));
@@ -81,7 +86,7 @@ public class AuthService {
 
     public void logout(Long userId) {
         userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
+            .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 
         redisRefreshTokenAdapter.delete(userId);
     }
