@@ -94,7 +94,7 @@ public class PostController {
         return ResponseEntity.ok(CommonResponse.of(
             true,
             HttpStatus.OK.value(),
-            "게시글 수정 성공"));
+            "게시글 삭제 성공"));
     }
 
 }
