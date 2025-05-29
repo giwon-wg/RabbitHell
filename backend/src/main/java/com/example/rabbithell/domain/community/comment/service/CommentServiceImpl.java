@@ -11,6 +11,8 @@ import com.example.rabbithell.common.util.CursorPaginationUtil;
 import com.example.rabbithell.domain.community.comment.dto.request.CommentRequest;
 import com.example.rabbithell.domain.community.comment.dto.response.CommentResponse;
 import com.example.rabbithell.domain.community.comment.entity.Comment;
+import com.example.rabbithell.domain.community.comment.exception.CommentException;
+import com.example.rabbithell.domain.community.comment.exception.code.CommentExceptionCode;
 import com.example.rabbithell.domain.community.comment.repository.CommentQueryRepository;
 import com.example.rabbithell.domain.community.comment.repository.CommentRepository;
 import com.example.rabbithell.domain.community.post.entity.Post;
@@ -33,10 +35,10 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     public CommentResponse create(Long postId, Long userId, CommentRequest request) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글 없음, 커스텀예외 추가 후 교체"));
+            .orElseThrow(() -> new CommentException(CommentExceptionCode.POST_NOT_FOUND));
 
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
-            .orElseThrow(() -> new IllegalArgumentException("유저 없음, 커스텀예외 추가 후 교체"));
+            .orElseThrow(() -> new CommentException(CommentExceptionCode.USER_NOT_FOUND));
 
         Comment comment = Comment.builder()
             .post(post)
@@ -53,10 +55,10 @@ public class CommentServiceImpl implements CommentService{
     @Transactional
     public CommentResponse update(Long commentId, Long userId, CommentRequest request) {
         Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new IllegalArgumentException("댓글 없음, 커스텀예외 추가 후 교체"));
+            .orElseThrow(() -> new CommentException(CommentExceptionCode.COMMENT_NOT_FOUND));
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("작성자만 수정 가능, 커스텀예외 추가 후 교체");
+            throw new CommentException(CommentExceptionCode.USER_MISMATCH);
         }
 
         comment.update(request.content());
@@ -68,13 +70,13 @@ public class CommentServiceImpl implements CommentService{
     public void delete(Long postId, Long commentId, Long userId) {
 
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글 없음, 커스텀예외 추가 후 교체"));
+            .orElseThrow(() -> new CommentException(CommentExceptionCode.POST_NOT_FOUND));
 
         Comment comment = commentRepository.findById(commentId)
-            .orElseThrow(() -> new IllegalArgumentException("댓글 없음, 커스텀예외 추가 후 교체"));
+            .orElseThrow(() -> new CommentException(CommentExceptionCode.COMMENT_NOT_FOUND));
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("작성자만 삭제 가능, 커스텀예외 추가 후 교체");
+            throw new CommentException(CommentExceptionCode.USER_MISMATCH);
         }
 
         post.decreaseCommentCount();
