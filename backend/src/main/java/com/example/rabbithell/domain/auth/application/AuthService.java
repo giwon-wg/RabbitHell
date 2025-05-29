@@ -23,21 +23,23 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public void signup(SignupRequest request) {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
+        if (userRepository.findByEmailAndIsDeletedFalse(request.email()).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
         User user = User.builder()
             .email(request.email())
+            .name(request.name())
             .password(passwordEncoder.encode(request.password()))
             .role(User.Role.valueOf(request.role().toUpperCase()))
+            .isDeleted(false)
             .build();
 
         userRepository.save(user);
     }
 
     public LoginResponse login(String email, String rawPassword) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndIsDeletedFalse(email)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
 
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
@@ -59,8 +61,10 @@ public class AuthService {
 
         Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
 
-        String saved = redisRefreshTokenAdapter.getByUserId(userId)
+        userRepository.findByIdAndIsDeletedFalse(userId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
 
+        String saved = redisRefreshTokenAdapter.getByUserId(userId)
             .orElseThrow(() -> new IllegalArgumentException("리프레시 토큰 없음"));
 
         if (!refreshToken.equals(saved)) {
@@ -76,6 +80,9 @@ public class AuthService {
     }
 
     public void logout(Long userId) {
+        userRepository.findByIdAndIsDeletedFalse(userId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
+
         redisRefreshTokenAdapter.delete(userId);
     }
 
