@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.rabbithell.domain.auth.application.AuthService;
+import com.example.rabbithell.domain.auth.service.AuthService;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.auth.dto.request.LoginRequest;
 import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
