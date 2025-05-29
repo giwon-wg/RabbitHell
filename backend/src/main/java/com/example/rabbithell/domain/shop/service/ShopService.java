@@ -1,7 +1,17 @@
 package com.example.rabbithell.domain.shop.service;
 
-import org.springframework.stereotype.Service;
+import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
+import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
+import jakarta.validation.Valid;
 
-@Service
-public class ShopService {
+public interface ShopService {
+
+    ShopResponse findShopById(Long shopId);
+
+    ShopResponse createShop(ShopRequest shopRequest);
+
+    ShopResponse updateShop(Long shopId, @Valid ShopRequest shopRequest);
+
+    void deleteShop(Long shopId);
+
 }

@@ -45,7 +45,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Boolean isDeleted;
 
-    public void markAsDelete() {
+    public void markAsDeleted() {
         this.isDeleted = true;
     }
 

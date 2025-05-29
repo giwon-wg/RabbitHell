@@ -72,7 +72,8 @@ public class PostServiceImpl implements PostService {
             throw new IllegalArgumentException("작성자 다름, 커스텀 예외 후 교채");
         }
 
-        post.markAsDelete();
+
+        post.markAsDeleted();
     }
 
     @Transactional
