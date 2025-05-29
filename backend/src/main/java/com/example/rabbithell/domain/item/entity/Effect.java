@@ -1,6 +1,6 @@
 package com.example.rabbithell.domain.item.entity;
 
-import com.example.rabbithell.domain.item.enums.Type;
+import com.example.rabbithell.domain.item.enums.EffectType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +29,7 @@ public class Effect {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private EffectType effectType;
 
     @Column(nullable = false)
     private Long power;
