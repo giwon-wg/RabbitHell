@@ -57,4 +57,24 @@ public class Item extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    public void update(
+        Shop shop,
+        String name,
+        ItemType itemType,
+        Rarity rarity,
+        Long price,
+        Long attack,
+        Long weight,
+        Integer durability
+    ) {
+        this.shop = shop;
+        this.name = name;
+        this.itemType = itemType;
+        this.rarity = rarity;
+        this.price = price;
+        this.attack = attack;
+        this.weight = weight;
+        this.durability = durability;
+    }
+
 }

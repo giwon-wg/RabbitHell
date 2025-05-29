@@ -57,4 +57,23 @@ public class ItemServiceImpl implements ItemService {
         return PageResponse.of(dtoList, page);
     }
 
+    @Transactional
+    @Override
+    public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
+        Item item = itemRepository.findByIdOrElseThrow(itemId);
+
+        item.update(
+            itemRequest.shop(),
+            itemRequest.name(),
+            itemRequest.itemType(),
+            itemRequest.rarity(),
+            itemRequest.price(),
+            itemRequest.attack(),
+            itemRequest.weight(),
+            itemRequest.durability()
+        );
+
+        return ItemResponse.fromEntity(item);
+    }
+
 }
