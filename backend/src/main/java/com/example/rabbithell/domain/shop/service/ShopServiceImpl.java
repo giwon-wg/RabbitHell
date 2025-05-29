@@ -2,10 +2,15 @@ package com.example.rabbithell.domain.shop.service;
 
 import static com.example.rabbithell.domain.shop.exception.code.ShopExceptionCode.NO_SUCH_SHOP;
 
+import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.exception.ShopException;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
+import com.example.rabbithell.domain.village.entity.Village;
+import com.example.rabbithell.domain.village.exception.VillageException;
+import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
+import com.example.rabbithell.domain.village.repository.VillageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopServiceImpl implements ShopService {
 
     private final ShopRepository shopRepository;
+    private final VillageRepository villageRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -22,6 +28,20 @@ public class ShopServiceImpl implements ShopService {
         Shop shop = shopRepository.findById(shopId)
             .orElseThrow(() -> new ShopException(NO_SUCH_SHOP));
         return ShopResponse.fromEntity(shop);
+    }
+
+    @Override
+    public ShopResponse createShop(ShopRequest shopRequest) {
+        Village village = villageRepository.findById(shopRequest.villageId())
+            .orElseThrow(() -> new VillageException(VillageExceptionCode.ERROR_CODE_NAME)); // TODO: 에러 코드 수정
+
+        Shop shop = Shop.builder()
+            .village(village)
+            .name(shopRequest.name())
+            .build();
+
+        Shop savedShop = shopRepository.save(shop);
+        return ShopResponse.fromEntity(savedShop);
     }
 
 }
