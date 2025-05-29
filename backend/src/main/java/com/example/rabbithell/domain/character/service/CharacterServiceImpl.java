@@ -35,7 +35,7 @@ public class CharacterServiceImpl implements CharacterService{
             .kingdom(kingdom)
             .specie(specie)
             .name(request.name())
-            .job("전사?")
+            .job("무능한 토끼")
             .level(0)
             .exp(0)
             .stamina(1000)
@@ -53,7 +53,7 @@ public class CharacterServiceImpl implements CharacterService{
             .cash(0L)
             .saving(0L)
             .skillPoint(0)
-            .currentVillage(1)
+            .currentVillage(1L)
             .build();
 
         characterRepository.save(character);
