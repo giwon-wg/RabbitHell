@@ -59,7 +59,7 @@ public class StigmaController {
         return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
-				"스티그마 전체 조회 성공", stigmaService.findAll(page, size, cond)));
+				"스티그마 전체 조회 성공", stigmaService.findAllByCond(page, size, cond)));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
