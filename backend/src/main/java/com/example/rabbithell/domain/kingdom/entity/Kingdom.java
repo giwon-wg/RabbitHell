@@ -36,6 +36,7 @@ public class Kingdom {
     @Column(nullable = false)
     private String kingdomDetail;
 
+    @Builder.Default
     @OneToMany
     @JoinColumn(name = "kingdom_id")
     private List<Village> villages = new ArrayList<>();
