@@ -30,8 +30,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public ShopResponse createShop(ShopRequest shopRequest) {
-        Village village = villageRepository.findById(shopRequest.villageId())
-            .orElseThrow(() -> new VillageException(VillageExceptionCode.ERROR_CODE_NAME)); // TODO: 에러 코드 수정
+        Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
 
         Shop shop = Shop.builder()
             .village(village)
