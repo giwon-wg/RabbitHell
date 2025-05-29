@@ -75,6 +75,7 @@ public class PostServiceImpl implements PostService {
         post.markAsDelete();
     }
 
+    @Transactional
     @Override
     public PostResponse updatePost(Long userId, Long postId, PostRequest postRequest) {
 
