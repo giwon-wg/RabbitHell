@@ -15,6 +15,7 @@ import com.example.rabbithell.domain.village.exception.VillageException;
 import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
@@ -56,5 +57,21 @@ public class VillageService {
         }
 
         return character;
+    }
+
+    @Transactional
+    public void saveMoney(AuthUser authUser, Long characterId, Long saveMoney) {
+
+        Character character = verifyCharacter(authUser, characterId);
+
+        if(saveMoney < 1000){
+            throw new VillageException(VillageExceptionCode.SAVE_BELOW_MINIMUM);
+        }
+
+        if(character.getCash() < saveMoney){
+            throw new VillageException(VillageExceptionCode.NOT_ENOUGH_MONEY);
+        }
+
+        character.saveToBank(saveMoney);
     }
 }
