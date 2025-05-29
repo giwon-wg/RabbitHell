@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Entity
-@Table(name = "monster_encounter")
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonsterEncounter {
