@@ -15,4 +15,6 @@ public interface StigmaService {
     StigamResponse findById(Long stigmaId);
 
     void update(Long stigmaId, UpdateStigmaRequest request);
+
+    void delete(Long stigmaId);
 }
