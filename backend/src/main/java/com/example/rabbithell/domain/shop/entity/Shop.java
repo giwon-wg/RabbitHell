@@ -1,7 +1,6 @@
 package com.example.rabbithell.domain.shop.entity;
 
 import com.example.rabbithell.domain.village.entity.Village;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,5 +33,10 @@ public class Shop {
 
     @Column(nullable = false, length = 20)
     private String name;
+
+    public void update(Village village, String name) {
+        this.village = village;
+        this.name = name;
+    }
 
 }

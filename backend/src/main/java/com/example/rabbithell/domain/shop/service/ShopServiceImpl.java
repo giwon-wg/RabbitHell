@@ -1,11 +1,8 @@
 package com.example.rabbithell.domain.shop.service;
 
-import static com.example.rabbithell.domain.shop.exception.code.ShopExceptionCode.NO_SUCH_SHOP;
-
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
-import com.example.rabbithell.domain.shop.exception.ShopException;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.village.entity.Village;
 import com.example.rabbithell.domain.village.exception.VillageException;
@@ -25,8 +22,7 @@ public class ShopServiceImpl implements ShopService {
     @Transactional(readOnly = true)
     @Override
     public ShopResponse findShopById(Long shopId) {
-        Shop shop = shopRepository.findById(shopId)
-            .orElseThrow(() -> new ShopException(NO_SUCH_SHOP));
+        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
         return ShopResponse.fromEntity(shop);
     }
 
@@ -42,6 +38,18 @@ public class ShopServiceImpl implements ShopService {
 
         Shop savedShop = shopRepository.save(shop);
         return ShopResponse.fromEntity(savedShop);
+    }
+
+    @Transactional
+    @Override
+    public ShopResponse updateShop(Long shopId, ShopRequest shopRequest) {
+        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+
+        Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
+
+        shop.update(village, shopRequest.name());
+
+        return ShopResponse.fromEntity(shop);
     }
 
 }
