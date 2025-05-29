@@ -1,16 +1,17 @@
 package com.example.rabbithell.domain.stigma.controller;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.stigma.dto.request.CreateStigmaRequest;
+import com.example.rabbithell.domain.stigma.dto.request.StigmaCond;
 import com.example.rabbithell.domain.stigma.dto.request.UpdateStigmaRequest;
-import com.example.rabbithell.domain.stigma.dto.response.StigamResponse;
+import com.example.rabbithell.domain.stigma.dto.response.StigmaResponse;
 import com.example.rabbithell.domain.stigma.service.StigmaService;
 
 @RequiredArgsConstructor
@@ -34,7 +37,7 @@ public class StigmaController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping()
-	public ResponseEntity<CommonResponse<StigamResponse>> create(
+	public ResponseEntity<CommonResponse<StigmaResponse>> create(
 		@RequestBody @Valid CreateStigmaRequest request
 	) {
 		return ResponseEntity.ok(
@@ -45,20 +48,23 @@ public class StigmaController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/page/{pageNumber}")
-	public ResponseEntity<CommonResponse<List<StigamResponse>>> findAll(
-@PathVariable int pageNumber, @RequestParam(defaultValue = "10") int size
+	@GetMapping("/page/")
+	@Validated
+	public ResponseEntity<CommonResponse<PageResponse<StigmaResponse>>> findAll(
+		@RequestParam(defaultValue = "1") @Min(1) int page
+		, @RequestParam(defaultValue = "10") @Min(1) int size,
+		@ModelAttribute StigmaCond cond
 	) {
-		return ResponseEntity.ok(
+
+        return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
-				"스티그마 전체 조회 성공",
-				stigmaService.findAll(pageNumber, size)));
+				"스티그마 전체 조회 성공", stigmaService.findAll(page, size, cond)));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{stigmaId}")
-	public ResponseEntity<CommonResponse<StigamResponse>> findById (
+	public ResponseEntity<CommonResponse<StigmaResponse>> findById (
 		@PathVariable Long stigmaId
 	) {
 		return ResponseEntity.ok(
