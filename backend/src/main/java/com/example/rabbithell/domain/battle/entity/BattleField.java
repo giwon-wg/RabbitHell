@@ -1,11 +1,12 @@
-package com.example.rabbithell.domain.battleField.entity;
+package com.example.rabbithell.domain.battle.entity;
+
+import com.example.rabbithell.domain.battle.type.BattleFieldType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class BattleField {
     private Long id;
 
     @Column(nullable = false)
-    private String battleFieldName;
+    private BattleFieldType battleFieldType;
 
     @Column(nullable = false)
     private String rating;
