@@ -12,9 +12,6 @@ import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.service.ItemService;
-import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
-import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
-import com.example.rabbithell.domain.shop.service.ShopService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
