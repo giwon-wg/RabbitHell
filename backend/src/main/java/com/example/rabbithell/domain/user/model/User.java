@@ -46,7 +46,7 @@ public class User extends BaseEntity {
         USER, ADMIN
     }
 
-    public void delete() {
+    public void markAsDelete() {
         this.isDeleted = true;
     }
 }
