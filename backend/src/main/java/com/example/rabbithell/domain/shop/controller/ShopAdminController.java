@@ -55,7 +55,6 @@ public class ShopAdminController {
         @PathVariable Long shopId
     ) {
         shopService.deleteShop(shopId);
-
         return ResponseEntity.ok(CommonResponse.of(
             true,
             HttpStatus.OK.value(),
