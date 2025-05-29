@@ -46,7 +46,7 @@ public class VillageController {
         return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), request.saveMoney().toString()+"골드가 입금되었습니다."));
     }
 
-    @PatchMapping("/bankss/withdraw")
+    @PatchMapping("/banks/withdraw")
     public ResponseEntity<CommonResponse<Void>> withdrawMoney(
         @AuthenticationPrincipal AuthUser authUser,
         @Valid @RequestBody MoneyRequest request

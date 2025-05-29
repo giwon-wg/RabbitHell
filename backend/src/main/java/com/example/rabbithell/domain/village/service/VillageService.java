@@ -23,7 +23,6 @@ public class VillageService {
     private final VillageRepository villageRepository;
     private final CharacterRepository characterRepository;
 
-
     @Transactional
     public void moveVillage(AuthUser authUser, Long characterId, Long villageId) {
         Character character = verifyCharacter(authUser, characterId);
@@ -41,14 +40,11 @@ public class VillageService {
         character.updateCurrentVillage(targetVillage);
     }
 
-
-
-
     private Character verifyCharacter(AuthUser authUser, Long characterId) {
 
         Character character = characterRepository.findByIdOrElseThrow(characterId);
 
-        if(!Objects.equals(character.getUser().getId(), authUser.getUserId())){
+        if (!Objects.equals(character.getUser().getId(), authUser.getUserId())) {
             throw new VillageException(CHARACTER_FORBIDDEN);
         }
 
@@ -60,28 +56,27 @@ public class VillageService {
 
         Character character = verifyCharacter(authUser, characterId);
 
-        if(saveMoney < 1000){
-            throw new VillageException(BELOW_MINIMUM);
+        if (saveMoney <= 0) {
+            throw new VillageException(BELOW_ZERO);
         }
 
-        if(character.getCash() < saveMoney){
+        if (character.getCash() < saveMoney) {
             throw new VillageException(NOT_ENOUGH_MONEY);
         }
 
         character.saveToBank(saveMoney);
     }
 
-
     @Transactional
     public void withdrawMoney(AuthUser authUser, Long characterId, Long withdrawMoney) {
 
         Character character = verifyCharacter(authUser, characterId);
 
-        if(withdrawMoney < 1000){
-            throw new VillageException(BELOW_MINIMUM);
+        if (withdrawMoney <= 0) {
+            throw new VillageException(BELOW_ZERO);
         }
 
-        if(character.getSaving() < withdrawMoney){
+        if (character.getSaving() < withdrawMoney) {
             throw new VillageException(NOT_ENOUGH_MONEY);
         }
 
@@ -96,12 +91,12 @@ public class VillageService {
 
         Character character = verifyCharacter(authUser, characterId);
 
-        if(cureCost > character.getSaving()){
-            if(cureCost > character.getCash()){
+        if (cureCost > character.getSaving()) {
+            if (cureCost > character.getCash()) {
                 throw new VillageException(NOT_ENOUGH_MONEY);
             }
             character.useMoneyFromSaving(cureCost);
-        }else{
+        } else {
             character.useMoneyFromCash(cureCost);
         }
 

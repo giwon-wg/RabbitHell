@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "villages")
 public class Village {
 
     @Id

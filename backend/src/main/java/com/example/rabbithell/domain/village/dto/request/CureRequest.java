@@ -4,5 +4,4 @@ import jakarta.validation.constraints.NotNull;
 
 public record CureRequest(
     @NotNull Long characterId
-) {
-}
+) {}

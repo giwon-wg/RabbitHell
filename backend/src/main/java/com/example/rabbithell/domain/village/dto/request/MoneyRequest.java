@@ -4,8 +4,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record MoneyRequest(
     @NotNull Long characterId,
-
     @NotNull Long saveMoney
-){
-
-}
+){}
