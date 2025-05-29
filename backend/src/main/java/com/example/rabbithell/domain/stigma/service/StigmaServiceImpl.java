@@ -1,18 +1,20 @@
 package com.example.rabbithell.domain.stigma.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.stigma.dto.request.CreateStigmaRequest;
+import com.example.rabbithell.domain.stigma.dto.request.StigmaCond;
 import com.example.rabbithell.domain.stigma.dto.request.UpdateStigmaRequest;
-import com.example.rabbithell.domain.stigma.dto.response.StigamResponse;
+import com.example.rabbithell.domain.stigma.dto.response.StigmaResponse;
 import com.example.rabbithell.domain.stigma.entity.Stigma;
 import com.example.rabbithell.domain.stigma.repository.StigmaRepository;
 
@@ -24,38 +26,38 @@ public class StigmaServiceImpl implements StigmaService{
 
     @Transactional
     @Override
-    public StigamResponse create(CreateStigmaRequest request) {
+    public StigmaResponse create(CreateStigmaRequest request) {
         Stigma stigma = Stigma.builder()
             .name(request.name())
             .ratio(request.ratio())
-            .description(request.description())
+            .description(request.description()).isDeleted(false)
             .build();
-
-        stigma.initIsDeleted();
 
         Stigma savedStigma = stigmaRepository.save(stigma);
 
-        return StigamResponse.from(stigma);
+        return StigmaResponse.from(stigma);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<StigamResponse> findAll(int pageNumber, int size) {
+    public PageResponse<StigmaResponse> findAllByCond(int pageNumber, int size, StigmaCond cond) {
 
-        //PageNUmber가 음수 일때에 대한 방어 코드
-        if (pageNumber < 1) {
-            pageNumber = 1;
-        }
         Pageable pageable = PageRequest.of(pageNumber - 1, size);
-        List<Stigma> stigmaList = stigmaRepository.findAll(pageable).getContent();
-        return stigmaList.stream().map(d -> StigamResponse.from(d)).toList();
+        List<Stigma> stigmaList = stigmaRepository.findAllByCondition(cond, pageable);
+        long count = stigmaRepository.countByCondition(cond);
+        List<StigmaResponse> responseList = stigmaList.stream()
+            .map(StigmaResponse::from)
+            .toList();
+        PageImpl<StigmaResponse> responsePage = new PageImpl<>(responseList, pageable, count);
+
+        return PageResponse.of(responseList, responsePage);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public StigamResponse findById(Long stigmaId) {
+    public StigmaResponse findById(Long stigmaId) {
         Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
-        return StigamResponse.from(stigma);
+        return StigmaResponse.from(stigma);
     }
 
     @Transactional
@@ -73,6 +75,6 @@ public class StigmaServiceImpl implements StigmaService{
     @Override
     public void delete(Long stigmaId) {
         Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
-        stigma.delete();
+        stigma.markAsDelete();
     }
 }
