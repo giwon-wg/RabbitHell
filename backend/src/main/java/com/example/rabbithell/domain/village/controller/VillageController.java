@@ -36,7 +36,7 @@ public class VillageController {
 
     }
 
-    @PatchMapping("/bank/save")
+    @PatchMapping("/banks/save")
     public ResponseEntity<CommonResponse<Void>> saveMoney(
         @AuthenticationPrincipal AuthUser authUser,
         @Valid @RequestBody MoneyRequest request
@@ -46,7 +46,7 @@ public class VillageController {
         return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), request.saveMoney().toString()+"골드가 입금되었습니다."));
     }
 
-    @PatchMapping("/bank/withdraw")
+    @PatchMapping("/bankss/withdraw")
     public ResponseEntity<CommonResponse<Void>> withdrawMoney(
         @AuthenticationPrincipal AuthUser authUser,
         @Valid @RequestBody MoneyRequest request
@@ -56,7 +56,7 @@ public class VillageController {
         return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), request.saveMoney().toString()+"골드가 출금되었습니다."));
     }
 
-    @PatchMapping("/hospital/cure")
+    @PatchMapping("/hospitals/cure")
     public ResponseEntity<CommonResponse<Void>> cureCharacter(
         @AuthenticationPrincipal AuthUser authUser,
         @Valid @RequestBody CureRequest request

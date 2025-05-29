@@ -3,7 +3,6 @@ package com.example.rabbithell.domain.village.service;
 import static com.example.rabbithell.domain.village.exception.code.VillageExceptionCode.*;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,14 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
-import com.example.rabbithell.domain.character.service.CharacterService;
 import com.example.rabbithell.domain.village.entity.Village;
 import com.example.rabbithell.domain.village.exception.VillageException;
-import com.example.rabbithell.domain.village.exception.code.VillageExceptionCode;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +22,6 @@ public class VillageService {
 
     private final VillageRepository villageRepository;
     private final CharacterRepository characterRepository;
-    private final CharacterService characterService;
 
 
     @Transactional
@@ -35,7 +29,7 @@ public class VillageService {
         Character character = verifyCharacter(authUser, characterId);
 
         Village currentVillage = villageRepository.findByIdOrElseThrow(Long.valueOf(character.getCurrentVillage()));
-        Village targetVillage = villageRepository.findByIdOrElseThrow(villageId)
+        Village targetVillage = villageRepository.findByIdOrElseThrow(villageId);
 
         boolean isConnected = currentVillage.getConnections().stream()
             .anyMatch(conn -> conn.getToVillage().getId().equals(targetVillage.getId()));
@@ -98,7 +92,7 @@ public class VillageService {
     @Transactional
     public void cureCharacter(AuthUser authUser, Long characterId) {
 
-        Long cureCost = 10000L;
+        Long cureCost = 0L;
 
         Character character = verifyCharacter(authUser, characterId);
 
