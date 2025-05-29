@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
-import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
 import com.example.rabbithell.domain.item.dto.request.EffectRequest;
 import com.example.rabbithell.domain.item.dto.response.EffectResponse;
 import com.example.rabbithell.domain.item.service.EffectService;
@@ -79,6 +79,18 @@ public class EffectAdminController {
 			HttpStatus.OK.value(),
 			"특수 효과 수정 성공",
 			effectService.updateEffect(effectId, effectRequest)));
+	}
+
+	@DeleteMapping("/{effectId}")
+	public ResponseEntity<CommonResponse<Void>> deleteEffect(
+		@PathVariable Long effectId
+	) {
+		effectService.deleteEffect(effectId);
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"특수 효과 삭제 성공"
+		));
 	}
 
 }

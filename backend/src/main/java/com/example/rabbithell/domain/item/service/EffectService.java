@@ -18,4 +18,6 @@ public interface EffectService {
 
     EffectResponse updateEffect(Long effectId, @Valid EffectRequest effectRequest);
 
+    void deleteEffect(Long effectId);
+
 }

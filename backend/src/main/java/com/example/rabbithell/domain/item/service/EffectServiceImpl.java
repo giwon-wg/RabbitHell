@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
-import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
-import com.example.rabbithell.domain.community.post.entity.Post;
 import com.example.rabbithell.domain.item.dto.request.EffectRequest;
 import com.example.rabbithell.domain.item.dto.response.EffectResponse;
 import com.example.rabbithell.domain.item.entity.Effect;
@@ -38,7 +36,6 @@ public class EffectServiceImpl implements EffectService {
     @Override
     public EffectResponse getEffectById(Long effectId) {
         Effect effect = effectRepository.findByIdOrElseThrow(effectId);
-
         return EffectResponse.fromEntity(effect);
     }
 
@@ -62,6 +59,13 @@ public class EffectServiceImpl implements EffectService {
         effect.update(effectRequest.effectType(), effectRequest.power());
 
         return EffectResponse.fromEntity(effect);
+    }
+
+    @Transactional
+    @Override
+    public void deleteEffect(Long effectId) {
+        Effect effect = effectRepository.findByIdOrElseThrow(effectId);
+        effect.markAsDeleted();
     }
 
 }
