@@ -37,6 +37,7 @@ jobs:
               run: chmod +x gradlew
 
             - name: Create .env from GitHub Secrets
+              working-directory: backend
               run: |
                   echo "LOCAL_MYSQL_URL=${{ secrets.LOCAL_MYSQL_URL }}" >> .env
                   echo "LOCAL_MYSQL_USERNAME=${{ secrets.LOCAL_MYSQL_USERNAME }}" >> .env
