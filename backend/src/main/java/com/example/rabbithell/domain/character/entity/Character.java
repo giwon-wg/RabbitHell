@@ -80,7 +80,7 @@ public class Character extends BaseEntity {
     private int skillPoint;
 
     @Column(name = "current_village")
-    private int currentVillage;
+    private Long currentVillage;
 
 
 

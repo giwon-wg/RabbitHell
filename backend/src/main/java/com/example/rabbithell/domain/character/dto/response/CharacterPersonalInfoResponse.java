@@ -29,7 +29,7 @@ public record CharacterPersonalInfoResponse(
     Long cash,
     Long saving,
     int skillPoint,
-    int currentVillage
+    Long currentVillage
 ) implements CharacterInfoResponse {
     public static CharacterPersonalInfoResponse from(Character character) {
         return new CharacterPersonalInfoResponse(
