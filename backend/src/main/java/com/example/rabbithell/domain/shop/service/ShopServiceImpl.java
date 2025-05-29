@@ -19,13 +19,6 @@ public class ShopServiceImpl implements ShopService {
     private final ShopRepository shopRepository;
     private final VillageRepository villageRepository;
 
-    @Transactional(readOnly = true)
-    @Override
-    public ShopResponse findShopById(Long shopId) {
-        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
-        return ShopResponse.fromEntity(shop);
-    }
-
     @Override
     public ShopResponse createShop(ShopRequest shopRequest) {
         Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
@@ -37,6 +30,13 @@ public class ShopServiceImpl implements ShopService {
 
         Shop savedShop = shopRepository.save(shop);
         return ShopResponse.fromEntity(savedShop);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ShopResponse findShopById(Long shopId) {
+        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+        return ShopResponse.fromEntity(shop);
     }
 
     @Transactional
