@@ -22,12 +22,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Optional<Post> findByIdAndIsDeletedFalse(Long id);
 
 	default Post finByIdOrElseThrow(Long id) {
+
 		return findByIdAndIsDeletedFalse(id)
 			.orElseThrow(() -> new PostException(POST_NOT_FOUND));
 	}
 
 	default Post findByIdAndValidateOwner(Long id, Long userId) {
 		Post post = finByIdOrElseThrow(id);
+
 		if (!post.getUser().getId().equals(userId)) {
 			throw new PostException(USER_MISMATCH);
 		}
