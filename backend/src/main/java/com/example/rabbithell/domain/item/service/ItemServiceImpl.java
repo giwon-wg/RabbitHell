@@ -12,6 +12,8 @@ import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.repository.ItemRepository;
+import com.example.rabbithell.domain.shop.entity.Shop;
+import com.example.rabbithell.domain.shop.repository.ShopRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,11 +22,14 @@ import lombok.RequiredArgsConstructor;
 public class ItemServiceImpl implements ItemService {
 
 	private final ItemRepository itemRepository;
+	private final ShopRepository shopRepository;
 
 	@Override
 	public ItemResponse createItem(ItemRequest itemRequest) {
+		Shop shop = itemRequest.shopId() != null ? shopRepository.findByIdOrElseThrow(itemRequest.shopId()) : null;
+
 		Item item = Item.builder()
-			.shop(itemRequest.shop())
+			.shop(shop)
 			.name(itemRequest.name())
 			.itemType(itemRequest.itemType())
 			.rarity(itemRequest.rarity())
@@ -61,9 +66,10 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
 		Item item = itemRepository.findByIdOrElseThrow(itemId);
+		Shop shop = shopRepository.findByIdOrElseThrow(itemRequest.shopId());
 
 		item.update(
-			itemRequest.shop(),
+			shop,
 			itemRequest.name(),
 			itemRequest.itemType(),
 			itemRequest.rarity(),

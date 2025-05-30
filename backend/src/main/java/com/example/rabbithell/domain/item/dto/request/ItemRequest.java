@@ -5,7 +5,7 @@ import com.example.rabbithell.domain.item.enums.Rarity;
 import com.example.rabbithell.domain.shop.entity.Shop;
 
 public record ItemRequest(
-	Shop shop,
+	Long shopId,
 	String name,
 	ItemType itemType,
 	Rarity rarity,

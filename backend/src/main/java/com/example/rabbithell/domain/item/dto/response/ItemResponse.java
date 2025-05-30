@@ -2,11 +2,10 @@ package com.example.rabbithell.domain.item.dto.response;
 
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.Rarity;
-import com.example.rabbithell.domain.shop.entity.Shop;
 
 public record ItemResponse(
 	Long itemId,
-	Shop shop,
+	Long shopId,
 	String name,
 	Rarity rarity,
 	Long price,
@@ -17,7 +16,7 @@ public record ItemResponse(
 	public static ItemResponse fromEntity(Item item) {
 		return new ItemResponse(
 			item.getId(),
-			item.getShop(),
+			item.getShop() != null ? item.getShop().getId() : null,
 			item.getName(),
 			item.getRarity(),
 			item.getPrice(),
