@@ -10,7 +10,7 @@ import com.example.rabbithell.domain.shop.exception.ShopException;
 public interface ShopRepository extends JpaRepository<Shop, Long> {
 
 	default Shop findByIdOrElseThrow(Long id) {
-		return findById(id).orElseThrow(() -> new ShopException(NO_SUCH_SHOP));
+		return findById(id).orElseThrow(() -> new ShopException(SHOP_NOT_FOUND));
 	}
 
 }
