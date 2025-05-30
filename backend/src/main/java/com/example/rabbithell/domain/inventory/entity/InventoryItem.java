@@ -42,6 +42,6 @@ public class InventoryItem extends BaseEntity {
     private Integer durability;
 
     @Enumerated(EnumType.STRING)
-    private Slot slot; // enum
+    private Slot slot; // 장착 부위
 
 }
