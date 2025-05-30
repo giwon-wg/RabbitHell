@@ -1,6 +1,5 @@
 package com.example.rabbithell.domain.community.comment.service;
 
-import static com.example.rabbithell.domain.community.comment.exception.code.CommentExceptionCode.*;
 
 import java.util.List;
 
@@ -13,7 +12,6 @@ import com.example.rabbithell.common.util.CursorPaginationUtil;
 import com.example.rabbithell.domain.community.comment.dto.request.CommentRequest;
 import com.example.rabbithell.domain.community.comment.dto.response.CommentResponse;
 import com.example.rabbithell.domain.community.comment.entity.Comment;
-import com.example.rabbithell.domain.community.comment.exception.CommentException;
 import com.example.rabbithell.domain.community.comment.repository.CommentQueryRepository;
 import com.example.rabbithell.domain.community.comment.repository.CommentRepository;
 import com.example.rabbithell.domain.community.post.entity.Post;
@@ -35,18 +33,16 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	@Transactional
 	public CommentResponse create(Long postId, Long userId, CommentRequest request) {
-		Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-			.orElseThrow(() -> new CommentException(POST_NOT_FOUND));
 
-		User user = userRepository.findByIdAndIsDeletedFalse(userId)
-			.orElseThrow(() -> new CommentException(USER_NOT_FOUND));
+		Post post = postRepository.finByIdOrElseThrow(postId);
 
-		Comment comment = Comment.builder()
-			.post(post)
-			.user(user)
-			.content(request.content())
-			.isDeleted(false)
-			.build();
+		User user = userRepository.findByIdOrElseThrow(userId);
+
+		Comment comment = new Comment(
+			user,
+			post,
+			request.content()
+		);
 
 		post.increaseCommentCount();
 		return CommentResponse.fromEntity(commentRepository.save(comment));
@@ -55,14 +51,11 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	@Transactional
 	public CommentResponse update(Long commentId, Long userId, CommentRequest request) {
-		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new CommentException(COMMENT_NOT_FOUND));
 
-		if (!comment.getUser().getId().equals(userId)) {
-			throw new CommentException(USER_MISMATCH);
-		}
+		Comment comment = commentRepository.findByIdAndValidateOwner(commentId, userId);
 
 		comment.update(request.content());
+
 		return CommentResponse.fromEntity(comment);
 	}
 
@@ -70,17 +63,12 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	public void delete(Long postId, Long commentId, Long userId) {
 
-		Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-			.orElseThrow(() -> new CommentException(POST_NOT_FOUND));
+		Post post = postRepository.finByIdOrElseThrow(postId);
 
-		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new CommentException(COMMENT_NOT_FOUND));
-
-		if (!comment.getUser().getId().equals(userId)) {
-			throw new CommentException(USER_MISMATCH);
-		}
+		Comment comment = commentRepository.findByIdAndValidateOwner(commentId, userId);
 
 		post.decreaseCommentCount();
+
 		comment.markAsDeleted();
 	}
 
