@@ -13,14 +13,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InventoryServiceImpl implements InventoryService {
 
-    private final InventoryRepository inventoryRepository;
+	private final InventoryRepository inventoryRepository;
 
-    @Transactional
-    @Override
-    public InventoryResponse expandInventory(Long userId, int amount) {
-        Inventory inventory = inventoryRepository.findByIdOrElseThrow(userId);
-        inventory.expand(amount);
-        return InventoryResponse.fromEntity(inventory);
-    }
+	@Transactional
+	@Override
+	public InventoryResponse expandInventory(Long userId, int amount) {
+		Inventory inventory = inventoryRepository.findByIdOrElseThrow(userId);
+		inventory.expand(amount);
+		return InventoryResponse.fromEntity(inventory);
+	}
 
 }

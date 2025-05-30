@@ -10,14 +10,14 @@ import jakarta.validation.Valid;
 
 public interface EffectService {
 
-    EffectResponse createEffect(@Valid EffectRequest effectRequest);
+	EffectResponse createEffect(@Valid EffectRequest effectRequest);
 
-    EffectResponse getEffectById(Long effectId);
+	EffectResponse getEffectById(Long effectId);
 
-    PageResponse<EffectResponse> getAllEffects(Pageable pageable);
+	PageResponse<EffectResponse> getAllEffects(Pageable pageable);
 
-    EffectResponse updateEffect(Long effectId, @Valid EffectRequest effectRequest);
+	EffectResponse updateEffect(Long effectId, @Valid EffectRequest effectRequest);
 
-    void deleteEffect(Long effectId);
+	void deleteEffect(Long effectId);
 
 }

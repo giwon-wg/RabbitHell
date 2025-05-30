@@ -9,11 +9,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum EffectExceptionCode {
 
-    NO_SUCH_EFFECT(false, HttpStatus.NOT_FOUND, "효과가 존재하지 않습니다."),
-    ;
+	NO_SUCH_EFFECT(false, HttpStatus.NOT_FOUND, "효과가 존재하지 않습니다."),
+	;
 
-    private final boolean success;
-    private final HttpStatus status;
-    private final String message;
+	private final boolean success;
+	private final HttpStatus status;
+	private final String message;
 
 }

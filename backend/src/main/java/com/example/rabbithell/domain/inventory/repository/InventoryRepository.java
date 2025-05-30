@@ -9,8 +9,8 @@ import com.example.rabbithell.domain.inventory.exception.InventoryException;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
-    default Inventory findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new InventoryException(USER_MISMATCH));
-    }
+	default Inventory findByIdOrElseThrow(Long id) {
+		return findById(id).orElseThrow(() -> new InventoryException(USER_MISMATCH));
+	}
 
 }

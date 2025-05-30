@@ -10,14 +10,14 @@ import lombok.Getter;
 @Getter
 public class InventoryException extends BaseException {
 
-    private final InventoryExceptionCode errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
+	private final InventoryExceptionCode errorCode;
+	private final HttpStatus httpStatus;
+	private final String message;
 
-    public InventoryException(InventoryExceptionCode errorCode) {
-        this.errorCode = errorCode;
-        this.httpStatus = errorCode.getStatus();
-        this.message = errorCode.getMessage();
-    }
+	public InventoryException(InventoryExceptionCode errorCode) {
+		this.errorCode = errorCode;
+		this.httpStatus = errorCode.getStatus();
+		this.message = errorCode.getMessage();
+	}
 
 }

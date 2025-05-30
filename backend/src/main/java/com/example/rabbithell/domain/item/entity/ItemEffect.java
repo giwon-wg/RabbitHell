@@ -20,17 +20,17 @@ import lombok.NoArgsConstructor;
 @Table(name = "item_effect")
 public class ItemEffect {
 
-    @EmbeddedId
-    private ItemEffectId id;
+	@EmbeddedId
+	private ItemEffectId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("itemId") // ItemEffectId.itemId 매핑
-    @JoinColumn(name = "item_id")
-    private Item item;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("itemId") // ItemEffectId.itemId 매핑
+	@JoinColumn(name = "item_id")
+	private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("effectId") // ItemEffectId.effectId 매핑
-    @JoinColumn(name = "effect_id")
-    private Effect effect;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("effectId") // ItemEffectId.effectId 매핑
+	@JoinColumn(name = "effect_id")
+	private Effect effect;
 
 }

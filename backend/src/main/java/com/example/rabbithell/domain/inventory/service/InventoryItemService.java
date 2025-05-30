@@ -7,6 +7,6 @@ import com.example.rabbithell.domain.inventory.dto.response.InventoryItemRespons
 
 public interface InventoryItemService {
 
-    PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable);
+	PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable);
 
 }

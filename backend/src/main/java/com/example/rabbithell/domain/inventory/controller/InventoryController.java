@@ -20,19 +20,19 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/inventory")
 public class InventoryController {
 
-    private final InventoryService inventoryService;
+	private final InventoryService inventoryService;
 
-    @PostMapping("/expand")
-    public ResponseEntity<CommonResponse<InventoryResponse>> expandInventory(
-        @AuthenticationPrincipal AuthUser authUser,
-        @RequestParam int amount
-    ) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "인벤토리 확장 성공",
-            inventoryService.expandInventory(authUser.getUserId(), amount)
-        ));
-    }
+	@PostMapping("/expand")
+	public ResponseEntity<CommonResponse<InventoryResponse>> expandInventory(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestParam int amount
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"인벤토리 확장 성공",
+			inventoryService.expandInventory(authUser.getUserId(), amount)
+		));
+	}
 
 }

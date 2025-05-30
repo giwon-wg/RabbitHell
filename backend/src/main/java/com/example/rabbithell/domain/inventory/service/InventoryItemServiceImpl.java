@@ -18,18 +18,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InventoryItemServiceImpl implements InventoryItemService {
 
-    private final InventoryItemRepository inventoryItemRepository;
+	private final InventoryItemRepository inventoryItemRepository;
 
-    @Transactional(readOnly = true)
-    @Override
-    public PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable) {
-        Page<InventoryItem> page = inventoryItemRepository.findAll(pageable);
+	@Transactional(readOnly = true)
+	@Override
+	public PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable) {
+		Page<InventoryItem> page = inventoryItemRepository.findAll(pageable);
 
-        List<InventoryItemResponse> dtoList = page.getContent().stream()
-            .map(InventoryItemResponse::fromEntity)
-            .toList();
+		List<InventoryItemResponse> dtoList = page.getContent().stream()
+			.map(InventoryItemResponse::fromEntity)
+			.toList();
 
-        return PageResponse.of(dtoList, page);
-    }
+		return PageResponse.of(dtoList, page);
+	}
 
 }

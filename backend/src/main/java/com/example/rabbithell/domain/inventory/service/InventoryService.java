@@ -4,6 +4,6 @@ import com.example.rabbithell.domain.inventory.dto.response.InventoryResponse;
 
 public interface InventoryService {
 
-    InventoryResponse expandInventory(Long userId, int amount);
+	InventoryResponse expandInventory(Long userId, int amount);
 
 }

@@ -22,21 +22,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/inventory")
 public class InventoryItemController {
 
-    private final InventoryItemService inventoryItemService;
+	private final InventoryItemService inventoryItemService;
 
-    @GetMapping
-    public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+	@GetMapping
+	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "인벤토리 아이템 전체 조회 성공",
-            inventoryItemService.getAllInventoryItems(pageable)
-        ));
-    }
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"인벤토리 아이템 전체 조회 성공",
+			inventoryItemService.getAllInventoryItems(pageable)
+		));
+	}
 
 }

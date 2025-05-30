@@ -31,67 +31,67 @@ import lombok.RequiredArgsConstructor;
 @PreAuthorize("hasRole('ADMIN')")
 public class ItemController {
 
-    private final ItemService itemService;
+	private final ItemService itemService;
 
-    @PostMapping
-    public ResponseEntity<CommonResponse<ItemResponse>> createItem(
-        @Valid @RequestBody ItemRequest itemRequest
-    ) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "아이템 생성 성공",
-            itemService.createItem(itemRequest)
-        ));
-    }
+	@PostMapping
+	public ResponseEntity<CommonResponse<ItemResponse>> createItem(
+		@Valid @RequestBody ItemRequest itemRequest
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 생성 성공",
+			itemService.createItem(itemRequest)
+		));
+	}
 
-    @GetMapping("/{itemId}")
-    public ResponseEntity<CommonResponse<ItemResponse>> getPost(
-        @PathVariable Long itemId
-    ) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "아이템 단건 조회 성공",
-            itemService.getItemById(itemId)));
-    }
+	@GetMapping("/{itemId}")
+	public ResponseEntity<CommonResponse<ItemResponse>> getPost(
+		@PathVariable Long itemId
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 단건 조회 성공",
+			itemService.getItemById(itemId)));
+	}
 
-    @GetMapping
-    public ResponseEntity<CommonResponse<PageResponse<ItemResponse>>> getAllItems(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+	@GetMapping
+	public ResponseEntity<CommonResponse<PageResponse<ItemResponse>>> getAllItems(
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "아이템 전체 조회 성공",
-            itemService.getAllItems(pageable)
-        ));
-    }
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 전체 조회 성공",
+			itemService.getAllItems(pageable)
+		));
+	}
 
-    @PutMapping("/{itemId}")
-    public ResponseEntity<CommonResponse<ItemResponse>> updatItem(
-        @PathVariable Long itemId,
-        @Valid @RequestBody ItemRequest itemRequest
-    ) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "아이템 수정 성공",
-            itemService.updateItem(itemId, itemRequest)));
-    }
+	@PutMapping("/{itemId}")
+	public ResponseEntity<CommonResponse<ItemResponse>> updatItem(
+		@PathVariable Long itemId,
+		@Valid @RequestBody ItemRequest itemRequest
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 수정 성공",
+			itemService.updateItem(itemId, itemRequest)));
+	}
 
-    @DeleteMapping("/{itemId}")
-    public ResponseEntity<CommonResponse<Void>> deleteItem(
-        @PathVariable Long itemId
-    ) {
-        itemService.deleteItem(itemId);
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "아이템 삭제 성공"));
-    }
+	@DeleteMapping("/{itemId}")
+	public ResponseEntity<CommonResponse<Void>> deleteItem(
+		@PathVariable Long itemId
+	) {
+		itemService.deleteItem(itemId);
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 삭제 성공"));
+	}
 
 }

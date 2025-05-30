@@ -26,28 +26,28 @@ import lombok.NoArgsConstructor;
 @Table(name = "inventory")
 public class Inventory {
 
-    @Id
-    private Long id; // User의 PK를 그대로 사용(Shared PK)
+	@Id
+	private Long id; // User의 PK를 그대로 사용(Shared PK)
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId // id 값을 user_id로부터 매핑
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId // id 값을 user_id로부터 매핑
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @Column(nullable = false)
-    private Integer capacity; // 용량
+	@Column(nullable = false)
+	private Integer capacity; // 용량
 
-    public void setUser(User user) {
-        this.user = user;
-        this.id = user.getId();
-    }
+	public void setUser(User user) {
+		this.user = user;
+		this.id = user.getId();
+	}
 
-    public void expand(int amount) {
-        if (amount <= 0) {
-            throw new InventoryException(AMOUNT_TOO_SMALL);
-        }
-        // TODO: 골드 소모 로직 추가
-        this.capacity += amount;
-    }
+	public void expand(int amount) {
+		if (amount <= 0) {
+			throw new InventoryException(AMOUNT_TOO_SMALL);
+		}
+		// TODO: 골드 소모 로직 추가
+		this.capacity += amount;
+	}
 
 }
