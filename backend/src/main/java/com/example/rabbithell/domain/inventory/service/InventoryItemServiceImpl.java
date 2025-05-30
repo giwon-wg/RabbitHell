@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.entity.InventoryItemId;
 import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,14 @@ import lombok.RequiredArgsConstructor;
 public class InventoryItemServiceImpl implements InventoryItemService {
 
 	private final InventoryItemRepository inventoryItemRepository;
+
+	@Transactional(readOnly = true)
+	@Override
+	public InventoryItemResponse getInventoryItemById(Long userId, Long itemId) {
+		InventoryItemId id = new InventoryItemId(userId, itemId);
+		InventoryItem inventoryItem = inventoryItemRepository.findByIdOrElseThrow(id);
+		return InventoryItemResponse.fromEntity(inventoryItem);
+	}
 
 	@Transactional(readOnly = true)
 	@Override
