@@ -26,22 +26,22 @@ import lombok.NoArgsConstructor;
 @Table(name = "inventory_item")
 public class InventoryItem extends BaseEntity {
 
-    @EmbeddedId
-    private InventoryItemId id;
+	@EmbeddedId
+	private InventoryItemId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("inventoryId") // InventoryItemId.inventoryId 매핑
-    @JoinColumn(name = "inventory_id")
-    private Inventory inventory;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("inventoryId") // InventoryItemId.inventoryId 매핑
+	@JoinColumn(name = "inventory_id")
+	private Inventory inventory;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("itemId") // InventoryItemId.itemId 매핑
-    @JoinColumn(name = "item_id")
-    private Item item;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("itemId") // InventoryItemId.itemId 매핑
+	@JoinColumn(name = "item_id")
+	private Item item;
 
-    private Integer durability;
+	private Integer durability;
 
-    @Enumerated(EnumType.STRING)
-    private Slot slot; // enum
+	@Enumerated(EnumType.STRING)
+	private Slot slot; // 장착 부위
 
 }
