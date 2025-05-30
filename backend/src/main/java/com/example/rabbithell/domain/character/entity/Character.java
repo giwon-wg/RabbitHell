@@ -99,6 +99,8 @@ public class Character extends BaseEntity {
         name = "character_unlocked_rare_maps",
         joinColumns = @JoinColumn(name = "character_id")
     )
+
+    @Builder.Default
     @Column(name = "rare_map_type")
     private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
 

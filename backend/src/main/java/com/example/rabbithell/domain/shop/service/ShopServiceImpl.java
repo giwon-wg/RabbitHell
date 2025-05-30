@@ -34,7 +34,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Transactional(readOnly = true)
     @Override
-    public ShopResponse findShopById(Long shopId) {
+    public ShopResponse getShopById(Long shopId) {
         Shop shop = shopRepository.findByIdOrElseThrow(shopId);
         return ShopResponse.fromEntity(shop);
     }

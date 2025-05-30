@@ -24,7 +24,7 @@ public class ShopUserController {
             true,
             HttpStatus.OK.value(),
             "상점 조회 성공",
-            shopService.findShopById(shopId)
+            shopService.getShopById(shopId)
         ));
     }
 
