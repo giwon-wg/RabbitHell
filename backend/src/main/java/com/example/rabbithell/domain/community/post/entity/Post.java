@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Post extends BaseEntity {
 
 	@Id
@@ -38,12 +36,19 @@ public class Post extends BaseEntity {
 	@Column(nullable = false)
 	private String content;
 
-	//todo 코멘트 작성 후 만들예정
 	@Column(nullable = false)
 	private Integer commentCount;
 
 	@Column(nullable = false)
 	private Boolean isDeleted;
+
+	public Post(User user, String title, String content) {
+		this.user = user;
+		this.title = title;
+		this.content = content;
+		this.commentCount = 0;
+		this.isDeleted = false;
+	}
 
 	public void markAsDeleted() {
 		this.isDeleted = true;
