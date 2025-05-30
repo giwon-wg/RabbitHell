@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
 	@Transactional(readOnly = true)
 	@Override
 	public PostResponse getPostById(Long postId) {
-		return PostResponse.fromEntity(postRepository.finById(postId));
+		return PostResponse.fromEntity(postRepository.finByIdOrElseThrow(postId));
 	}
 
 	@Transactional(readOnly = true)
