@@ -29,56 +29,56 @@ import lombok.NoArgsConstructor;
 @Table(name = "item")
 public class Item extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "shop_id")
+	private Shop shop;
 
-    @Column(nullable = false, length = 20)
-    private String name;
+	@Column(nullable = false, length = 20)
+	private String name;
 
-    @Enumerated(EnumType.STRING)
-    private ItemType itemType;
+	@Enumerated(EnumType.STRING)
+	private ItemType itemType;
 
-    @Enumerated(EnumType.STRING)
-    private Rarity rarity; // enum
+	@Enumerated(EnumType.STRING)
+	private Rarity rarity; // enum
 
-    private Long price;
+	private Long price;
 
-    private Long attack;
+	private Long attack;
 
-    private Long weight;
+	private Long weight;
 
-    private Integer durability;
+	private Integer durability;
 
-    @Column(nullable = false)
-    private boolean isDeleted;
+	@Column(nullable = false)
+	private boolean isDeleted;
 
-    public void update(
-        Shop shop,
-        String name,
-        ItemType itemType,
-        Rarity rarity,
-        Long price,
-        Long attack,
-        Long weight,
-        Integer durability
-    ) {
-        this.shop = shop;
-        this.name = name;
-        this.itemType = itemType;
-        this.rarity = rarity;
-        this.price = price;
-        this.attack = attack;
-        this.weight = weight;
-        this.durability = durability;
-    }
+	public void update(
+		Shop shop,
+		String name,
+		ItemType itemType,
+		Rarity rarity,
+		Long price,
+		Long attack,
+		Long weight,
+		Integer durability
+	) {
+		this.shop = shop;
+		this.name = name;
+		this.itemType = itemType;
+		this.rarity = rarity;
+		this.price = price;
+		this.attack = attack;
+		this.weight = weight;
+		this.durability = durability;
+	}
 
-    public void markAsDeleted() {
-        this.isDeleted = true;
-    }
+	public void markAsDeleted() {
+		this.isDeleted = true;
+	}
 
 }

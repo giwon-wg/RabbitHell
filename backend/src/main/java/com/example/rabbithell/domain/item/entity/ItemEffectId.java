@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class ItemEffectId {
 
-    private Long itemId;
+	private Long itemId;
 
-    private Long effectId;
+	private Long effectId;
 
 }
