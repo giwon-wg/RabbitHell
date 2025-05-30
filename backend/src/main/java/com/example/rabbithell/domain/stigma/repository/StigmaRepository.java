@@ -9,7 +9,7 @@ import com.example.rabbithell.domain.stigma.exception.StigmaException;
 
 public interface StigmaRepository extends JpaRepository<Stigma, Long>, StigmaQueryRepository {
 
-    default Stigma findByIdOrElseThrow (Long id) {
-return findById(id).orElseThrow(() -> new StigmaException(STIGMA_NOT_FOUND));
+    default Stigma findByIdOrElseThrow(Long id) {
+        return findById(id).orElseThrow(() -> new StigmaException(STIGMA_NOT_FOUND));
     }
 }
