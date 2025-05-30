@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	public CommentResponse create(Long postId, Long userId, CommentRequest request) {
 
-		Post post = postRepository.finByIdOrElseThrow(postId);
+		Post post = postRepository.findByIdOrElseThrow(postId);
 
 		User user = userRepository.findByIdOrElseThrow(userId);
 
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	public void delete(Long postId, Long commentId, Long userId) {
 
-		Post post = postRepository.finByIdOrElseThrow(postId);
+		Post post = postRepository.findByIdOrElseThrow(postId);
 
 		Comment comment = commentRepository.findByIdAndValidateOwner(commentId, userId);
 

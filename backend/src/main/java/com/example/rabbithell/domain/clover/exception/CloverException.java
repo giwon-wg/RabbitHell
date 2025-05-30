@@ -1,20 +1,20 @@
-package com.example.rabbithell.domain.expedition.exception;
+package com.example.rabbithell.domain.clover.exception;
 
 import org.springframework.http.HttpStatus;
 
 import com.example.rabbithell.common.exception.BaseException;
-import com.example.rabbithell.domain.expedition.exception.code.ExpeditionExceptionCode;
+import com.example.rabbithell.domain.clover.exception.code.CloverExceptionCode;
 
 import lombok.Getter;
 
 @Getter
-public class ExpeditionException extends BaseException {
+public class CloverException extends BaseException {
 
-	private final ExpeditionExceptionCode errorCode;
+	private final CloverExceptionCode errorCode;
 	private final HttpStatus httpStatus;
 	private final String message;
 
-	public ExpeditionException(ExpeditionExceptionCode errorCode) {
+	public CloverException(CloverExceptionCode errorCode) {
 		this.errorCode = errorCode;
 		this.httpStatus = errorCode.getStatus();
 		this.message = errorCode.getMessage();

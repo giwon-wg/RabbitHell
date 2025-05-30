@@ -10,8 +10,8 @@ import com.example.rabbithell.domain.auth.dto.request.SignupRequest;
 import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
 import com.example.rabbithell.domain.auth.dto.response.TokenResponse;
 import com.example.rabbithell.domain.auth.exception.AuthException;
-import com.example.rabbithell.domain.expedition.entity.Expedition;
-import com.example.rabbithell.domain.expedition.repository.ExpeditionRepository;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.user.model.User;
@@ -30,7 +30,7 @@ public class AuthService {
     private final InventoryRepository inventoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-	private final ExpeditionRepository expeditionRepository;
+	private final CloverRepository cloverRepository;
 
 	@Transactional
     public void signup(SignupRequest request) {
@@ -39,8 +39,8 @@ public class AuthService {
             throw new AuthException(DUPLICATED_EMAIL);
         }
 
-		if (expeditionRepository.existsByName(request.expeditionName())) {
-			throw new AuthException(DUPLICATED_EXPEDITION_NAME);
+		if (cloverRepository.existsByName(request.CloverName())) {
+			throw new AuthException(DUPLICATED_Clover_NAME);
 		}
 
         User user = User.builder()
@@ -53,8 +53,8 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-		Expedition expedition = new Expedition(request.expeditionName(), savedUser);
-		expeditionRepository.save(expedition);
+		Clover Clover = new Clover(request.CloverName(), savedUser);
+		cloverRepository.save(Clover);
 
         Inventory inventory = Inventory.builder()
             .user(savedUser)
@@ -73,9 +73,9 @@ public class AuthService {
             throw new AuthException(INVALID_PASSWORD);
         }
 
-		Expedition expedition = expeditionRepository.findByUserIdOrElseThrow(user.getId());
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(user.getId());
 
-        String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name(), expedition.getId(), expedition.getName());
+        String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name(), clover.getId(), clover.getName());
         String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
 
         redisRefreshTokenAdapter.save(user.getId(), refreshToken);
@@ -101,9 +101,9 @@ public class AuthService {
             throw new AuthException(REFRESH_TOKEN_MISMATCH);
         }
 
-		Expedition expedition = expeditionRepository.findByUserIdOrElseThrow(userId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
 
-        String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken), expedition.getId(), expedition.getName());
+        String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken), clover.getId(), clover.getName());
         String newRefreshToken = jwtUtil.generateRefreshToken(userId.toString());
 
         redisRefreshTokenAdapter.save(userId, newRefreshToken);

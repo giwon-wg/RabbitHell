@@ -14,14 +14,14 @@ public class AuthUser implements UserDetails {
 
 	private final Long userId;
 	private final String role;
-	private final Long expeditionId;
-	private final String expeditionName;
+	private final Long cloverId;
+	private final String cloverName;
 
-	public AuthUser(Long userId, String role, Long expeditionId, String expeditionName) {
+	public AuthUser(Long userId, String role, Long cloverId, String cloverName) {
 		this.userId = userId;
 		this.role = role;
-		this.expeditionId = expeditionId;
-		this.expeditionName = expeditionName;
+		this.cloverId = cloverId;
+		this.cloverName = cloverName;
 	}
 
 	@Override
@@ -39,12 +39,12 @@ public class AuthUser implements UserDetails {
 		return String.valueOf(userId);
 	}
 
-	public Long getExpeditionId() {
-		return expeditionId;
+	public Long getCloverId() {
+		return cloverId;
 	}
 
-	public String getExpeditionName() {
-		return expeditionName;
+	public String getCloverName() {
+		return cloverName;
 	}
 
 	@Override

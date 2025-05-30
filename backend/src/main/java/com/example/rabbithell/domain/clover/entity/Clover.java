@@ -1,21 +1,24 @@
-package com.example.rabbithell.domain.expedition.entity;
+package com.example.rabbithell.domain.clover.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.character.entity.Character;
+import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.user.model.User;
+import com.example.rabbithell.domain.village.entity.Village;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -23,10 +26,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "expeditions")
+@Table(name = "Clovers")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Expedition extends BaseEntity {
+public class Clover extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,70 +44,104 @@ public class Expedition extends BaseEntity {
 
 	// todo 캐릭터 쪽에
 	// @ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "expedition_id")
-	// private Expedition expedition;
+	// @JoinColumn(name = "Clover_id")
+	// private Clover Clover;
+
 	// 추가 후 주석 풀것
-	// @OneToMany(mappedBy = "expedition", cascade = CascadeType.ALL, orphanRemoval = true)
+	// @OneToMany(mappedBy = "Clover", cascade = CascadeType.ALL, orphanRemoval = true)
 	// private final List<com.example.rabbithell.domain.character.entity.Character> members = new ArrayList<>();
 
 	@Column(nullable = false)
-	private long gold = 0;
+	private long cash = 0;
 
 	@Column(nullable = false)
-	private long bank = 0;
+	private long saving = 0;
 
-	//요청시 추가 사항
+	//현재 마을 저장
 	@Column(name = "current_village")
 	private Long currentVillage;
 
+	// 레어맵이 나오는데 나왔을때,
+	@ElementCollection(fetch = FetchType.LAZY)
+	@Enumerated(EnumType.STRING)
+	@CollectionTable(
+		name = "character_unlocked_rare_maps",
+		joinColumns = @JoinColumn(name = "character_id")
+	)
+	@Column(name = "rare_map_type")
+	private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
 
+	// 레어맵 컬럼에 추가
+	public void unlockRareMap(BattleFieldType rareMap) {
+		unlockedRareMaps.add(rareMap);
+	}
 
-	//
+	// 레어맵 휘발
+	public void clearUnlockedRareMaps() {
+		unlockedRareMaps.clear();
+	}
 
-	public Expedition(String name, User user) {
+	// 현재 마을 위치 업데이트?
+	public void updateCurrentVillage(Village currentVillage) {
+		this.currentVillage = currentVillage.getId();
+	}
+
+	public Clover(String name, User user) {
 		this.name = name;
 		this.user = user;
 	}
 
-	//로직
-	public void earnGold(int amount) {
+	public void earnCash(int amount) {
 		if (amount < 0) {
 			throw new IllegalArgumentException("획득 골드는 음수일 수 없습니다.");
 		}
-		this.gold += amount;
+		this.cash += amount;
 	}
 
-	public void spendGold(int amount) {
+	public void spendCash(int amount) {
 		if (amount < 0) {
 			throw new IllegalArgumentException("사용 골드는 음수일 수 없습니다.");
 		}
-		if (this.gold < amount) {
+		if (this.cash < amount) {
 			throw new IllegalStateException("보유 골드가 부족합니다.");
 		}
-		this.gold -= amount;
+		this.cash -= amount;
 	}
 
-	public void depositToBank(int amount) {
+	public void depositToSaving(int amount) {
 		if (amount < 0) {
 			throw new IllegalArgumentException("입금 금액은 음수일 수 없습니다.");
 		}
-		if (this.gold < amount) {
+		if (this.cash < amount) {
 			throw new IllegalStateException("골드가 부족합니다.");
 		}
-		this.gold -= amount;
-		this.bank += amount;
+		this.cash -= amount;
+		this.saving += amount;
 	}
 
-	public void withdrawFromBank(int amount) {
+	public void withdrawFromSaving(int amount) {
 		if (amount < 0) {
 			throw new IllegalArgumentException("출금 금액은 음수일 수 없습니다.");
 		}
-		if (this.bank < amount) {
+		if (this.saving < amount) {
 			throw new IllegalStateException("은행 잔고가 부족합니다.");
 		}
-		this.bank -= amount;
-		this.gold += amount;
+		this.saving -= amount;
+		this.cash += amount;
 	}
+
+	//은행에서 돈 사용 메서드
+	public void useFromSaving(int amount) {
+		if (amount < 0) {
+			throw new IllegalArgumentException("출금 금액은 음수일 수 없습니다.");
+		}
+		if (this.saving < amount) {
+			throw new IllegalStateException("은행 잔고가 부족합니다.");
+		}
+		this.saving -= amount;
+		this.cash += amount;
+	}
+
 
 	// public void addMember(Character character) {
 	// 	if (members.size() >= 4) {
@@ -112,14 +149,14 @@ public class Expedition extends BaseEntity {
 	// 	}
 	// 	this.members.add(character);
 	// 	// todo 캐릭터 생성 파트에 요청 필요
-	// 	// character.setExpedition(this);
+	// 	// character.setClover(this);
 	//
 	// 	// @ManyToOne(fetch = FetchType.LAZY)
-	// 	// @JoinColumn(name = "expedition_id")
-	// 	// private Expedition expedition;
+	// 	// @JoinColumn(name = "Clover_id")
+	// 	// private Clover Clover;
 	// 	//
-	// 	// public void setExpedition(Expedition expedition) {
-	// 	// 	this.expedition = expedition;
+	// 	// public void setClover(Clover Clover) {
+	// 	// 	this.Clover = Clover;
 	// 	// }
 	// }
 	//
