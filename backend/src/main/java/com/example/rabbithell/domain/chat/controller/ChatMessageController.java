@@ -1,7 +1,6 @@
 package com.example.rabbithell.domain.chat.controller;
 
 import com.example.rabbithell.domain.chat.dto.ChatMessageDto;
-import com.example.rabbithell.domain.chat.dto.MessageType;
 import com.example.rabbithell.domain.chat.exception.ChatMessageException;
 import com.example.rabbithell.domain.chat.exception.ChatMessageExceptionCode;
 import com.example.rabbithell.domain.chat.service.ChatMessageService;
@@ -20,46 +19,52 @@ import static com.example.rabbithell.domain.chat.dto.MessageType.*;
 @Controller
 public class ChatMessageController {
 
-    private final ChatMessageService chatMessageService;
-    private final SimpMessagingTemplate messagingTemplate;
+	private final ChatMessageService chatMessageService;
+	private final SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/chat/{roomId}")
-    public void sendChatMessage(
-        @DestinationVariable Long roomId,
-        ChatMessageDto messageDto,
-        @AuthenticationPrincipal User user
-    ) {
-        if (user == null) {
-            throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
-        }
+	@MessageMapping("/chat/{roomId}")
+	public void sendChatMessage(
+		@DestinationVariable Long roomId,
+		ChatMessageDto messageDto,
+		@AuthenticationPrincipal User user
+	) {
+		if (user == null) {
+			throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
+		}
 
-        if (messageDto == null || messageDto.getMessageType() == null) {
-            throw new ChatMessageException(ChatMessageExceptionCode.INVALID_PAYLOAD);
-        }
+		if (messageDto == null || messageDto.getMessageType() == null) {
+			throw new ChatMessageException(ChatMessageExceptionCode.INVALID_PAYLOAD);
+		}
 
-        String username = user.getName();
+		String username = user.getName();
+		Long userId = user.getId();
 
-        try {
-            switch (messageDto.getMessageType()) {
-                case ENTER -> messageDto.setMessage(username + "님이 입장하셨습니다.");
-                case CHAT -> {
-                    if (!StringUtils.hasText(messageDto.getMessage())) {
-                        throw new ChatMessageException(ChatMessageExceptionCode.NULL_MESSAGE);
-                    }
-                    chatMessageService.saveMessage(roomId, user, messageDto.getMessage());
-                }
-                case QUIT -> messageDto.setMessage(username + "님이 퇴장하셨습니다.");
-                default -> throw new ChatMessageException(ChatMessageExceptionCode.INVALID_PAYLOAD);
-            }
+		try {
+			ChatMessageDto finalMessage;
 
-            messageDto.setChatUserId(user.getId());
-            messageDto.setUsername(username);
-            messagingTemplate.convertAndSend("/sub/room/" + roomId, messageDto);
+			switch (messageDto.getMessageType()) {
+				case ENTER -> {
+					finalMessage = ChatMessageDto.createEnterMessage(userId, username);
+				}
+				case CHAT -> {
+					if (!StringUtils.hasText(messageDto.getMessage())) {
+						throw new ChatMessageException(ChatMessageExceptionCode.NULL_MESSAGE);
+					}
+					chatMessageService.saveMessage(roomId, user, messageDto.getMessage());
+					finalMessage = ChatMessageDto.createChatMessage(userId, username, messageDto.getMessage());
+				}
+				case QUIT -> {
+					finalMessage = ChatMessageDto.createQuitMessage(userId, username);
+				}
+				default -> throw new ChatMessageException(ChatMessageExceptionCode.INVALID_PAYLOAD);
+			}
 
-        } catch (ChatMessageException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
-        }
-    }
+			messagingTemplate.convertAndSend("/sub/room/" + roomId, finalMessage);
+
+		} catch (ChatMessageException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
+		}
+	}
 }
