@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @Entity
-public class StigmaSoket extends BaseEntity {
+public class StigmaSocket extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +38,5 @@ public class StigmaSoket extends BaseEntity {
     private Character character;
 
     @Column(nullable = false)
-    private StigmaSocketStatus stigmaStatus;
-
-    public void initStigma() {
-        this.stigmaStatus = StigmaSocketStatus.UNEQUIP;
-    }
+    private StigmaSocketStatus stigmaSocketStatus;
 }
