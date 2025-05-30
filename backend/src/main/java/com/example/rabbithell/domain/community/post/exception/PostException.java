@@ -10,14 +10,14 @@ import lombok.Getter;
 @Getter
 public class PostException extends BaseException {
 
-    private final PostExceptionCode errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
+	private final PostExceptionCode errorCode;
+	private final HttpStatus httpStatus;
+	private final String message;
 
-    public PostException(PostExceptionCode errorCode) {
-        this.errorCode = errorCode;
-        this.httpStatus = errorCode.getStatus();
-        this.message = errorCode.getMessage();
-    }
+	public PostException(PostExceptionCode errorCode) {
+		this.errorCode = errorCode;
+		this.httpStatus = errorCode.getStatus();
+		this.message = errorCode.getMessage();
+	}
 
 }
