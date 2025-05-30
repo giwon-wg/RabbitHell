@@ -25,10 +25,12 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String userId, String role) {
+    public String generateAccessToken(String userId, String role, Long expeditionId, String expeditionName) {
         return Jwts.builder()
             .setSubject(userId)
             .claim("role", role)
+			.claim("expeditionId", expeditionId)
+			.claim("expeditionName", expeditionName)
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpireMillis()))
             .signWith(key, SignatureAlgorithm.HS256)
@@ -70,6 +72,24 @@ public class JwtUtil {
             .getBody()
             .get("role", String.class);
     }
+
+	public Long extractExpeditionId(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.get("expeditionId", Long.class);
+	}
+
+	public String extractExpeditionName(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.get("expeditionName", String.class);
+	}
 
     private long getAccessTokenExpireMillis() {
         return 1000 * 60 * properties.getToken().getAccess().getMinute();
