@@ -28,6 +28,7 @@ import com.example.rabbithell.domain.stigma.dto.request.UpdateStigmaRequest;
 import com.example.rabbithell.domain.stigma.dto.response.StigmaResponse;
 import com.example.rabbithell.domain.stigma.service.StigmaService;
 
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/stigmas")
@@ -35,68 +36,64 @@ public class StigmaController {
 
 	private final StigmaService stigmaService;
 
-	@PreAuthorize("hasRole('ADMIN')")
+
 	@PostMapping()
-	public ResponseEntity<CommonResponse<StigmaResponse>> create(
+	public ResponseEntity<CommonResponse<StigmaResponse>> createStigma(
 		@RequestBody @Valid CreateStigmaRequest request
 	) {
 		return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
 				"스티그마 생성 성공",
-				stigmaService.create(request)));
+				stigmaService.createStigma(request)));
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/page/")
 	@Validated
-	public ResponseEntity<CommonResponse<PageResponse<StigmaResponse>>> findAll(
-		@RequestParam(defaultValue = "1") @Min(1) int page
-		, @RequestParam(defaultValue = "10") @Min(1) int size,
+	public ResponseEntity<CommonResponse<PageResponse<StigmaResponse>>> findAllStigmaByCond(
+		@RequestParam(defaultValue = "1") @Min(1) int page,
+        @RequestParam(defaultValue = "10") @Min(1) int size,
 		@ModelAttribute StigmaCond cond
 	) {
 
         return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
-				"스티그마 전체 조회 성공", stigmaService.findAllByCond(page, size, cond)));
+				"스티그마 전체 조회 성공",
+                stigmaService.findAllStigmaByCond(page, size, cond)));
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/{stigmaId}")
-	public ResponseEntity<CommonResponse<StigmaResponse>> findById (
+	public ResponseEntity<CommonResponse<StigmaResponse>> findStigmaById (
 		@PathVariable Long stigmaId
 	) {
 		return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
 				"스티그마 개별 조회 성공",
-				stigmaService.findById(stigmaId)));
+				stigmaService.findStigmaById(stigmaId)));
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
 	@PatchMapping("/{stigmaId}")
-	public ResponseEntity<CommonResponse<Void>> update(
+	public ResponseEntity<CommonResponse<Void>> updateStigma(
 		@PathVariable Long stigmaId,
 		@RequestBody @Valid UpdateStigmaRequest request
 	) {
-		stigmaService.update(stigmaId, request);
+		stigmaService.updateStigma(stigmaId, request);
 		return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
 				"스티그마 수정 성공"));
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{stigmaId}")
-	public ResponseEntity<CommonResponse<Void>> delete(
+	public ResponseEntity<CommonResponse<Void>> deleteStigma(
 		@PathVariable Long stigmaId
 	) {
-		stigmaService.delete(stigmaId);
+		stigmaService.deleteStigma(stigmaId);
 		return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
 				"스티그마 삭제 성공"));
 	}
-
 }
