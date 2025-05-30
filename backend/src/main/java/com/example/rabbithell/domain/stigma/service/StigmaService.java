@@ -8,13 +8,13 @@ import com.example.rabbithell.domain.stigma.dto.response.StigmaResponse;
 
 public interface StigmaService {
 
-    StigmaResponse create(CreateStigmaRequest request);
+    StigmaResponse createStigma(CreateStigmaRequest request);
 
-    PageResponse<StigmaResponse> findAllByCond(int pageNumber, int size, StigmaCond cond);
+    PageResponse<StigmaResponse> findAllStigmaByCond(int pageNumber, int size, StigmaCond cond);
 
-    StigmaResponse findById(Long stigmaId);
+    StigmaResponse findStigmaById(Long stigmaId);
 
-    void update(Long stigmaId, UpdateStigmaRequest request);
+    void updateStigma(Long stigmaId, UpdateStigmaRequest request);
 
-    void delete(Long stigmaId);
+    void deleteStigma(Long stigmaId);
 }
