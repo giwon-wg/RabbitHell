@@ -19,53 +19,53 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EffectServiceImpl implements EffectService {
 
-    private final EffectRepository effectRepository;
+	private final EffectRepository effectRepository;
 
-    @Override
-    public EffectResponse createEffect(EffectRequest effectRequest) {
-        Effect effect = Effect.builder()
-            .effectType(effectRequest.effectType())
-            .power(effectRequest.power())
-            .build();
+	@Override
+	public EffectResponse createEffect(EffectRequest effectRequest) {
+		Effect effect = Effect.builder()
+			.effectType(effectRequest.effectType())
+			.power(effectRequest.power())
+			.build();
 
-        Effect savedEffect = effectRepository.save(effect);
-        return EffectResponse.fromEntity(savedEffect);
-    }
+		Effect savedEffect = effectRepository.save(effect);
+		return EffectResponse.fromEntity(savedEffect);
+	}
 
-    @Transactional(readOnly = true)
-    @Override
-    public EffectResponse getEffectById(Long effectId) {
-        Effect effect = effectRepository.findByIdOrElseThrow(effectId);
-        return EffectResponse.fromEntity(effect);
-    }
+	@Transactional(readOnly = true)
+	@Override
+	public EffectResponse getEffectById(Long effectId) {
+		Effect effect = effectRepository.findByIdOrElseThrow(effectId);
+		return EffectResponse.fromEntity(effect);
+	}
 
-    @Transactional(readOnly = true)
-    @Override
-    public PageResponse<EffectResponse> getAllEffects(Pageable pageable) {
-        Page<Effect> page = effectRepository.findAll(pageable);
+	@Transactional(readOnly = true)
+	@Override
+	public PageResponse<EffectResponse> getAllEffects(Pageable pageable) {
+		Page<Effect> page = effectRepository.findAll(pageable);
 
-        List<EffectResponse> dtoList = page.getContent().stream()
-            .map(EffectResponse::fromEntity)
-            .toList();
+		List<EffectResponse> dtoList = page.getContent().stream()
+			.map(EffectResponse::fromEntity)
+			.toList();
 
-        return PageResponse.of(dtoList, page);
-    }
+		return PageResponse.of(dtoList, page);
+	}
 
-    @Transactional
-    @Override
-    public EffectResponse updateEffect(Long effectId, EffectRequest effectRequest) {
-        Effect effect = effectRepository.findByIdOrElseThrow(effectId);
+	@Transactional
+	@Override
+	public EffectResponse updateEffect(Long effectId, EffectRequest effectRequest) {
+		Effect effect = effectRepository.findByIdOrElseThrow(effectId);
 
-        effect.update(effectRequest.effectType(), effectRequest.power());
+		effect.update(effectRequest.effectType(), effectRequest.power());
 
-        return EffectResponse.fromEntity(effect);
-    }
+		return EffectResponse.fromEntity(effect);
+	}
 
-    @Transactional
-    @Override
-    public void deleteEffect(Long effectId) {
-        Effect effect = effectRepository.findByIdOrElseThrow(effectId);
-        effect.markAsDeleted();
-    }
+	@Transactional
+	@Override
+	public void deleteEffect(Long effectId) {
+		Effect effect = effectRepository.findByIdOrElseThrow(effectId);
+		effect.markAsDeleted();
+	}
 
 }

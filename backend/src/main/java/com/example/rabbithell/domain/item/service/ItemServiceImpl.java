@@ -12,6 +12,8 @@ import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.repository.ItemRepository;
+import com.example.rabbithell.domain.shop.entity.Shop;
+import com.example.rabbithell.domain.shop.repository.ShopRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,68 +21,72 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemRepository itemRepository;
+	private final ItemRepository itemRepository;
+	private final ShopRepository shopRepository;
 
-    @Override
-    public ItemResponse createItem(ItemRequest itemRequest) {
-        Item item = Item.builder()
-            .shop(itemRequest.shop())
-            .name(itemRequest.name())
-            .itemType(itemRequest.itemType())
-            .rarity(itemRequest.rarity())
-            .price(itemRequest.price())
-            .attack(itemRequest.attack())
-            .weight(itemRequest.weight())
-            .durability(itemRequest.durability())
-            .build();
+	@Override
+	public ItemResponse createItem(ItemRequest itemRequest) {
+		Shop shop = itemRequest.shopId() != null ? shopRepository.findByIdOrElseThrow(itemRequest.shopId()) : null;
 
-        Item savedItem = itemRepository.save(item);
-        return ItemResponse.fromEntity(savedItem);
-    }
+		Item item = Item.builder()
+			.shop(shop)
+			.name(itemRequest.name())
+			.itemType(itemRequest.itemType())
+			.rarity(itemRequest.rarity())
+			.price(itemRequest.price())
+			.attack(itemRequest.attack())
+			.weight(itemRequest.weight())
+			.durability(itemRequest.durability())
+			.build();
 
-    @Transactional(readOnly = true)
-    @Override
-    public ItemResponse getItemById(Long itemId) {
-        Item item = itemRepository.findByIdOrElseThrow(itemId);
-        return ItemResponse.fromEntity(item);
-    }
+		Item savedItem = itemRepository.save(item);
+		return ItemResponse.fromEntity(savedItem);
+	}
 
-    @Transactional(readOnly = true)
-    @Override
-    public PageResponse<ItemResponse> getAllItems(Pageable pageable) {
-        Page<Item> page = itemRepository.findAll(pageable);
+	@Transactional(readOnly = true)
+	@Override
+	public ItemResponse getItemById(Long itemId) {
+		Item item = itemRepository.findByIdOrElseThrow(itemId);
+		return ItemResponse.fromEntity(item);
+	}
 
-        List<ItemResponse> dtoList = page.getContent().stream()
-            .map(ItemResponse::fromEntity)
-            .toList();
+	@Transactional(readOnly = true)
+	@Override
+	public PageResponse<ItemResponse> getAllItems(Pageable pageable) {
+		Page<Item> page = itemRepository.findAll(pageable);
 
-        return PageResponse.of(dtoList, page);
-    }
+		List<ItemResponse> dtoList = page.getContent().stream()
+			.map(ItemResponse::fromEntity)
+			.toList();
 
-    @Transactional
-    @Override
-    public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
-        Item item = itemRepository.findByIdOrElseThrow(itemId);
+		return PageResponse.of(dtoList, page);
+	}
 
-        item.update(
-            itemRequest.shop(),
-            itemRequest.name(),
-            itemRequest.itemType(),
-            itemRequest.rarity(),
-            itemRequest.price(),
-            itemRequest.attack(),
-            itemRequest.weight(),
-            itemRequest.durability()
-        );
+	@Transactional
+	@Override
+	public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
+		Item item = itemRepository.findByIdOrElseThrow(itemId);
+		Shop shop = shopRepository.findByIdOrElseThrow(itemRequest.shopId());
 
-        return ItemResponse.fromEntity(item);
-    }
+		item.update(
+			shop,
+			itemRequest.name(),
+			itemRequest.itemType(),
+			itemRequest.rarity(),
+			itemRequest.price(),
+			itemRequest.attack(),
+			itemRequest.weight(),
+			itemRequest.durability()
+		);
 
-    @Transactional
-    @Override
-    public void deleteItem(Long itemId) {
-        Item item = itemRepository.findByIdOrElseThrow(itemId);
-        item.markAsDeleted();
-    }
+		return ItemResponse.fromEntity(item);
+	}
+
+	@Transactional
+	@Override
+	public void deleteItem(Long itemId) {
+		Item item = itemRepository.findByIdOrElseThrow(itemId);
+		item.markAsDeleted();
+	}
 
 }

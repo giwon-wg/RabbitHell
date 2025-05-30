@@ -23,27 +23,27 @@ import lombok.NoArgsConstructor;
 @Table(name = "effect")
 public class Effect {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EffectType effectType;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private EffectType effectType;
 
-    @Column(nullable = false)
-    private Long power;
+	@Column(nullable = false)
+	private Long power;
 
-    @Column(nullable = false)
-    private boolean isDeleted;
+	@Column(nullable = false)
+	private boolean isDeleted;
 
-    public void update(EffectType effectType, Long power) {
-        this.effectType = effectType;
-        this.power = power;
-    }
+	public void update(EffectType effectType, Long power) {
+		this.effectType = effectType;
+		this.power = power;
+	}
 
-    public void markAsDeleted() {
-        this.isDeleted = true;
-    }
+	public void markAsDeleted() {
+		this.isDeleted = true;
+	}
 
 }
