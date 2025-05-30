@@ -25,12 +25,12 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String userId, String role, Long expeditionId, String expeditionName) {
+    public String generateAccessToken(String userId, String role, Long CloverId, String CloverName) {
         return Jwts.builder()
             .setSubject(userId)
             .claim("role", role)
-			.claim("expeditionId", expeditionId)
-			.claim("expeditionName", expeditionName)
+			.claim("CloverId", CloverId)
+			.claim("CloverName", CloverName)
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpireMillis()))
             .signWith(key, SignatureAlgorithm.HS256)
@@ -73,22 +73,22 @@ public class JwtUtil {
             .get("role", String.class);
     }
 
-	public Long extractExpeditionId(String token) {
+	public Long extractCloverId(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
 			.build()
 			.parseClaimsJws(token)
 			.getBody()
-			.get("expeditionId", Long.class);
+			.get("CloverId", Long.class);
 	}
 
-	public String extractExpeditionName(String token) {
+	public String extractCloverName(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
 			.build()
 			.parseClaimsJws(token)
 			.getBody()
-			.get("expeditionName", String.class);
+			.get("CloverName", String.class);
 	}
 
     private long getAccessTokenExpireMillis() {
