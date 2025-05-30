@@ -2,6 +2,8 @@ package com.example.rabbithell.domain.chat.entity;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.example.rabbithell.domain.user.model.User;
@@ -18,6 +20,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Getter
+@Setter
 public class ChatMessage {
 
     @Id
