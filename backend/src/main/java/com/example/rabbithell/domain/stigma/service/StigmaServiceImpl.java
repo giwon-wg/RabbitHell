@@ -26,7 +26,7 @@ public class StigmaServiceImpl implements StigmaService{
 
     @Transactional
     @Override
-    public StigmaResponse create(CreateStigmaRequest request) {
+    public StigmaResponse createStigma(CreateStigmaRequest request) {
         Stigma stigma = Stigma.builder()
             .name(request.name())
             .ratio(request.ratio())
@@ -40,7 +40,7 @@ public class StigmaServiceImpl implements StigmaService{
 
     @Transactional(readOnly = true)
     @Override
-    public PageResponse<StigmaResponse> findAllByCond(int pageNumber, int size, StigmaCond cond) {
+    public PageResponse<StigmaResponse> findAllStigmaByCond(int pageNumber, int size, StigmaCond cond) {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, size);
         List<Stigma> stigmaList = stigmaRepository.findAllByCondition(cond, pageable);
@@ -55,14 +55,14 @@ public class StigmaServiceImpl implements StigmaService{
 
     @Transactional(readOnly = true)
     @Override
-    public StigmaResponse findById(Long stigmaId) {
+    public StigmaResponse findStigmaById(Long stigmaId) {
         Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
         return StigmaResponse.from(stigma);
     }
 
     @Transactional
     @Override
-    public void update(Long stigmaId, UpdateStigmaRequest request) {
+    public void updateStigma(Long stigmaId, UpdateStigmaRequest request) {
 
         Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
 
@@ -73,8 +73,8 @@ public class StigmaServiceImpl implements StigmaService{
 
     @Transactional
     @Override
-    public void delete(Long stigmaId) {
+    public void deleteStigma(Long stigmaId) {
         Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
-        stigma.markAsDelete();
+        stigma.markAsDeleted();
     }
 }
