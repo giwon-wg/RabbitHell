@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
-import com.example.rabbithell.domain.community.post.controller.PostController;
 import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.service.ItemService;
