@@ -70,7 +70,7 @@ public class PostController {
 	}
 
 	@PutMapping("/{postId}")
-	public ResponseEntity<CommonResponse<PostResponse>> updatPost(
+	public ResponseEntity<CommonResponse<PostResponse>> updatePost(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long postId,
 		@Valid @RequestBody PostRequest request
