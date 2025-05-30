@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.user.model.User;
@@ -36,112 +37,167 @@ import lombok.NoArgsConstructor;
 @Table(name = "character")
 public class Character extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false,unique = true)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false, unique = true)
+	private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kingdom_id",nullable = false)
-    private Kingdom kingdom;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "kingdom_id", nullable = false)
+	private Kingdom kingdom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "species_id",nullable = false)
-    private Specie specie;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "species_id", nullable = false)
+	private Specie specie;
 
-    @Column(nullable = false,unique = true,length = 10)
-    private String name;
+	@Column(nullable = false, unique = true, length = 10)
+	private String name;
 
-    private String job;
+	private Job job;
 
-    private int level;
-    private int exp;
-    private int stamina;
+	private int level;
+	private int exp;
+	private int stamina;
 
-    private int maxHp;
-    private int hp;
-    private int maxMp;
-    private int mp;
+	private int maxHp;
+	private int hp;
+	private int maxMp;
+	private int mp;
 
-    private int strength;
-    private int agility;
-    private int intelligence;
-    private int focus;
-    private int luck;
+	private int strength;
+	private int agility;
+	private int intelligence;
+	private int focus;
+	private int luck;
 
-    @Column(name = "warrior_point")
-    private int warriorPoint;
+	@Column(name = "incompetent_point")
+	private int incompetentPoint;
 
-    @Column(name = "thief_point")
-    private int thiefPoint;
+	@Column(name = "warrior_point")
+	private int warriorPoint;
 
-    @Column(name = "wizard_point")
-    private int wizardPoint;
+	@Column(name = "thief_point")
+	private int thiefPoint;
 
-    @Column(name = "archer_point")
-    private int archerPoint;
+	@Column(name = "wizard_point")
+	private int wizardPoint;
 
-    private Long cash;
-    private Long saving;
+	@Column(name = "archer_point")
+	private int archerPoint;
 
-    @Column(name = "skill_point")
-    private int skillPoint;
+	private Long cash;
+	private Long saving;
 
-    @Column(name = "current_village")
-    private Long currentVillage;
+	@Column(name = "skill_point")
+	private int skillPoint;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(
-        name = "character_unlocked_rare_maps",
-        joinColumns = @JoinColumn(name = "character_id")
-    )
+	@Column(name = "current_village")
+	private Long currentVillage;
 
-    @Builder.Default
-    @Column(name = "rare_map_type")
-    private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
+	@ElementCollection(fetch = FetchType.LAZY)
+	@Enumerated(EnumType.STRING)
+	@CollectionTable(
+		name = "character_unlocked_rare_maps",
+		joinColumns = @JoinColumn(name = "character_id")
+	)
 
-    // 레어맵 해금 메서드
-    public void unlockRareMap(BattleFieldType rareMap) {
-        unlockedRareMaps.add(rareMap);
-    }
+	@Builder.Default
+	@Column(name = "rare_map_type")
+	private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
 
-    public void clearUnlockedRareMaps() {
-        unlockedRareMaps.clear();
-    }
+	// 레어맵 해금 메서드
+	public void unlockRareMap(BattleFieldType rareMap) {
+		unlockedRareMaps.add(rareMap);
+	}
 
-    public boolean hasUnlockedRareMap(BattleFieldType rareMap) {
-        return unlockedRareMaps.contains(rareMap);
-    }
+	public void clearUnlockedRareMaps() {
+		unlockedRareMaps.clear();
+	}
 
-    public void updateCurrentVillage(Village currentVillage) {
-        this.currentVillage = currentVillage.getId();
-    }
+	public boolean hasUnlockedRareMap(BattleFieldType rareMap) {
+		return unlockedRareMaps.contains(rareMap);
+	}
 
-    public void saveToBank(Long saveMoney){
-        this.cash -= saveMoney;
-        this.saving += saveMoney;
-    }
+	public void updateCurrentVillage(Village currentVillage) {
+		this.currentVillage = currentVillage.getId();
+	}
 
-    public void withdrawFromBank(Long withdrawMoney){
-        this.cash += withdrawMoney;
-        this.saving -= withdrawMoney;
-    }
+	public void saveToBank(Long saveMoney) {
+		this.cash -= saveMoney;
+		this.saving += saveMoney;
+	}
 
-    public void useMoneyFromSaving(Long useMoney){
-        this.saving -= useMoney;
-    }
+	public void withdrawFromBank(Long withdrawMoney) {
+		this.cash += withdrawMoney;
+		this.saving -= withdrawMoney;
+	}
 
-    public void useMoneyFromCash(Long useMoney){
-        this.cash -= useMoney;
-    }
+	public void useMoneyFromSaving(Long useMoney) {
+		this.saving -= useMoney;
+	}
 
-    public void refill(){
-        this.hp = this.maxHp;
-        this.mp = this.maxMp;
-    }
+	public void useMoneyFromCash(Long useMoney) {
+		this.cash -= useMoney;
+	}
+
+	public void refill() {
+		this.hp = this.maxHp;
+		this.mp = this.maxMp;
+	}
+
+	public int getJobPoint(Character character, Job job) {
+		switch (job) {
+			case INCOMPETENT:
+				return character.getIncompetentPoint();
+			case WARRIOR_TIER1:
+			case WARRIOR_TIER2:
+			case WARRIOR_TIER3:
+			case WARRIOR_TIER4:
+				return character.getWarriorPoint();
+			case THIEF_TIER1:
+			case THIEF_TIER2:
+			case THIEF_TIER3:
+			case THIEF_TIER4:
+				return character.getThiefPoint();
+			case MAGE_TIER1:
+			case MAGE_TIER2:
+			case MAGE_TIER3:
+			case MAGE_TIER4:
+				return character.getWizardPoint();
+			case ARCHER_TIER1:
+			case ARCHER_TIER2:
+			case ARCHER_TIER3:
+			case ARCHER_TIER4:
+				return character.getArcherPoint();
+			default:
+				return 0;
+		}
+	}
+
+	public int getOtherJobPointsSum(Character character, Job currentJob) {
+		int sum = 0;
+		if (!isWarriorJob(currentJob)) sum += character.getWarriorPoint();
+		if (!isThiefJob(currentJob)) sum += character.getThiefPoint();
+		if (!isMageJob(currentJob)) sum += character.getWizardPoint();
+		if (!isArcherJob(currentJob)) sum += character.getArcherPoint();
+		if (currentJob != Job.INCOMPETENT) sum += character.getIncompetentPoint();
+		return sum;
+	}
+
+	private boolean isWarriorJob(Job job) {
+		return job.name().startsWith("WARRIOR");
+	}
+	private boolean isThiefJob(Job job) {
+		return job.name().startsWith("THIEF");
+	}
+	private boolean isMageJob(Job job) {
+		return job.name().startsWith("MAGE");
+	}
+	private boolean isArcherJob(Job job) {
+		return job.name().startsWith("ARCHER");
+	}
 }
 
