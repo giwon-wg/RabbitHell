@@ -5,11 +5,23 @@ import java.time.LocalDateTime;
 
 import com.example.rabbithell.domain.stigma.entity.Stigma;
 
-public record StigmaResponse(Long stigmaId, String name, BigDecimal ratio, String description, Boolean isDeleted,
-                             LocalDateTime createdAt, LocalDateTime modifiedAt) {
+public record StigmaResponse(
+	Long stigmaId,
+	String name,
+	BigDecimal ratio,
+	String description,
+	Boolean isDeleted,
+	LocalDateTime createdAt,
+	LocalDateTime modifiedAt) {
 
-	public static StigmaResponse from(Stigma stigma) {
-		return new StigmaResponse(stigma.getId(), stigma.getName(), stigma.getRatio(), stigma.getDescription(),
-			stigma.getIsDeleted(), stigma.getCreatedAt(), stigma.getModifiedAt());
+	public static StigmaResponse fromEntity(Stigma stigma) {
+		return new StigmaResponse(
+			stigma.getId(),
+			stigma.getName(),
+			stigma.getRatio(),
+			stigma.getDescription(),
+			stigma.getIsDeleted(),
+			stigma.getCreatedAt(),
+			stigma.getModifiedAt());
 	}
 }
