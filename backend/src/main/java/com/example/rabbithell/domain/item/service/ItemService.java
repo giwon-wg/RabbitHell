@@ -17,5 +17,7 @@ public interface ItemService {
     PageResponse<ItemResponse> getAllItems(Pageable pageable);
 
     ItemResponse updateItem(Long itemId, @Valid ItemRequest itemRequest);
-    
+
+    void deleteItem(Long itemId);
+
 }

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
-import com.example.rabbithell.domain.auth.domain.AuthUser;
-import com.example.rabbithell.domain.community.post.dto.request.PostRequest;
-import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
+import com.example.rabbithell.domain.community.post.controller.PostController;
 import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.service.ItemService;
@@ -84,6 +82,17 @@ public class ItemController {
             HttpStatus.OK.value(),
             "아이템 수정 성공",
             itemService.updateItem(itemId, itemRequest)));
+    }
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<CommonResponse<Void>> deleteItem(
+        @PathVariable Long itemId
+    ) {
+        itemService.deleteItem(itemId);
+        return ResponseEntity.ok(CommonResponse.of(
+            true,
+            HttpStatus.OK.value(),
+            "아이템 삭제 성공"));
     }
 
 }

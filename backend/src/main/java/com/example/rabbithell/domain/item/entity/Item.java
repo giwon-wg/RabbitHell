@@ -77,4 +77,8 @@ public class Item extends BaseEntity {
         this.durability = durability;
     }
 
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
+
 }

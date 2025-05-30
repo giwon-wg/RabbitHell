@@ -76,4 +76,11 @@ public class ItemServiceImpl implements ItemService {
         return ItemResponse.fromEntity(item);
     }
 
+    @Transactional
+    @Override
+    public void deleteItem(Long itemId) {
+        Item item = itemRepository.findByIdOrElseThrow(itemId);
+        item.markAsDeleted();
+    }
+
 }
