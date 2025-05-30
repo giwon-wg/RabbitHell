@@ -14,6 +14,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.hibernate.annotations.DynamicUpdate;
+
+@DynamicUpdate
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,4 +37,22 @@ public class Stigma extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeRatio(BigDecimal ratio) {
+        this.ratio = ratio;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
 }
