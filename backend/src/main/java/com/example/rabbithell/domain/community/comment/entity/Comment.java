@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,9 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
 	@Id
@@ -40,9 +39,15 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@Builder.Default
 	@Column(nullable = false)
 	private Boolean isDeleted = false;
+
+	public Comment(User user, Post post, String content) {
+		this.user = user;
+		this.post = post;
+		this.content = content;
+		this.isDeleted = false;
+	}
 
 	public void update(String content) {
 		this.content = content;
