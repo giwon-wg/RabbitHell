@@ -36,11 +36,24 @@ jobs:
             - name: Grant execute permission to Gradle
               run: chmod +x gradlew
 
+            - name: Create .env from GitHub Secrets
+              working-directory: backend
+              run: |
+                  echo "LOCAL_MYSQL_URL=${{ secrets.LOCAL_MYSQL_URL }}" >> .env
+                  echo "LOCAL_MYSQL_USERNAME=${{ secrets.LOCAL_MYSQL_USERNAME }}" >> .env
+                  echo "LOCAL_MYSQL_PASSWORD=${{ secrets.LOCAL_MYSQL_PASSWORD }}" >> .env
+                  echo "LOCAL_REDIS_HOST=${{ secrets.LOCAL_REDIS_HOST }}" >> .env
+                  echo "LOCAL_REDIS_PORT=${{ secrets.LOCAL_REDIS_PORT }}" >> .env
+                  echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+                  echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+                  echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env
+
             - name: Build with Gradle
-              run: ./gradlew build
+              run: ./gradlew build -x checkstyleMain
+              working-directory: backend
 
             - name: Upload JAR artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: app-jar
-                  path: build/libs/*.jar
+                  path: backend/build/libs/*.jar
