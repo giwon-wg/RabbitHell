@@ -4,6 +4,7 @@ import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCod
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.dto.request.SignupRequest;
 import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
@@ -28,6 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+	@Transactional
     public void signup(SignupRequest request) {
         if (userRepository.findByEmailAndIsDeletedFalse(request.email()).isPresent()) {
             throw new AuthException(DUPLICATED_EMAIL);
@@ -47,9 +49,11 @@ public class AuthService {
             .user(savedUser)
             .capacity(100)
             .build();
+
         inventoryRepository.save(inventory);
     }
 
+	@Transactional
     public LoginResponse login(String email, String rawPassword) {
         User user = userRepository.findByEmailAndIsDeletedFalse(email)
             .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
@@ -66,6 +70,7 @@ public class AuthService {
         return new LoginResponse(accessToken, refreshToken);
     }
 
+	@Transactional
     public TokenResponse reissue(String refreshToken) {
         if (!jwtUtil.validateToken(refreshToken)) {
             throw new AuthException(REFRESH_TOKEN_MISMATCH);
@@ -91,6 +96,7 @@ public class AuthService {
         return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
+	@Transactional
     public void logout(Long userId) {
         userRepository.findByIdAndIsDeletedFalse(userId)
             .orElseThrow(() -> new AuthException(USER_NOT_FOUND));
