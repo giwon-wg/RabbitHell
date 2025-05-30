@@ -16,7 +16,7 @@ import com.example.rabbithell.domain.stigmasocket.repository.StigmaSocketReposit
 
 @Service
 @RequiredArgsConstructor
-public class StigmaSocketServiceImpl implements StigmaSocketService {
+public class AdminStigmaSocketServiceImpl implements StigmaSocketService {
 
 	private final StigmaSocketRepository stigmaSocketRepository;
 	private final StigmaRepository stigmaRepository;
