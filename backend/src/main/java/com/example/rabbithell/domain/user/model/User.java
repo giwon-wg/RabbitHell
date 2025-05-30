@@ -22,32 +22,32 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+	@Column(unique = true, nullable = false)
+	private String email;
 
-    @Column(nullable = false)
-    private String password;
+	@Column(nullable = false)
+	private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private boolean isDeleted = false;
+	@Builder.Default
+	@Column(nullable = false)
+	private boolean isDeleted = false;
 
-    public enum Role {
-        USER, ADMIN
-    }
+	public enum Role {
+		USER, ADMIN
+	}
 
-    public void markAsDeleted() {
-        this.isDeleted = true;
-    }
+	public void markAsDeleted() {
+		this.isDeleted = true;
+	}
 }

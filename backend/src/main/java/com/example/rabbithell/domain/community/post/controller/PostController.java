@@ -31,67 +31,67 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/posts")
 public class PostController {
 
-    private final PostService postService;
+	private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity<CommonResponse<PostResponse>> createPost(
-        @AuthenticationPrincipal AuthUser authUser,
-        @Valid  @RequestBody PostRequest postRequest
-    ) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "게시글 생성 성공",
-            postService.createPost(authUser.getUserId(), postRequest)));
-    }
+	@PostMapping
+	public ResponseEntity<CommonResponse<PostResponse>> createPost(
+		@AuthenticationPrincipal AuthUser authUser,
+		@Valid @RequestBody PostRequest postRequest
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"게시글 생성 성공",
+			postService.createPost(authUser.getUserId(), postRequest)));
+	}
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<CommonResponse<PostResponse>> getPost(@PathVariable Long postId) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "게시글 단건 조회 성공",
-            postService.getPostById(postId)));
-    }
+	@GetMapping("/{postId}")
+	public ResponseEntity<CommonResponse<PostResponse>> getPost(@PathVariable Long postId) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"게시글 단건 조회 성공",
+			postService.getPostById(postId)));
+	}
 
-    @GetMapping
-    public ResponseEntity<CommonResponse<PageResponse<PostResponse>>> getAllPosts(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        PageResponse<PostResponse> response = postService.getAllPosts(pageable);
+	@GetMapping
+	public ResponseEntity<CommonResponse<PageResponse<PostResponse>>> getAllPosts(
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+		PageResponse<PostResponse> response = postService.getAllPosts(pageable);
 
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "게시글 전체 조회 성공",
-            response));
-    }
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"게시글 전체 조회 성공",
+			response));
+	}
 
-    @PutMapping("/{postId}")
-    public ResponseEntity<CommonResponse<PostResponse>> updatPost(
-        @AuthenticationPrincipal AuthUser authUser,
-        @PathVariable Long postId,
-        @Valid @RequestBody PostRequest request
-    ) {
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "게시글 수정 성공",
-            postService.updatePost(authUser.getUserId(), postId, request)));
-    }
+	@PutMapping("/{postId}")
+	public ResponseEntity<CommonResponse<PostResponse>> updatPost(
+		@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable Long postId,
+		@Valid @RequestBody PostRequest request
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"게시글 수정 성공",
+			postService.updatePost(authUser.getUserId(), postId, request)));
+	}
 
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<CommonResponse<PostController>> deletePost(
-        @AuthenticationPrincipal AuthUser authUser,
-        @PathVariable Long postId
-    ) {
-        postService.deletePost(authUser.getUserId(), postId);
-        return ResponseEntity.ok(CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "게시글 삭제 성공"));
-    }
+	@DeleteMapping("/{postId}")
+	public ResponseEntity<CommonResponse<PostController>> deletePost(
+		@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable Long postId
+	) {
+		postService.deletePost(authUser.getUserId(), postId);
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"게시글 삭제 성공"));
+	}
 
 }

@@ -8,14 +8,14 @@ import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
 
 public interface PostService {
 
-    PostResponse createPost(Long userId, PostRequest postRequest);
+	PostResponse createPost(Long userId, PostRequest postRequest);
 
-    PostResponse getPostById(Long postId);
+	PostResponse getPostById(Long postId);
 
-    PageResponse<PostResponse> getAllPosts(Pageable pageable);
+	PageResponse<PostResponse> getAllPosts(Pageable pageable);
 
-    void deletePost(Long userId, Long postId);
+	void deletePost(Long userId, Long postId);
 
-    PostResponse updatePost(Long userId, Long postId, PostRequest postRequest);
+	PostResponse updatePost(Long userId, Long postId, PostRequest postRequest);
 
 }

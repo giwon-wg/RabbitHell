@@ -12,6 +12,12 @@ public interface ItemService {
 
     ItemResponse createItem(@Valid ItemRequest itemRequest);
 
+    ItemResponse getItemById(Long itemId);
+
     PageResponse<ItemResponse> getAllItems(Pageable pageable);
+
+    ItemResponse updateItem(Long itemId, @Valid ItemRequest itemRequest);
+
+    void deleteItem(Long itemId);
 
 }

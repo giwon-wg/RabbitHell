@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/effects")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
-public class EffectAdminController {
+public class EffectController {
 
 	private final EffectService effectService;
 
