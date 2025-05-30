@@ -1,8 +1,12 @@
 package com.example.rabbithell.domain.user.repository;
 
+import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode.*;
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.rabbithell.domain.auth.exception.AuthException;
 
 import com.example.rabbithell.domain.user.model.User;
 
@@ -19,4 +23,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	// 소프트 딜리트 대응
 	Optional<User> findByIdAndIsDeletedFalse(Long id);
+
+	default User findByIdOrElseThrow(Long id) {
+		return findByIdAndIsDeletedFalse(id)
+			.orElseThrow(() -> new AuthException(USER_NOT_FOUND));
+	}
+
+	default User findByEmailOrElseThrow(String email) {
+		return findByEmailAndIsDeletedFalse(email)
+			.orElseThrow(() -> new AuthException(USER_NOT_FOUND));
+	}
+
 }

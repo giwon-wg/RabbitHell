@@ -1,20 +1,20 @@
-package com.example.rabbithell.domain.shop.exception;
+package com.example.rabbithell.domain.clover.exception;
 
 import org.springframework.http.HttpStatus;
 
 import com.example.rabbithell.common.exception.BaseException;
-import com.example.rabbithell.domain.shop.exception.code.ShopExceptionCode;
+import com.example.rabbithell.domain.clover.exception.code.CloverExceptionCode;
 
 import lombok.Getter;
 
 @Getter
-public class ShopException extends BaseException {
+public class CloverException extends BaseException {
 
-	private final ShopExceptionCode errorCode;
+	private final CloverExceptionCode errorCode;
 	private final HttpStatus httpStatus;
 	private final String message;
 
-	public ShopException(ShopExceptionCode errorCode) {
+	public CloverException(CloverExceptionCode errorCode) {
 		this.errorCode = errorCode;
 		this.httpStatus = errorCode.getStatus();
 		this.message = errorCode.getMessage();
