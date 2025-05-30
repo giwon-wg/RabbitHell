@@ -9,6 +9,6 @@ import com.example.rabbithell.domain.community.comment.entity.Comment;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findByPostIdAndIsDeletedFalseOrderByIdDesc(Long postId);
+	List<Comment> findByPostIdAndIsDeletedFalseOrderByIdDesc(Long postId);
 
 }

@@ -15,24 +15,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentQueryRepositoryImpl implements CommentQueryRepository {
 
-    private final JPAQueryFactory jpaQueryFactory;
+	private final JPAQueryFactory jpaQueryFactory;
 
-    @Override
-    public List<Comment> findByPostIdAndCursor(Long postId, Long cursorId, int size) {
-        QComment comment = QComment.comment;
+	@Override
+	public List<Comment> findByPostIdAndCursor(Long postId, Long cursorId, int size) {
+		QComment comment = QComment.comment;
 
-        BooleanExpression condition = comment.post.id.eq(postId)
-            .and(comment.isDeleted.isFalse());
+		BooleanExpression condition = comment.post.id.eq(postId)
+			.and(comment.isDeleted.isFalse());
 
-        if (cursorId != null) {
-            condition = condition.and(comment.id.lt(cursorId));
-        }
+		if (cursorId != null) {
+			condition = condition.and(comment.id.lt(cursorId));
+		}
 
-        return jpaQueryFactory
-            .selectFrom(comment)
-            .where(condition)
-            .orderBy(comment.id.desc())
-            .limit(size)
-            .fetch();
-    }
+		return jpaQueryFactory
+			.selectFrom(comment)
+			.where(condition)
+			.orderBy(comment.id.desc())
+			.limit(size)
+			.fetch();
+	}
 }
