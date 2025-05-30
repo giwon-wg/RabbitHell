@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 
 public interface ShopService {
 
-    ShopResponse findShopById(Long shopId);
+    ShopResponse getShopById(Long shopId);
 
     ShopResponse createShop(ShopRequest shopRequest);
 

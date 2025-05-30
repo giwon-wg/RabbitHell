@@ -40,6 +40,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
