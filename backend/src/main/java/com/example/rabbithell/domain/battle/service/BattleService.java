@@ -22,17 +22,19 @@ public class BattleService {
 
     CharacterRepository characterRepository;
 
-
-
     public GetBattleFieldsResponse getBattleFields(AuthUser authUser, Long characterId) {
 
         Character character = verifyCharacter(authUser, characterId);
 
-        Set<BattleFieldType> unlockedRareMaps = character.getUnlockedRareMaps();
+        Set<BattleFieldType> maps = character.getUnlockedRareMaps();
 
-        return new GetBattleFieldsResponse(unlockedRareMaps);
+        maps.add(BattleFieldType.PLAIN);
+        maps.add(BattleFieldType.MOUNTAIN);
+        maps.add(BattleFieldType.FOREST);
+        maps.add(BattleFieldType.DESERT);
+
+        return new GetBattleFieldsResponse(maps);
     }
-
 
     private Character verifyCharacter(AuthUser authUser, Long characterId) {
 
