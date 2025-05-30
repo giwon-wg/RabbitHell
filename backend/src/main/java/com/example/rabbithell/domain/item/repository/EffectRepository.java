@@ -9,8 +9,8 @@ import com.example.rabbithell.domain.item.exception.EffectException;
 
 public interface EffectRepository extends JpaRepository<Effect, Long> {
 
-    default Effect findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new EffectException(NO_SUCH_EFFECT));
-    }
+	default Effect findByIdOrElseThrow(Long id) {
+		return findById(id).orElseThrow(() -> new EffectException(NO_SUCH_EFFECT));
+	}
 
 }

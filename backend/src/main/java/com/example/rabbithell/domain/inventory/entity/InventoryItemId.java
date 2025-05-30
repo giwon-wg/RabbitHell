@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class InventoryItemId implements Serializable {
 
-    private Long inventoryId;
+	private Long inventoryId;
 
-    private Long itemId;
+	private Long itemId;
 
 }

@@ -1,7 +1,9 @@
 package com.example.rabbithell.domain.inventory.service;
 
-import org.springframework.stereotype.Service;
+import com.example.rabbithell.domain.inventory.dto.response.InventoryResponse;
 
-@Service
-public class InventoryService {
+public interface InventoryService {
+
+	InventoryResponse expandInventory(Long userId, int amount);
+
 }
