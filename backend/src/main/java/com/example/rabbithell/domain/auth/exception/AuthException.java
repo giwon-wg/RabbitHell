@@ -10,14 +10,14 @@ import lombok.Getter;
 @Getter
 public class AuthException extends BaseException {
 
-    private final AuthExceptionCode errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
+	private final AuthExceptionCode errorCode;
+	private final HttpStatus httpStatus;
+	private final String message;
 
-    public AuthException(AuthExceptionCode errorCode) {
-        this.errorCode = errorCode;
-        this.httpStatus = errorCode.getStatus();
-        this.message = errorCode.getMessage();
-    }
+	public AuthException(AuthExceptionCode errorCode) {
+		this.errorCode = errorCode;
+		this.httpStatus = errorCode.getStatus();
+		this.message = errorCode.getMessage();
+	}
 
 }

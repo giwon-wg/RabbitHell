@@ -1,0 +1,73 @@
+# 운영 서버 포트 설정
+server:
+    port: 8080
+    shutdown: graceful
+
+spring:
+    application:
+        name: rabbithell
+
+    mvc:
+        pathmatch:
+            matching-strategy: ant_path_matcher
+
+    jackson: {}
+
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${MYSQL_URL}
+        username: ${MYSQL_USERNAME}
+        password: ${MYSQL_PASSWORD}
+
+    jpa:
+        hibernate:
+            ddl-auto: validate        # update/create 로 바꾸면 혼낼꺼임
+        open-in-view: false
+        properties:
+            hibernate:
+                show_sql: false
+                format_sql: false
+            use_sql_comments: false
+
+    data:
+        redis:
+            host: ${REDIS_HOST}
+            port: ${REDIS_PORT}
+
+    # Kakao API
+    security:
+        oauth2:
+            client:
+                registration:
+                    kakao:
+                        client-id: ${KAKAO_CLIENT_ID}
+                        client-secret: ${KAKAO_CLIENT_SECRET}
+                        redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
+                        authorization-grant-type: authorization_code
+                        scope:
+                            - profile_nickname
+                            - account_email
+                        client-name: kakao
+                provider:
+                    kakao:
+                        authorization-uri: https://kauth.kakao.com/oauth/authorize
+                        token-uri: https://kauth.kakao.com/oauth/token
+                        user-info-uri: https://kapi.kakao.com/v2/user/me
+                        user-name-attribute: id
+
+    jwt:
+        token:
+            header: Authorization
+            prefix: Bearer
+            access:
+                minute: 15
+            refresh:
+                minute: 20160
+        secret: ${SECRET_KEY}
+
+# log info
+logging:
+    level:
+        root: INFO
+        org.hibernate.SQL: off
+        org.hibernate.type.descriptor.sql.BasicBinder: off
