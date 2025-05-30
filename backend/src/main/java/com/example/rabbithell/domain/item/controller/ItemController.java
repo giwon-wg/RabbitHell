@@ -46,7 +46,7 @@ public class ItemController {
 	}
 
 	@GetMapping("/{itemId}")
-	public ResponseEntity<CommonResponse<ItemResponse>> getPost(
+	public ResponseEntity<CommonResponse<ItemResponse>> getItem(
 		@PathVariable Long itemId
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
