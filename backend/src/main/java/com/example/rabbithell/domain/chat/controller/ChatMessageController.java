@@ -5,29 +5,26 @@ import com.example.rabbithell.domain.chat.exception.ChatMessageException;
 import com.example.rabbithell.domain.chat.exception.ChatMessageExceptionCode;
 import com.example.rabbithell.domain.chat.service.ChatMessageService;
 import com.example.rabbithell.domain.user.model.User;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-
-import static com.example.rabbithell.domain.chat.dto.MessageType.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ChatMessageController {
 
 	private final ChatMessageService chatMessageService;
 	private final SimpMessagingTemplate messagingTemplate;
 
 	@MessageMapping("/chat/{roomId}")
-	public void sendChatMessage(
-		@DestinationVariable Long roomId,
-		ChatMessageDto messageDto,
-		@AuthenticationPrincipal User user
-	) {
+	public void sendChatMessage(@DestinationVariable Long roomId, ChatMessageDto messageDto, @AuthenticationPrincipal User user) {
 		if (user == null) {
 			throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
 		}
@@ -50,7 +47,7 @@ public class ChatMessageController {
 					if (!StringUtils.hasText(messageDto.getMessage())) {
 						throw new ChatMessageException(ChatMessageExceptionCode.NULL_MESSAGE);
 					}
-					chatMessageService.saveMessage(roomId, user, messageDto.getMessage());
+					chatMessageService.saveMessage(roomId, messageDto);
 					finalMessage = ChatMessageDto.createChatMessage(userId, username, messageDto.getMessage());
 				}
 				case QUIT -> {

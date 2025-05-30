@@ -3,16 +3,16 @@ package com.example.rabbithell.domain.chat.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
+
 import lombok.Getter;
+
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 
 @Getter
 public class ChatMessageDto {
 
-	private final Long chatUserId;
 	private final MessageType messageType;
 
 	@NotBlank(message = "내용은 반드시 작성되어야 합니다.")
@@ -24,14 +24,8 @@ public class ChatMessageDto {
 	private final LocalDateTime createdAt;
 
 	@JsonCreator
-	public ChatMessageDto(
-		@JsonProperty("chatUserId") Long chatUserId,
-		@JsonProperty("messageType") MessageType messageType,
-		@JsonProperty("message") String message,
-		@JsonProperty("username") String username,
-		@JsonProperty("createdAt") LocalDateTime createdAt
-	) {
-		this.chatUserId = chatUserId;
+	public ChatMessageDto(@JsonProperty("chatUserId") Long chatUserId, @JsonProperty("messageType") MessageType messageType, @JsonProperty("message") String message, @JsonProperty("username") String username, @JsonProperty("createdAt") LocalDateTime createdAt) {
+
 		this.messageType = messageType;
 		this.message = message;
 		this.username = username;
