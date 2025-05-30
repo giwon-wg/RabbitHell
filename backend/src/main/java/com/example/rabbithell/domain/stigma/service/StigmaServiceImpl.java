@@ -35,7 +35,7 @@ public class StigmaServiceImpl implements StigmaService {
 
 		Stigma savedStigma = stigmaRepository.save(stigma);
 
-		return StigmaResponse.from(stigma);
+		return StigmaResponse.fromEntity(stigma);
 	}
 
 	@Transactional(readOnly = true)
@@ -46,7 +46,7 @@ public class StigmaServiceImpl implements StigmaService {
 		List<Stigma> stigmaList = stigmaRepository.findAllByCondition(cond, pageable);
 		long count = stigmaRepository.countByCondition(cond);
 		List<StigmaResponse> responseList = stigmaList.stream()
-			.map(StigmaResponse::from)
+			.map(StigmaResponse::fromEntity)
 			.toList();
 		PageImpl<StigmaResponse> responsePage = new PageImpl<>(responseList, pageable, count);
 
@@ -57,7 +57,7 @@ public class StigmaServiceImpl implements StigmaService {
 	@Override
 	public StigmaResponse findStigmaById(Long stigmaId) {
 		Stigma stigma = stigmaRepository.findByIdOrElseThrow(stigmaId);
-		return StigmaResponse.from(stigma);
+		return StigmaResponse.fromEntity(stigma);
 	}
 
 	@Transactional
