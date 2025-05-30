@@ -24,32 +24,32 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Comment extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
 
-    @Column(nullable = false)
-    private String content;
+	@Column(nullable = false)
+	private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_id")
+	private Post post;
 
-    @Builder.Default
-    @Column(nullable = false)
-    private Boolean isDeleted = false;
+	@Builder.Default
+	@Column(nullable = false)
+	private Boolean isDeleted = false;
 
-    public void update(String content) {
-        this.content = content;
-    }
+	public void update(String content) {
+		this.content = content;
+	}
 
-    public void markAsDeleted() {
-        this.isDeleted = true;
-    }
+	public void markAsDeleted() {
+		this.isDeleted = true;
+	}
 
 }

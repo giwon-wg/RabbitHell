@@ -32,11 +32,16 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth/**",
-                    "/swagger-ui/**",
+					"/oauth2/**",
+					"/oauth2/authorization/**",
+					"/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
+			.oauth2Login(oauth -> oauth
+				.loginPage("/oauth2/authorization/kakao")
+			)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

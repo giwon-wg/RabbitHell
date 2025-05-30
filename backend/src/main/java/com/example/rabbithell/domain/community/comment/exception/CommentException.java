@@ -10,14 +10,14 @@ import lombok.Getter;
 @Getter
 public class CommentException extends BaseException {
 
-    private final CommentExceptionCode errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
+	private final CommentExceptionCode errorCode;
+	private final HttpStatus httpStatus;
+	private final String message;
 
-    public CommentException(CommentExceptionCode errorCode) {
-        this.errorCode = errorCode;
-        this.httpStatus = errorCode.getStatus();
-        this.message = errorCode.getMessage();
-    }
+	public CommentException(CommentExceptionCode errorCode) {
+		this.errorCode = errorCode;
+		this.httpStatus = errorCode.getStatus();
+		this.message = errorCode.getMessage();
+	}
 
 }

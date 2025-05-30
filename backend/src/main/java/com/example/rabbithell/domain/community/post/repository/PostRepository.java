@@ -12,10 +12,10 @@ import com.example.rabbithell.domain.community.post.entity.Post;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    // offset 페이징
-    Page<Post> findAllByIsDeletedFalse(Pageable pageable);
+	// offset 페이징
+	Page<Post> findAllByIsDeletedFalse(Pageable pageable);
 
-    // id 기반 조회
-    Optional<Post> findByIdAndIsDeletedFalse(Long id);
+	// id 기반 조회
+	Optional<Post> findByIdAndIsDeletedFalse(Long id);
 
 }

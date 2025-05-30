@@ -6,6 +6,6 @@ import com.example.rabbithell.domain.community.comment.entity.Comment;
 
 public interface CommentQueryRepository {
 
-    List<Comment> findByPostIdAndCursor(Long postId, Long cursorId, int size);
+	List<Comment> findByPostIdAndCursor(Long postId, Long cursorId, int size);
 
 }

@@ -16,46 +16,46 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ShopServiceImpl implements ShopService {
 
-    private final ShopRepository shopRepository;
-    private final VillageRepository villageRepository;
+	private final ShopRepository shopRepository;
+	private final VillageRepository villageRepository;
 
-    @Override
-    public ShopResponse createShop(ShopRequest shopRequest) {
-        Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
+	@Override
+	public ShopResponse createShop(ShopRequest shopRequest) {
+		Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
 
-        Shop shop = Shop.builder()
-            .village(village)
-            .name(shopRequest.name())
-            .build();
+		Shop shop = Shop.builder()
+			.village(village)
+			.name(shopRequest.name())
+			.build();
 
-        Shop savedShop = shopRepository.save(shop);
-        return ShopResponse.fromEntity(savedShop);
-    }
+		Shop savedShop = shopRepository.save(shop);
+		return ShopResponse.fromEntity(savedShop);
+	}
 
-    @Transactional(readOnly = true)
-    @Override
-    public ShopResponse getShopById(Long shopId) {
-        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
-        return ShopResponse.fromEntity(shop);
-    }
+	@Transactional(readOnly = true)
+	@Override
+	public ShopResponse getShopById(Long shopId) {
+		Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+		return ShopResponse.fromEntity(shop);
+	}
 
-    @Transactional
-    @Override
-    public ShopResponse updateShop(Long shopId, ShopRequest shopRequest) {
-        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+	@Transactional
+	@Override
+	public ShopResponse updateShop(Long shopId, ShopRequest shopRequest) {
+		Shop shop = shopRepository.findByIdOrElseThrow(shopId);
 
-        Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
+		Village village = villageRepository.findByIdOrElseThrow(shopRequest.villageId());
 
-        shop.update(village, shopRequest.name());
+		shop.update(village, shopRequest.name());
 
-        return ShopResponse.fromEntity(shop);
-    }
+		return ShopResponse.fromEntity(shop);
+	}
 
-    @Transactional
-    @Override
-    public void deleteShop(Long shopId) {
-        Shop shop = shopRepository.findByIdOrElseThrow(shopId);
-        shop.markAsDeleted();
-    }
+	@Transactional
+	@Override
+	public void deleteShop(Long shopId) {
+		Shop shop = shopRepository.findByIdOrElseThrow(shopId);
+		shop.markAsDeleted();
+	}
 
 }

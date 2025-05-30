@@ -40,3 +40,6 @@ out/
 ### .env ###
 ../.env
 .env
+
+# Spring Boot application configuration files
+/backend/src/main/resources/application*.yml
