@@ -18,12 +18,12 @@ import com.example.rabbithell.domain.stigmasocket.service.StigmaSocketService;
 
 @RestController
 @RequiredArgsConstructor
-public class StigmaSocketController {
+public class AdminStigmaSocketController {
 
 	private final StigmaSocketService stigmaSocketService;
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping
+	@PostMapping("/admin/stigma-sockets")
 	public ResponseEntity<CommonResponse<StigmaSocketResponse>> creatStigmaSocket(
 		@RequestBody @Valid CreateStigmaSocketRequest request
 	) {
