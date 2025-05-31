@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 	indexes = {
 		@Index(name = "idx_character_id_user_id", columnList = "id, user_id")
 	})
-public class Character extends BaseEntity {
+public class GameCharacter extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,7 +79,7 @@ public class Character extends BaseEntity {
 	private int skillPoint;
 
 	@Builder
-	public Character(
+	public GameCharacter(
 		User user,
 		Clover clover,
 		String name,
