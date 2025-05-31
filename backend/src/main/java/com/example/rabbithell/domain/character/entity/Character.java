@@ -1,30 +1,26 @@
 package com.example.rabbithell.domain.character.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
-import com.example.rabbithell.domain.kingdom.entity.Kingdom;
-import com.example.rabbithell.domain.specie.entity.Specie;
+import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.user.model.User;
-import com.example.rabbithell.domain.village.entity.Village;
 
-import jakarta.persistence.CollectionTable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +28,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(name = "character")
+@Table(
+	name = "character",
+	indexes = {
+		@Index(name = "idx_character_id_user_id", columnList = "id, user_id")
+	})
 public class Character extends BaseEntity {
 
 	@Id
@@ -46,12 +44,11 @@ public class Character extends BaseEntity {
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "kingdom_id", nullable = false)
-	private Kingdom kingdom;
+	@JoinColumn(name = "clover_id")
+	private Clover clover;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "species_id", nullable = false)
-	private Specie specie;
+	@OneToMany(mappedBy = "clover", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Character> members = new ArrayList<>();
 
 	@Column(nullable = false, unique = true, length = 10)
 	private String name;
@@ -60,7 +57,6 @@ public class Character extends BaseEntity {
 
 	private int level;
 	private int exp;
-	private int stamina;
 
 	private int maxHp;
 	private int hp;
@@ -94,53 +90,53 @@ public class Character extends BaseEntity {
 	@Column(name = "skill_point")
 	private int skillPoint;
 
-	@Column(name = "current_village")
-	private Long currentVillage;
-
-	@ElementCollection(fetch = FetchType.LAZY)
-	@Enumerated(EnumType.STRING)
-	@CollectionTable(
-		name = "character_unlocked_rare_maps",
-		joinColumns = @JoinColumn(name = "character_id")
-	)
-
-	@Builder.Default
-	@Column(name = "rare_map_type")
-	private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
-
-	// 레어맵 해금 메서드
-	public void unlockRareMap(BattleFieldType rareMap) {
-		unlockedRareMaps.add(rareMap);
-	}
-
-	public void clearUnlockedRareMaps() {
-		unlockedRareMaps.clear();
-	}
-
-	public boolean hasUnlockedRareMap(BattleFieldType rareMap) {
-		return unlockedRareMaps.contains(rareMap);
-	}
-
-	public void updateCurrentVillage(Village currentVillage) {
-		this.currentVillage = currentVillage.getId();
-	}
-
-	public void saveToBank(Long saveMoney) {
-		this.cash -= saveMoney;
-		this.saving += saveMoney;
-	}
-
-	public void withdrawFromBank(Long withdrawMoney) {
-		this.cash += withdrawMoney;
-		this.saving -= withdrawMoney;
-	}
-
-	public void useMoneyFromSaving(Long useMoney) {
-		this.saving -= useMoney;
-	}
-
-	public void useMoneyFromCash(Long useMoney) {
-		this.cash -= useMoney;
+	@Builder
+	public Character(
+		User user,
+		Clover clover,
+		String name,
+		Job job,
+		int level,
+		int exp,
+		int maxHp,
+		int hp,
+		int maxMp,
+		int mp,
+		int strength,
+		int agility,
+		int intelligence,
+		int focus,
+		int luck,
+		int incompetentPoint,
+		int warriorPoint,
+		int thiefPoint,
+		int wizardPoint,
+		int archerPoint,
+		int skillPoint
+	) {
+		this.user = user;
+		this.clover = clover;
+		this.name = name;
+		this.job = job;
+		this.level = level;
+		this.exp = exp;
+		this.maxHp = maxHp;
+		this.hp = hp;
+		this.maxMp = maxMp;
+		this.mp = mp;
+		this.strength = strength;
+		this.agility = agility;
+		this.intelligence = intelligence;
+		this.focus = focus;
+		this.luck = luck;
+		this.incompetentPoint = incompetentPoint;
+		this.warriorPoint = warriorPoint;
+		this.thiefPoint = thiefPoint;
+		this.wizardPoint = wizardPoint;
+		this.archerPoint = archerPoint;
+		this.cash = cash;
+		this.saving = saving;
+		this.skillPoint = skillPoint;
 	}
 
 	public void refill() {
@@ -148,56 +144,5 @@ public class Character extends BaseEntity {
 		this.mp = this.maxMp;
 	}
 
-	public int getJobPoint(Character character, Job job) {
-		switch (job) {
-			case INCOMPETENT:
-				return character.getIncompetentPoint();
-			case WARRIOR_TIER1:
-			case WARRIOR_TIER2:
-			case WARRIOR_TIER3:
-			case WARRIOR_TIER4:
-				return character.getWarriorPoint();
-			case THIEF_TIER1:
-			case THIEF_TIER2:
-			case THIEF_TIER3:
-			case THIEF_TIER4:
-				return character.getThiefPoint();
-			case MAGE_TIER1:
-			case MAGE_TIER2:
-			case MAGE_TIER3:
-			case MAGE_TIER4:
-				return character.getWizardPoint();
-			case ARCHER_TIER1:
-			case ARCHER_TIER2:
-			case ARCHER_TIER3:
-			case ARCHER_TIER4:
-				return character.getArcherPoint();
-			default:
-				return 0;
-		}
-	}
-
-	public int getOtherJobPointsSum(Character character, Job currentJob) {
-		int sum = 0;
-		if (!isWarriorJob(currentJob)) sum += character.getWarriorPoint();
-		if (!isThiefJob(currentJob)) sum += character.getThiefPoint();
-		if (!isMageJob(currentJob)) sum += character.getWizardPoint();
-		if (!isArcherJob(currentJob)) sum += character.getArcherPoint();
-		if (currentJob != Job.INCOMPETENT) sum += character.getIncompetentPoint();
-		return sum;
-	}
-
-	private boolean isWarriorJob(Job job) {
-		return job.name().startsWith("WARRIOR");
-	}
-	private boolean isThiefJob(Job job) {
-		return job.name().startsWith("THIEF");
-	}
-	private boolean isMageJob(Job job) {
-		return job.name().startsWith("MAGE");
-	}
-	private boolean isArcherJob(Job job) {
-		return job.name().startsWith("ARCHER");
-	}
 }
 
