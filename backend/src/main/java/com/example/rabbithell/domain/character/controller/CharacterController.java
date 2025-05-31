@@ -26,53 +26,53 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CharacterController {
 
-    private final CharacterService characterService;
+	private final CharacterService characterService;
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/characters")
-    public ResponseEntity<CommonResponse<Long>> createCharacter(
-        @Valid @RequestBody CreateCharacterRequest request,
-        @AuthenticationPrincipal AuthUser authUser
-    ){
-        Long characterId = characterService.createCharacter(authUser,request);
-        return ResponseEntity.ok(
-            CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "캐릭터 생성 성공",
-            characterId
-            )
-        );
-    }
+	@PreAuthorize("hasRole('USER')")
+	@PostMapping("/characters")
+	public ResponseEntity<CommonResponse<Long>> createCharacter(
+		@Valid @RequestBody CreateCharacterRequest request,
+		@AuthenticationPrincipal AuthUser authUser
+	) {
+		Long characterId = characterService.createCharacter(authUser, request);
+		return ResponseEntity.ok(
+			CommonResponse.of(
+				true,
+				HttpStatus.OK.value(),
+				"캐릭터 생성 성공",
+				characterId
+			)
+		);
+	}
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/characters/{characterId}")
-    public ResponseEntity<CommonResponse<CharacterInfoResponse>> characterInfo(
-        @PathVariable Long characterId,
-        @AuthenticationPrincipal AuthUser authUser
-    ){
-        return ResponseEntity.ok(
-            CommonResponse.of(
-            true,
-            HttpStatus.OK.value(),
-            "캐릭터 조회 성공",
-            characterService.characterInfo(characterId, authUser)
-            )
-        );
-    }
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/characters/{characterId}")
+	public ResponseEntity<CommonResponse<CharacterInfoResponse>> characterInfo(
+		@PathVariable Long characterId,
+		@AuthenticationPrincipal AuthUser authUser
+	) {
+		return ResponseEntity.ok(
+			CommonResponse.of(
+				true,
+				HttpStatus.OK.value(),
+				"캐릭터 조회 성공",
+				characterService.characterInfo(characterId, authUser)
+			)
+		);
+	}
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/characters")
-    public ResponseEntity<CommonResponse<List<AllCharacterResponse>>> getAllCharacter(
-        @AuthenticationPrincipal AuthUser authUser
-    ){
-        return ResponseEntity.ok(
-            CommonResponse.of(
-                true,
-                HttpStatus.OK.value(),
-                "전체 캐릭터 조회 성공",
-                characterService.getAllCharacter(authUser.getUserId())
-            )
-        );
-    }
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/characters")
+	public ResponseEntity<CommonResponse<List<AllCharacterResponse>>> getAllCharacter(
+		@AuthenticationPrincipal AuthUser authUser
+	) {
+		return ResponseEntity.ok(
+			CommonResponse.of(
+				true,
+				HttpStatus.OK.value(),
+				"전체 캐릭터 조회 성공",
+				characterService.getAllCharacter(authUser.getUserId())
+			)
+		);
+	}
 }
