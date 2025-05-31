@@ -1,15 +1,10 @@
 package com.example.rabbithell.domain.character.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
-import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.user.model.User;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,9 +40,6 @@ public class Character extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "clover_id")
 	private Clover clover;
-
-	@OneToMany(mappedBy = "clover", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<Character> members = new ArrayList<>();
 
 	@Column(nullable = false, unique = true, length = 10)
 	private String name;
@@ -83,9 +74,6 @@ public class Character extends BaseEntity {
 
 	@Column(name = "archer_point")
 	private int archerPoint;
-
-	private Long cash;
-	private Long saving;
 
 	@Column(name = "skill_point")
 	private int skillPoint;
@@ -134,8 +122,6 @@ public class Character extends BaseEntity {
 		this.thiefPoint = thiefPoint;
 		this.wizardPoint = wizardPoint;
 		this.archerPoint = archerPoint;
-		this.cash = cash;
-		this.saving = saving;
 		this.skillPoint = skillPoint;
 	}
 
