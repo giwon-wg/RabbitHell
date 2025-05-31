@@ -29,4 +29,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			.orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 	}
 
+	default User findByEmailOrElseThrow(String email) {
+		return findByEmailAndIsDeletedFalse(email)
+			.orElseThrow(() -> new AuthException(USER_NOT_FOUND));
+	}
+
 }

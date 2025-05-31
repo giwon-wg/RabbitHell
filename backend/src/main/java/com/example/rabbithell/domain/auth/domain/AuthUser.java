@@ -14,10 +14,14 @@ public class AuthUser implements UserDetails {
 
 	private final Long userId;
 	private final String role;
+	private final Long cloverId;
+	private final String cloverName;
 
-	public AuthUser(Long userId, String role) {
+	public AuthUser(Long userId, String role, Long cloverId, String cloverName) {
 		this.userId = userId;
 		this.role = role;
+		this.cloverId = cloverId;
+		this.cloverName = cloverName;
 	}
 
 	@Override
@@ -33,6 +37,14 @@ public class AuthUser implements UserDetails {
 	@Override
 	public String getUsername() {
 		return String.valueOf(userId);
+	}
+
+	public Long getCloverId() {
+		return cloverId;
+	}
+
+	public String getCloverName() {
+		return cloverName;
 	}
 
 	@Override
@@ -54,4 +66,6 @@ public class AuthUser implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
+
 }
