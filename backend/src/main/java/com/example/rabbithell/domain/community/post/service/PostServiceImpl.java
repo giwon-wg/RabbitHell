@@ -13,7 +13,6 @@ import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.community.post.dto.request.PostRequest;
 import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
 import com.example.rabbithell.domain.community.post.entity.Post;
-import com.example.rabbithell.domain.community.post.exception.PostException;
 import com.example.rabbithell.domain.community.post.repository.PostRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
@@ -30,16 +29,13 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponse createPost(Long userId, PostRequest postRequest) {
 
-		User user = userRepository.findByIdAndIsDeletedFalse(userId)
-			.orElseThrow(() -> new PostException(USER_NOT_FOUND));
+		User user = userRepository.findByIdOrElseThrow(userId);
 
-		Post post = Post.builder()
-			.title(postRequest.title())
-			.content(postRequest.content())
-			.user(user)
-			.commentCount(0)
-			.isDeleted(false)
-			.build();
+		Post post = new Post(
+			user,
+			postRequest.title(),
+			postRequest.content()
+		);
 
 		Post savedPost = postRepository.save(post);
 		return PostResponse.fromEntity(savedPost);
@@ -48,9 +44,7 @@ public class PostServiceImpl implements PostService {
 	@Transactional(readOnly = true)
 	@Override
 	public PostResponse getPostById(Long postId) {
-		Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-			.orElseThrow(() -> new PostException(POST_NOT_FOUND));
-		return PostResponse.fromEntity(post);
+		return PostResponse.fromEntity(postRepository.findByIdOrElseThrow(postId));
 	}
 
 	@Transactional(readOnly = true)
@@ -68,12 +62,8 @@ public class PostServiceImpl implements PostService {
 	@Transactional
 	@Override
 	public void deletePost(Long userId, Long postId) {
-		Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-			.orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
-		if (!post.getUser().getId().equals(userId)) {
-			throw new PostException(USER_MISMATCH);
-		}
+		Post post = postRepository.findByIdAndValidateOwner(postId, userId);
 
 		post.markAsDeleted();
 	}
@@ -82,12 +72,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponse updatePost(Long userId, Long postId, PostRequest postRequest) {
 
-		Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-			.orElseThrow(() -> new PostException(POST_NOT_FOUND));
-
-		if (!post.getUser().getId().equals(userId)) {
-			throw new PostException(USER_MISMATCH);
-		}
+		Post post = postRepository.findByIdAndValidateOwner(postId, userId);
 
 		post.update(postRequest.title(), postRequest.content());
 
