@@ -1,16 +1,16 @@
 package com.example.rabbithell.domain.character.dto.response;
 
-import com.example.rabbithell.domain.character.entity.Character;
+import com.example.rabbithell.domain.character.entity.GameCharacter;
 
 public record CharacterPublicInfoResponse(
-    Long characterId,
-    Long userId,
-    String userName,
-    Long kingdomId,
-    String kingdomName,
-    Long speciesId,
-    String speciesName,
-    String characterName,
+	Long userId,
+	String userName,
+	Long cloverId,
+	String cloverName,
+	Long characterId,
+	String characterName,
+	String kingdomName,
+	String speciesName,
     String job,
     int level,
     int exp,
@@ -22,26 +22,28 @@ public record CharacterPublicInfoResponse(
     int focus,
     int luck
 ) implements CharacterInfoResponse {
-    public static CharacterPublicInfoResponse from(Character character){
+    public static CharacterPublicInfoResponse from(GameCharacter gameCharacter){
         return new CharacterPublicInfoResponse(
-            character.getId(),
-            character.getUser().getId(),
-            character.getUser().getName(),
-            character.getKingdom().getId(),
-            character.getKingdom().getKingdomName(),
-            character.getSpecie().getId(),
-            character.getSpecie().getSpeciesName(),
-            character.getName(),
-            character.getJob(),
-            character.getLevel(),
-            character.getExp(),
-            character.getMaxHp(),
-            character.getMaxMp(),
-            character.getStrength(),
-            character.getAgility(),
-            character.getIntelligence(),
-            character.getFocus(),
-            character.getLuck()
+			gameCharacter.getUser().getId(),
+			gameCharacter.getUser().getName(),
+			gameCharacter.getClover().getId(),
+			gameCharacter.getClover().getName(),
+			gameCharacter.getId(),
+			gameCharacter.getName(),
+			"왕국이름",
+			"종족명",
+			// gameCharacter.getClover().getKingdom().getKingdomName(),
+			// gameCharacter.getClover().getSpecie().getSpeciesName(),
+            gameCharacter.getJob().getName(),
+            gameCharacter.getLevel(),
+            gameCharacter.getExp(),
+            gameCharacter.getMaxHp(),
+            gameCharacter.getMaxMp(),
+            gameCharacter.getStrength(),
+            gameCharacter.getAgility(),
+            gameCharacter.getIntelligence(),
+            gameCharacter.getFocus(),
+            gameCharacter.getLuck()
         );
     }
 }
