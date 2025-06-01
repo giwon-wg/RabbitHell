@@ -3,6 +3,7 @@ package com.example.rabbithell.domain.skill.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.skill.dto.request.SkillCreateRequest;
@@ -39,6 +40,7 @@ public class SkillServiceImpl implements SkillService{
 		return skill.getId();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public Page<AllSkillResponse> getAllSkills(Pageable pageable,String jobName) {
 		Page<Skill> skills;
@@ -50,6 +52,7 @@ public class SkillServiceImpl implements SkillService{
 		return skills.map(skill -> new AllSkillResponse(skill));
 	}
 
+	@Transactional
 	@Override
 	public void updateSkill(Long skillId, SkillUpdateRequest request) {
 
@@ -68,5 +71,12 @@ public class SkillServiceImpl implements SkillService{
 		);
 
 		skillRepository.save(skill);
+	}
+
+	@Transactional
+	@Override
+	public void deleteSkill(Long skillId) {
+		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
+		skillRepository.delete(skill);
 	}
 }

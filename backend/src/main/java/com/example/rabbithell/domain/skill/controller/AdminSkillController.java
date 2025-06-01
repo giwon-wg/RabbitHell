@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +63,6 @@ public class AdminSkillController {
 		);
 	}
 
-	@Transactional
 	@PatchMapping("/{skillId}")
 	public ResponseEntity<CommonResponse<Void>> updateSkill(
 		@PathVariable Long skillId,
@@ -73,6 +73,18 @@ public class AdminSkillController {
 			true,
 			HttpStatus.OK.value(),
 			"스킬 수정 성공",
+			null
+			)
+		);
+	}
+
+	@DeleteMapping("/{skillId}")
+	public ResponseEntity<CommonResponse<Void>> deleteSkill(@PathVariable Long skillId) {
+		skillService.deleteSkill(skillId);
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"스킬 삭제 성공",
 			null
 			)
 		);
