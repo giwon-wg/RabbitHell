@@ -4,6 +4,8 @@ import com.example.rabbithell.domain.job.entity.Job;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,9 +17,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Skill {
 
     @Id
@@ -37,5 +37,17 @@ public class Skill {
 
     private int dmg;
 
+	@Enumerated(EnumType.STRING)
     private Job job;
+
+	@Builder
+	public Skill(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {
+		this.name = name;
+		this.description = description;
+		this.tier = tier;
+		this.mpCost = mpCost;
+		this.coolTime = coolTime;
+		this.dmg = dmg;
+		this.job = job;
+	}
 }
