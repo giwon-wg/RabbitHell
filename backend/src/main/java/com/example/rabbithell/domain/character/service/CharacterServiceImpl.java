@@ -2,7 +2,6 @@ package com.example.rabbithell.domain.character.service;
 
 import static com.example.rabbithell.domain.job.entity.Job.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,9 +21,7 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.job.entity.JobTier;
-import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.kingdom.repository.KingdomRepository;
-import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.specie.repository.SpecieRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
@@ -36,8 +33,6 @@ import lombok.RequiredArgsConstructor;
 public class CharacterServiceImpl implements CharacterService {
 
 	private final CharacterRepository characterRepository;
-	private final KingdomRepository kingdomRepository;
-	private final SpecieRepository specieRepository;
 	private final UserRepository userRepository;
 	private final CloverRepository cloverRepository;
 
@@ -46,9 +41,6 @@ public class CharacterServiceImpl implements CharacterService {
 
 		User user = userRepository.findByIdOrElseThrow(authUser.getUserId());
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
-
-		Kingdom kingdom = kingdomRepository.findByIdOrElseThrow(request.kingdomId());
-		Specie specie = specieRepository.findByIdOrElseThrow(request.speciesId());
 
 		GameCharacter gameCharacter = GameCharacter.builder()
 			.user(user)
