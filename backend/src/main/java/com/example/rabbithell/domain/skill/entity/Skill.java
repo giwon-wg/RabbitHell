@@ -37,7 +37,5 @@ public class Skill {
 
     private int dmg;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
     private Job job;
 }
