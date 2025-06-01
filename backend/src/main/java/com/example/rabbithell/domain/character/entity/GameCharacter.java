@@ -130,5 +130,9 @@ public class GameCharacter extends BaseEntity {
 		this.mp = this.maxMp;
 	}
 
+	public void updateJob(Job newJob){
+		this.job = newJob;
+	}
+
 }
 
