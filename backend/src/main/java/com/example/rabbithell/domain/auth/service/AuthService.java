@@ -39,9 +39,7 @@ public class AuthService {
             throw new AuthException(DUPLICATED_EMAIL);
         }
 
-		if (cloverRepository.existsByName(request.CloverName())) {
-			throw new AuthException(DUPLICATED_Clover_NAME);
-		}
+		cloverRepository.validateNameIsUnique(request.name());
 
         User user = User.builder()
             .email(request.email())
@@ -53,8 +51,8 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-		Clover Clover = new Clover(request.CloverName(), savedUser);
-		cloverRepository.save(Clover);
+		Clover clover = new Clover(request.cloverName(), savedUser);
+		cloverRepository.save(clover);
 
         Inventory inventory = Inventory.builder()
             .user(savedUser)

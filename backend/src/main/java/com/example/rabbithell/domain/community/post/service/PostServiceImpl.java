@@ -1,7 +1,5 @@
 package com.example.rabbithell.domain.community.post.service;
 
-import static com.example.rabbithell.domain.community.post.exception.code.PostExceptionCode.*;
-
 import java.util.List;
 
 import org.springframework.data.domain.Page;
