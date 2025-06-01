@@ -5,6 +5,7 @@ import static com.example.rabbithell.domain.job.entity.Job.*;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.character.dto.request.CreateCharacterRequest;
@@ -21,8 +22,6 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.job.entity.JobTier;
-import com.example.rabbithell.domain.kingdom.repository.KingdomRepository;
-import com.example.rabbithell.domain.specie.repository.SpecieRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
 
@@ -72,6 +71,7 @@ public class CharacterServiceImpl implements CharacterService {
 		return gameCharacter.getClover().getId();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public CharacterInfoResponse characterInfo(Long characterId, AuthUser authUser) {
 
@@ -86,6 +86,7 @@ public class CharacterServiceImpl implements CharacterService {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<AllCharacterResponse> getAllCharacter(Long authUserId) {
 
@@ -106,6 +107,7 @@ public class CharacterServiceImpl implements CharacterService {
 				gameCharacter.getLuck()))
 			.toList();
 	}
+
 
 	@Override
 	public boolean canChangeJob(Long authUserId, GameCharacter gameCharacter, Job changeJob) {
@@ -147,6 +149,7 @@ public class CharacterServiceImpl implements CharacterService {
 		return false;
 	}
 
+	@Transactional
 	@Override
 	public CharacterPersonalInfoResponse changeClass(Long authUserId, Long characterId, Job changeJob) {
 
