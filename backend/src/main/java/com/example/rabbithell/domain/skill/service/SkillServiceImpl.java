@@ -1,10 +1,12 @@
 package com.example.rabbithell.domain.skill.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.rabbithell.domain.job.entity.Job;
-import com.example.rabbithell.domain.job.repository.JobRepository;
 import com.example.rabbithell.domain.skill.dto.request.SkillCreateRequest;
+import com.example.rabbithell.domain.skill.dto.response.AllSkillResponse;
 import com.example.rabbithell.domain.skill.entity.Skill;
 import com.example.rabbithell.domain.skill.repository.SkillRepository;
 
@@ -34,5 +36,16 @@ public class SkillServiceImpl implements SkillService{
 		skillRepository.save(skill);
 
 		return skill.getId();
+	}
+
+	@Override
+	public Page<AllSkillResponse> getAllSkills(Pageable pageable,String jobName) {
+		Page<Skill> skills;
+		if (jobName == null || jobName.isEmpty()) {
+			skills = skillRepository.findAll(pageable);
+		} else {
+			skills = skillRepository.findByJobNameIgnoreCase(jobName, pageable);
+		}
+		return skills.map(skill -> new AllSkillResponse(skill));
 	}
 }
