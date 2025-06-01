@@ -41,12 +41,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
+			.cors()
+			.and()
 			.csrf(csrf -> csrf.disable())
 			.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.exceptionHandling()
+			.authenticationEntryPoint((request, response, authException) -> {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			})
+			.and()
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
 					"/auth/**",
-					"/oauth2/**",
+					"/oauth2/authorization/**",
 					"/swagger-ui/**",
 					"/v3/api-docs/**"
 				).permitAll()

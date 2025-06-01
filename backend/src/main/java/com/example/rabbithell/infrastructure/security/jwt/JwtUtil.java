@@ -29,7 +29,11 @@ public class JwtUtil {
 
 	public boolean hasCloverInfo(String token) {
 		Claims claims = parseClaims(token);
-		return claims.get("cloverId") != null && claims.get("cloverName") != null;
+
+		Object cloverId = claims.get("cloverId");
+		Object cloverName = claims.get("cloverName");
+
+		return cloverId instanceof Number && cloverName instanceof String;
 	}
 
 	public String createMiniToken(Long userId, String role) {
