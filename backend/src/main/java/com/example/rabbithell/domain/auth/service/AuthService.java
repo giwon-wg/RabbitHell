@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.auth.service;
 
 import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode.*;
+import static com.example.rabbithell.domain.clover.exception.code.CloverExceptionCode.DUPLICATED_CLOVER_NAME;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
 import com.example.rabbithell.domain.auth.dto.response.TokenResponse;
 import com.example.rabbithell.domain.auth.exception.AuthException;
 import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.exception.CloverException;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
@@ -39,7 +41,9 @@ public class AuthService {
             throw new AuthException(DUPLICATED_EMAIL);
         }
 
-		cloverRepository.validateNameIsUnique(request.name());
+		if (cloverRepository.existsByName(request.name())) {
+			throw new CloverException(DUPLICATED_CLOVER_NAME);
+		}
 
         User user = User.builder()
             .email(request.email())
