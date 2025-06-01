@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.skill.dto.request.SkillCreateRequest;
+import com.example.rabbithell.domain.skill.dto.request.SkillUpdateRequest;
 import com.example.rabbithell.domain.skill.dto.response.AllSkillResponse;
 import com.example.rabbithell.domain.skill.entity.Skill;
 import com.example.rabbithell.domain.skill.repository.SkillRepository;
@@ -47,5 +48,25 @@ public class SkillServiceImpl implements SkillService{
 			skills = skillRepository.findByJobNameIgnoreCase(jobName, pageable);
 		}
 		return skills.map(skill -> new AllSkillResponse(skill));
+	}
+
+	@Override
+	public void updateSkill(Long skillId, SkillUpdateRequest request) {
+
+		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
+
+		Job newJob = Job.fromName(request.jobName());
+
+		skill.skillUpdate(
+			request.name(),
+			request.description(),
+			request.tier(),
+			request.mpCost(),
+			request.coolTime(),
+			request.dmg(),
+			newJob
+		);
+
+		skillRepository.save(skill);
 	}
 }

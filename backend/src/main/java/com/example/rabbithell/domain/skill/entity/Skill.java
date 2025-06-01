@@ -47,4 +47,15 @@ public class Skill {
 		this.dmg = dmg;
 		this.job = job;
 	}
+
+	public void skillUpdate(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {
+		this.name = name;
+		this.description = description;
+		this.tier = tier;
+		this.mpCost = mpCost;
+		this.coolTime = coolTime;
+		this.dmg = dmg;
+		this.job = job;
+	}
+
 }
