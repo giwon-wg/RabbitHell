@@ -1,5 +1,11 @@
 package com.example.rabbithell.domain.job.entity;
 
+import static com.example.rabbithell.domain.job.exception.code.JobExceptionCode.*;
+
+import java.util.Arrays;
+
+import com.example.rabbithell.domain.job.exception.JobException;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -35,4 +41,10 @@ public enum Job {
 	private final int requiredJobPoint;
 	private final int requiredSubPoint;
 
+	public static Job fromName(String name) {
+		return Arrays.stream(Job.values())
+			.filter(job -> job.getName().equalsIgnoreCase(name))
+			.findFirst()
+			.orElseThrow(() -> new JobException(JOB_NOT_FOUND));
+	}
 }
