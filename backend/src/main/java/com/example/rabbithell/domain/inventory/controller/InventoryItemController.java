@@ -19,7 +19,6 @@ import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
-import com.example.rabbithell.domain.inventory.dto.response.EquippedItem;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 
@@ -27,21 +26,21 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/inventory/items")
+@RequestMapping("/inventory/inventory-items")
 public class InventoryItemController {
 
 	private final InventoryItemService inventoryItemService;
 
-	@GetMapping("/{itemId}")
+	@GetMapping("/{inventoryItemId}")
 	public ResponseEntity<CommonResponse<InventoryItemResponse>> getInventoryItem(
 		@AuthenticationPrincipal AuthUser authUser,
-		@PathVariable Long itemId
+		@PathVariable Long inventoryItemId
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 단건 조회 성공",
-			inventoryItemService.getInventoryItemById(authUser.getUserId(), itemId)
+			inventoryItemService.getInventoryItemById(authUser.getUserId(), inventoryItemId)
 		));
 	}
 
@@ -61,17 +60,17 @@ public class InventoryItemController {
 	}
 
 	// 장비 착용
-	@PostMapping("/{itemId}/equip")
+	@PostMapping("/{inventoryItemId}/equip")
 	public ResponseEntity<CommonResponse<EquipResponse>> equipItem(
 		@AuthenticationPrincipal AuthUser authUser,
-		@PathVariable Long itemId,
+		@PathVariable Long inventoryItemId,
 		@RequestBody EquipRequest equipRequest
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 장착 성공",
-			inventoryItemService.equipItem(authUser.getUserId(), itemId, equipRequest)
+			inventoryItemService.equipItem(authUser.getUserId(), inventoryItemId, equipRequest)
 		));
 	}
 
