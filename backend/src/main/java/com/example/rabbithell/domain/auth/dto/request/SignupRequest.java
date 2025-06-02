@@ -5,6 +5,6 @@ public record SignupRequest(
 	String name,
 	String password,
 	String role,
-	String expeditionName
+	String CloverName
 ) {
 }

@@ -34,10 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
             Long userId = Long.parseLong(jwtUtil.extractSubject(token));
             String role = jwtUtil.extractRole(token);
-			Long expeditionId = jwtUtil.extractExpeditionId(token);
-			String expeditionName = jwtUtil.extractExpeditionName(token);
+			Long cloverId = jwtUtil.extractCloverId(token);
+			String CloverName = jwtUtil.extractCloverName(token);
 
-            AuthUser authUser = new AuthUser(userId, role, expeditionId, expeditionName);
+            AuthUser authUser = new AuthUser(userId, role, cloverId, CloverName);
 
             UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
