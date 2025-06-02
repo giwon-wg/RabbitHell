@@ -10,7 +10,7 @@ import com.example.rabbithell.domain.inventory.dto.response.InventoryItemRespons
 
 public interface InventoryItemService {
 
-	InventoryItemResponse getInventoryItemById(Long userId, Long itemId);
+	InventoryItemResponse getInventoryItemById(Long userId, Long inventoryItemId);
 
 	PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable);
 
