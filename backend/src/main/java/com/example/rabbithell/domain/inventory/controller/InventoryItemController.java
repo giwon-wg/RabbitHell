@@ -20,6 +20,7 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
+import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,6 @@ public class InventoryItemController {
 		));
 	}
 
-	// 장비 착용
 	@PostMapping("/{inventoryItemId}/equip")
 	public ResponseEntity<CommonResponse<EquipResponse>> equipItem(
 		@AuthenticationPrincipal AuthUser authUser,
@@ -71,6 +71,19 @@ public class InventoryItemController {
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 장착 성공",
 			inventoryItemService.equipItem(authUser.getUserId(), inventoryItemId, equipRequest)
+		));
+	}
+
+	@PostMapping("/{inventoryItemId}/unequip")
+	public ResponseEntity<CommonResponse<UnequipResponse>> unequipItem(
+		@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable Long inventoryItemId
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"인벤토리 아이템 장착 해제 성공",
+			inventoryItemService.unequipItem(authUser.getUserId(), inventoryItemId)
 		));
 	}
 

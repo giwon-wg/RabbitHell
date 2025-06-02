@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
-import com.example.rabbithell.domain.inventory.dto.response.EquippedItem;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
+import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 
 public interface InventoryItemService {
 
@@ -15,5 +15,7 @@ public interface InventoryItemService {
 	PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable);
 
 	EquipResponse equipItem(Long userId, Long itemId, EquipRequest equipRequest);
+
+	UnequipResponse unequipItem(Long userId, Long inventoryItemId);
 
 }
