@@ -23,7 +23,6 @@ import com.example.rabbithell.domain.character.dto.response.CharacterInfoRespons
 import com.example.rabbithell.domain.character.dto.response.CharacterPersonalInfoResponse;
 import com.example.rabbithell.domain.character.service.CharacterService;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 

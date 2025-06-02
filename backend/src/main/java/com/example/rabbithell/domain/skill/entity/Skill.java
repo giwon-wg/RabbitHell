@@ -17,25 +17,25 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Skill {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String name;
+	private String name;
 
-    private String description;
+	private String description;
 
-    private int tier;
+	private int tier;
 
-    private int mpCost;
+	private int mpCost;
 
-    // 이거 필요한가?
-    private int coolTime;
+	// 이거 필요한가?
+	private int coolTime;
 
-    private int dmg;
+	private int dmg;
 
 	@Enumerated(EnumType.STRING)
-    private Job job;
+	private Job job;
 
 	@Builder
 	public Skill(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {

@@ -11,7 +11,7 @@ public interface SkillService {
 
 	Long createSkill(SkillCreateRequest request);
 
-	Page<AllSkillResponse> getAllSkills(Pageable pageable,String jobName);
+	Page<AllSkillResponse> getAllSkills(Pageable pageable, String jobName);
 
 	void updateSkill(Long skillId, SkillUpdateRequest request);
 

@@ -13,11 +13,11 @@ import com.example.rabbithell.domain.skill.entity.Skill;
 import com.example.rabbithell.domain.skill.exception.SkillException;
 import com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode;
 
-public interface SkillRepository extends JpaRepository<Skill,Long> {
+public interface SkillRepository extends JpaRepository<Skill, Long> {
 	Page<Skill> findByJobNameIgnoreCase(String jobName, Pageable pageable);
 
 	default Skill findByIdOrElseThrow(Long id) {
 		return findById(id)
-			.orElseThrow(()-> new SkillException(SKILL_NOT_FOUND));
+			.orElseThrow(() -> new SkillException(SKILL_NOT_FOUND));
 	}
 }

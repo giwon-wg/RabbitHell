@@ -9,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SkillExceptionCode {
 
-	SKILL_NOT_FOUND(false, HttpStatus.NOT_FOUND, "해당 스킬을 찾을 수 없습니다.")
-	;
+	SKILL_NOT_FOUND(false, HttpStatus.NOT_FOUND, "해당 스킬을 찾을 수 없습니다.");
 
 	private final boolean success;
 	private final HttpStatus status;
