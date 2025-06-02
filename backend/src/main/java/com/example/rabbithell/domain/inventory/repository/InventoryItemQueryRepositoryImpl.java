@@ -30,6 +30,7 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 
 		List<EquippedItem> equippedItems = tuples.stream()
 			.map(t -> new EquippedItem(
+				t.get(inventoryItem.id),
 				t.get(inventoryItem.item.id),
 				t.get(inventoryItem.character.id),
 				t.get(inventoryItem.slot),

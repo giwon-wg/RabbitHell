@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "effect")
 public class Effect {
 
@@ -36,6 +34,13 @@ public class Effect {
 
 	@Column(nullable = false)
 	private boolean isDeleted;
+
+	@Builder
+	public Effect(EffectType effectType, Long power, boolean isDeleted) {
+		this.effectType = effectType;
+		this.power = power;
+		this.isDeleted = isDeleted;
+	}
 
 	public void update(EffectType effectType, Long power) {
 		this.effectType = effectType;

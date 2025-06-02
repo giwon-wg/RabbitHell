@@ -2,6 +2,7 @@ package com.example.rabbithell.domain.inventory.entity;
 
 import static com.example.rabbithell.domain.inventory.exception.code.InventoryExceptionCode.*;
 
+import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.inventory.exception.InventoryException;
 import com.example.rabbithell.domain.user.model.User;
 
@@ -22,8 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "inventory")
 public class Inventory {
 
@@ -32,11 +31,17 @@ public class Inventory {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	@JoinColumn(name = "clover_id", nullable = false)
+	private Clover clover;
 
 	@Column(nullable = false)
 	private Integer capacity; // 용량
+
+	@Builder
+	public Inventory(Clover clover, Integer capacity) {
+		this.clover = clover;
+		this.capacity = capacity;
+	}
 
 	public void expand(int amount) {
 		if (amount <= 0) {

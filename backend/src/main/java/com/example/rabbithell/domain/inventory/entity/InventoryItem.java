@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "inventory_item")
 public class InventoryItem extends BaseEntity {
 
@@ -49,6 +47,15 @@ public class InventoryItem extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
 
+	@Builder
+	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Integer durability, Slot slot) {
+		this.inventory = inventory;
+		this.item = item;
+		this.character = character;
+		this.durability = durability;
+		this.slot = slot;
+	}
+
 	// TODO: 아이템 종류에 따라 장착 부위가 정해지도록 기능 수정 필요
 	public void equip(GameCharacter character, Slot slot) {
 		this.character = character;
@@ -58,6 +65,11 @@ public class InventoryItem extends BaseEntity {
 	public void unequip() {
 		this.character = null;
 		this.slot = null;
+	}
+
+	// TODO: 나중에 기능 수정 필요: 내구도 닳는 양 필요
+	public void use(int amount) {
+		this.durability -= amount;
 	}
 
 }

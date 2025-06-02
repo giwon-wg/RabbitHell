@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "item_effect")
 public class ItemEffect {
 
@@ -32,5 +30,11 @@ public class ItemEffect {
 	@MapsId("effectId") // ItemEffectId.effectId 매핑
 	@JoinColumn(name = "effect_id")
 	private Effect effect;
+
+	@Builder
+	public ItemEffect(Item item, Effect effect) {
+		this.item = item;
+		this.effect = effect;
+	}
 
 }
