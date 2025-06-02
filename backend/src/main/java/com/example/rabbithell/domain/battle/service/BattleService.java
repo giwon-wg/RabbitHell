@@ -14,6 +14,8 @@ import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.character.exception.CharacterException;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.monster.service.MonsterService;
@@ -28,12 +30,13 @@ public class BattleService {
 	private final MonsterService monsterService;
 	private final InventoryRepository inventoryRepository;
 	private final InventoryItemRepository inventoryItemRepository;
+	private final CloverRepository cloverRepository;
 
 	public GetBattleFieldsResponse getBattleFields(AuthUser authUser, Long characterId) {
 
-		Character character = verifyCharacter(authUser, characterId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
-		Set<BattleFieldType> maps = character.getUnlockedRareMaps();
+		Set<BattleFieldType> maps = clover.getUnlockedRareMaps();
 
 		maps.add(BattleFieldType.PLAIN);
 		maps.add(BattleFieldType.MOUNTAIN);
@@ -44,7 +47,6 @@ public class BattleService {
 	}
 
 	public BattleResultResponse doBattle(AuthUser authUser, Long characterId, BattleFieldType battleFieldType) {
-		Character character = verifyCharacter(authUser, characterId);
 
 		// Monster monster = monsterService.getRandomMonster(battleFieldType);
 		//
