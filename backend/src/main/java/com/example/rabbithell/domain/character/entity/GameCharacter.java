@@ -51,15 +51,15 @@ public class GameCharacter extends BaseEntity {
 	private int mp;
 
 	private int strength;
-	private int maxStrength;
+	private int minStrength;
 	private int agility;
-	private int maxAgility;
+	private int minAgility;
 	private int intelligence;
-	private int maxIntelligence;
+	private int minIntelligence;
 	private int focus;
-	private int maxFocus;
+	private int minFocus;
 	private int luck;
-	private int maxLuck;
+	private int minLuck;
 
 	@Column(name = "incompetent_point")
 	private int incompetentPoint;
@@ -91,15 +91,15 @@ public class GameCharacter extends BaseEntity {
 		int maxMp,
 		int mp,
 		int strength,
-		int maxStrength,
+		int minxStrength,
 		int agility,
-		int maxAgility,
+		int minAgility,
 		int intelligence,
-		int maxIntelligence,
+		int minIntelligence,
 		int focus,
-		int maxFocus,
+		int minFocus,
 		int luck,
-		int maxLuck,
+		int minLuck,
 		int incompetentPoint,
 		int warriorPoint,
 		int thiefPoint,
