@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.auth.domain.MiniAuthUser;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,25 +30,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
 
-        String token = resolveToken(request);
+		String token = resolveToken(request);
 
-        if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
-            Long userId = Long.parseLong(jwtUtil.extractSubject(token));
-            String role = jwtUtil.extractRole(token);
-			Long cloverId = jwtUtil.extractCloverId(token);
-			String CloverName = jwtUtil.extractCloverName(token);
+		if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+			Long userId = Long.parseLong(jwtUtil.extractSubject(token));
+			String role = jwtUtil.extractRole(token);
 
-            AuthUser authUser = new AuthUser(userId, role, cloverId, CloverName);
+			// 미니 토큰 구간
+			if (!jwtUtil.hasCloverInfo(token)) {
+				MiniAuthUser authUser = new MiniAuthUser(userId, role);
+				UsernamePasswordAuthenticationToken authentication =
+					new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
+			// 풀 토큰 구간
+			} else {
+				Long cloverId = jwtUtil.extractCloverId(token);
+				String cloverName = jwtUtil.extractCloverName(token);
+				AuthUser authUser = new AuthUser(userId, role, cloverId, cloverName);
+				UsernamePasswordAuthenticationToken authentication =
+					new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+		}
 
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+		log.info("토큰 있음, subject={}, role={}, cloverId={}, cloverName={}",
+			jwtUtil.extractSubject(token),
+			jwtUtil.extractRole(token),
+			jwtUtil.extractCloverId(token),
+			jwtUtil.extractCloverName(token)
+		);
 
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
 
     private String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");

@@ -5,13 +5,21 @@ import static com.example.rabbithell.domain.inventory.exception.code.InventoryIt
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
-import com.example.rabbithell.domain.inventory.entity.InventoryItemId;
 import com.example.rabbithell.domain.inventory.exception.InventoryItemException;
 
-public interface InventoryItemRepository extends JpaRepository<InventoryItem, InventoryItemId> {
+public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long>, InventoryItemQueryRepository {
 
-	default InventoryItem findByIdOrElseThrow(InventoryItemId id) {
+	default InventoryItem findByIdOrElseThrow(Long id) {
 		return findById(id).orElseThrow(() -> new InventoryItemException(INVENTORY_ITEM_NOT_FOUND));
+	}
+
+	default InventoryItem findByIdAndValidateOwner(Long id, Long userId) {
+		InventoryItem inventoryItem = findByIdOrElseThrow(id);
+
+		if (!inventoryItem.getInventory().getUser().getId().equals(userId)) {
+			throw new InventoryItemException(USER_MISMATCH);
+		}
+		return inventoryItem;
 	}
 
 }

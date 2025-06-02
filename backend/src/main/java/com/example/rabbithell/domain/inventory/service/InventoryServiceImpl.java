@@ -19,7 +19,12 @@ public class InventoryServiceImpl implements InventoryService {
 	@Override
 	public InventoryResponse expandInventory(Long userId, int amount) {
 		Inventory inventory = inventoryRepository.findByIdOrElseThrow(userId);
+
+		// TODO: 골드 소모
+
+		// 인벤토리 확장
 		inventory.expand(amount);
+
 		return InventoryResponse.fromEntity(inventory);
 	}
 

@@ -2,10 +2,12 @@ package com.example.rabbithell.infrastructure.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,12 +27,38 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String userId, String role, Long CloverId, String CloverName) {
+	public boolean hasCloverInfo(String token) {
+		Claims claims = parseClaims(token);
+
+		Object cloverId = claims.get("cloverId");
+		Object cloverName = claims.get("cloverName");
+
+		return cloverId instanceof Number && cloverName instanceof String;
+	}
+
+	public String createMiniToken(Long userId, String role) {
+		Date now = new Date();
+		long duration = role.equals("ADMIN")
+			? Duration.ofHours(12).toMillis() //어드민의 경우 12시간 사용
+			: Duration.ofMinutes(5).toMillis(); // USER의 경우 5분 사용 가능
+
+		Date expiry = new Date(now.getTime() + duration);
+
+		return Jwts.builder()
+			.setSubject(String.valueOf(userId))
+			.claim("role", role)
+			.setIssuedAt(now)
+			.setExpiration(expiry)
+			.signWith(key, SignatureAlgorithm.HS512)
+			.compact();
+	}
+
+    public String generateAccessToken(String userId, String role, Long cloverId, String cloverName) {
         return Jwts.builder()
             .setSubject(userId)
             .claim("role", role)
-			.claim("CloverId", CloverId)
-			.claim("CloverName", CloverName)
+			.claim("cloverId", cloverId)
+			.claim("cloverName", cloverName)
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpireMillis()))
             .signWith(key, SignatureAlgorithm.HS256)
@@ -79,7 +107,7 @@ public class JwtUtil {
 			.build()
 			.parseClaimsJws(token)
 			.getBody()
-			.get("CloverId", Long.class);
+			.get("cloverId", Long.class);
 	}
 
 	public String extractCloverName(String token) {
@@ -88,7 +116,7 @@ public class JwtUtil {
 			.build()
 			.parseClaimsJws(token)
 			.getBody()
-			.get("CloverName", String.class);
+			.get("cloverName", String.class);
 	}
 
     private long getAccessTokenExpireMillis() {
@@ -98,4 +126,14 @@ public class JwtUtil {
     private long getRefreshTokenExpireMillis() {
         return 1000 * 60 * properties.getToken().getRefresh().getMinute();
     }
+
+	public Claims parseClaims(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+	}
+
+
 }

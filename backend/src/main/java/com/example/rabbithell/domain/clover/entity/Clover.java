@@ -1,13 +1,19 @@
 package com.example.rabbithell.domain.clover.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.kingdom.entity.Kingdom;
+import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.village.entity.Village;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -19,14 +25,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Clovers")
+@Table(name = "clovers")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Clover extends BaseEntity {
@@ -42,14 +50,16 @@ public class Clover extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 
-	// todo 캐릭터 쪽에
-	// @ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "Clover_id")
-	// private Clover Clover;
+	@OneToMany(mappedBy = "clover", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<GameCharacter> members = new ArrayList<>();
 
-	// 추가 후 주석 풀것
-	// @OneToMany(mappedBy = "Clover", cascade = CascadeType.ALL, orphanRemoval = true)
-	// private final List<com.example.rabbithell.domain.character.entity.Character> members = new ArrayList<>();
+	private Integer stamina;
+
+	// @OneToMany(fetch = FetchType.LAZY)
+	// private Kingdom kingdom;
+	//
+	// @OneToMany(fetch = FetchType.LAZY)
+	// private Specie specie;
 
 	@Column(nullable = false)
 	private long cash = 0;
@@ -57,7 +67,7 @@ public class Clover extends BaseEntity {
 	@Column(nullable = false)
 	private long saving = 0;
 
-	//현재 마을 저장
+	// 현재 마을 저장
 	@Column(name = "current_village")
 	private Long currentVillage;
 
@@ -70,6 +80,17 @@ public class Clover extends BaseEntity {
 	)
 	@Column(name = "rare_map_type")
 	private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
+
+	@Builder
+	public Clover(String name, User user, long cash, long saving, Long currentVillage,
+		Set<BattleFieldType> unlockedRareMaps) {
+		this.name = name;
+		this.user = user;
+		this.cash = cash;
+		this.saving = saving;
+		this.currentVillage = currentVillage;
+		this.unlockedRareMaps = unlockedRareMaps;
+	}
 
 	// 레어맵 컬럼에 추가
 	public void unlockRareMap(BattleFieldType rareMap) {
@@ -142,30 +163,19 @@ public class Clover extends BaseEntity {
 		this.cash += amount;
 	}
 
+	public void addMember(GameCharacter character) {
+		if (members.size() >= 4) {
+			throw new IllegalStateException("원정대에는 4명까지만 추가할 수 있습니다.");
+		}
+		this.members.add(character);
+	}
 
-	// public void addMember(Character character) {
-	// 	if (members.size() >= 4) {
-	// 		throw new IllegalStateException("원정대에는 4명까지만 추가할 수 있습니다.");
-	// 	}
-	// 	this.members.add(character);
-	// 	// todo 캐릭터 생성 파트에 요청 필요
-	// 	// character.setClover(this);
-	//
-	// 	// @ManyToOne(fetch = FetchType.LAZY)
-	// 	// @JoinColumn(name = "Clover_id")
-	// 	// private Clover Clover;
-	// 	//
-	// 	// public void setClover(Clover Clover) {
-	// 	// 	this.Clover = Clover;
-	// 	// }
-	// }
-	//
-	// public boolean isFull() {
-	// 	return members.size() >= 4;
-	// }
-	//
-	// public boolean isMember(Character character) {
-	// 	return members.contains(character);
-	// }
+	public boolean isFull() {
+		return members.size() >= 4;
+	}
+
+	public boolean isMember(GameCharacter character) {
+		return members.contains(character);
+	}
 
 }
