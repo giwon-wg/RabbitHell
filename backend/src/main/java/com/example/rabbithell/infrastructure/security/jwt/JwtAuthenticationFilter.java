@@ -38,7 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			// 미니 토큰 구간
 			if (!jwtUtil.hasCloverInfo(token)) {
-				log.info("MiniToken 인증 처리: userId={}, role={}", userId, role);
 				MiniAuthUser authUser = new MiniAuthUser(userId, role);
 				UsernamePasswordAuthenticationToken authentication =
 					new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
@@ -49,7 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			} else {
 				Long cloverId = jwtUtil.extractCloverId(token);
 				String cloverName = jwtUtil.extractCloverName(token);
-				log.info("FullToken 인증 처리: userId={}, role={}, cloverId={}, cloverName={}", userId, role, cloverId, cloverName);
 				AuthUser authUser = new AuthUser(userId, role, cloverId, cloverName);
 				UsernamePasswordAuthenticationToken authentication =
 					new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
@@ -57,6 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 		}
+
 		log.info("토큰 있음, subject={}, role={}, cloverId={}, cloverName={}",
 			jwtUtil.extractSubject(token),
 			jwtUtil.extractRole(token),
