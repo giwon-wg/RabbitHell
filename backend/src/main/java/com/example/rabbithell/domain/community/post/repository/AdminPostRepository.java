@@ -32,7 +32,6 @@ public interface AdminPostRepository extends JpaRepository<AdminPost, Long> {
 		AdminPostCategory category,
 		Pageable pageable
 	);
-
 	default AdminPost findByIdOrElseThrow(Long id) {
 
 		return findByIdAndIsDeletedFalse(id)
