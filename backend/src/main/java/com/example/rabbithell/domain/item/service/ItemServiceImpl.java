@@ -34,7 +34,9 @@ public class ItemServiceImpl implements ItemService {
 			.itemType(itemRequest.itemType())
 			.rarity(itemRequest.rarity())
 			.price(itemRequest.price())
-			.attack(itemRequest.attack())
+			.power(itemRequest.power())
+			.maxPower(itemRequest.maxPower())
+			.minPower(itemRequest.minPower())
 			.weight(itemRequest.weight())
 			.durability(itemRequest.durability())
 			.build();
@@ -74,7 +76,9 @@ public class ItemServiceImpl implements ItemService {
 			itemRequest.itemType(),
 			itemRequest.rarity(),
 			itemRequest.price(),
-			itemRequest.attack(),
+			itemRequest.power(),
+			itemRequest.maxPower(),
+			itemRequest.minPower(),
 			itemRequest.weight(),
 			itemRequest.durability()
 		);

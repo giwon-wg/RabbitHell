@@ -44,11 +44,15 @@ public class Item extends BaseEntity {
 	private ItemType itemType;
 
 	@Enumerated(EnumType.STRING)
-	private Rarity rarity; // enum
+	private Rarity rarity;
 
 	private Long price;
 
-	private Long attack;
+	private Long power; // 아이템 위력
+
+	private Long maxPower;
+
+	private Long minPower;
 
 	private Long weight;
 
@@ -64,7 +68,9 @@ public class Item extends BaseEntity {
 		ItemType itemType,
 		Rarity rarity,
 		Long price,
-		Long attack,
+		Long power,
+		Long maxPower,
+		Long minPower,
 		Long weight,
 		Integer durability
 	) {
@@ -73,7 +79,9 @@ public class Item extends BaseEntity {
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
-		this.attack = attack;
+		this.power = power;
+		this.maxPower = maxPower;
+		this.minPower = minPower;
 		this.weight = weight;
 		this.durability = durability;
 	}

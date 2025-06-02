@@ -20,7 +20,7 @@ public record ItemResponse(
 			item.getName(),
 			item.getRarity(),
 			item.getPrice(),
-			item.getAttack(),
+			item.getPower(),
 			item.getWeight(),
 			item.getDurability()
 		);

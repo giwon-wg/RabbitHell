@@ -2,6 +2,7 @@ package com.example.rabbithell.domain.inventory.entity;
 
 import static com.example.rabbithell.domain.inventory.exception.code.InventoryExceptionCode.*;
 
+import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.inventory.exception.InventoryException;
 import com.example.rabbithell.domain.user.model.User;
 
@@ -32,8 +33,8 @@ public class Inventory {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	@JoinColumn(name = "clover_id", nullable = false)
+	private Clover clover;
 
 	@Column(nullable = false)
 	private Integer capacity; // 용량
