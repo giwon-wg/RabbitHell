@@ -16,14 +16,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SkillServiceImpl implements SkillService{
+public class SkillServiceImpl implements SkillService {
 
 	private final SkillRepository skillRepository;
 
 	@Override
 	public Long createSkill(SkillCreateRequest request) {
-
-		Job job = Job.fromName(request.jobName());
 
 		Skill skill = Skill.builder()
 			.name(request.name())
@@ -32,7 +30,7 @@ public class SkillServiceImpl implements SkillService{
 			.mpCost(request.mpCost())
 			.coolTime(request.coolTime())
 			.dmg(request.dmg())
-			.job(job)
+			.job(request.job())
 			.build();
 
 		skillRepository.save(skill);
@@ -42,7 +40,7 @@ public class SkillServiceImpl implements SkillService{
 
 	@Transactional(readOnly = true)
 	@Override
-	public Page<AllSkillResponse> getAllSkills(Pageable pageable,String jobName) {
+	public Page<AllSkillResponse> getAllSkills(Pageable pageable, String jobName) {
 		Page<Skill> skills;
 		if (jobName == null || jobName.isEmpty()) {
 			skills = skillRepository.findAll(pageable);
@@ -58,8 +56,6 @@ public class SkillServiceImpl implements SkillService{
 
 		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
 
-		Job newJob = Job.fromName(request.jobName());
-
 		skill.skillUpdate(
 			request.name(),
 			request.description(),
@@ -67,7 +63,7 @@ public class SkillServiceImpl implements SkillService{
 			request.mpCost(),
 			request.coolTime(),
 			request.dmg(),
-			newJob
+			request.job()
 		);
 
 		skillRepository.save(skill);

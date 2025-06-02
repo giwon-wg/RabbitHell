@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.skill.dto.request;
 
+import com.example.rabbithell.domain.job.entity.Job;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +32,6 @@ public record SkillUpdateRequest(
 
 	@Schema(description = "스킬이 속한 직업명", example = "전사 1차")
 	@NotBlank(message = "직업명 필수입니다")
-	String jobName
+	Job job
 ) {
 }
