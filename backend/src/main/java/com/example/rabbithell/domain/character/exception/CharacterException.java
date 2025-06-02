@@ -10,14 +10,14 @@ import lombok.Getter;
 @Getter
 public class CharacterException extends BaseException {
 
-    private final CharacterExceptionCode errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
+	private final CharacterExceptionCode errorCode;
+	private final HttpStatus httpStatus;
+	private final String message;
 
-    public CharacterException(CharacterExceptionCode errorCode) {
-        this.errorCode = errorCode;
-        this.httpStatus = errorCode.getStatus();
-        this.message = errorCode.getMessage();
-    }
+	public CharacterException(CharacterExceptionCode errorCode) {
+		this.errorCode = errorCode;
+		this.httpStatus = errorCode.getStatus();
+		this.message = errorCode.getMessage();
+	}
 
 }
