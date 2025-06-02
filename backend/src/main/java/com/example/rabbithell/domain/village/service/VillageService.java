@@ -1,16 +1,11 @@
 package com.example.rabbithell.domain.village.service;
 
-import static com.example.rabbithell.domain.character.exception.code.CharacterExceptionCode.*;
 import static com.example.rabbithell.domain.village.exception.code.VillageExceptionCode.*;
-
-import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
-import com.example.rabbithell.domain.character.entity.Character;
-import com.example.rabbithell.domain.character.exception.CharacterException;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
@@ -46,17 +41,6 @@ public class VillageService {
 		clover.updateCurrentVillage(targetVillage);
 	}
 
-	private Character verifyCharacter(AuthUser authUser, Long characterId) {
-
-		Character character = characterRepository.findByIdOrElseThrow(characterId);
-
-		if (!Objects.equals(character.getUser().getId(), authUser.getUserId())) {
-			throw new CharacterException(CHARACTER_NOT_FOUND);
-		}
-
-		return character;
-	}
-
 	@Transactional
 	public void saveMoney(AuthUser authUser, int saveMoney) {
 
@@ -75,7 +59,7 @@ public class VillageService {
 	}
 
 	@Transactional
-	public void cureCharacter(AuthUser authUser, Long characterId) {
+	public void cureCharacter(AuthUser authUser) {
 
 		int cureCost = 0;
 

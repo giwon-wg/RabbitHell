@@ -12,7 +12,6 @@ import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.village.dto.request.MoneyRequest;
 import com.example.rabbithell.domain.village.dto.request.MoveCharacterRequest;
-import com.example.rabbithell.domain.village.dto.request.UserRequest;
 import com.example.rabbithell.domain.village.service.VillageService;
 
 import jakarta.validation.Valid;
@@ -69,10 +68,9 @@ public class VillageController {
 
 	@PatchMapping("/hospitals/cure")
 	public ResponseEntity<CommonResponse<Void>> cureCharacter(
-		@AuthenticationPrincipal AuthUser authUser,
-		@Valid @RequestBody UserRequest request
+		@AuthenticationPrincipal AuthUser authUser
 	) {
-		villageService.cureCharacter(authUser, request.characterId());
+		villageService.cureCharacter(authUser);
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
