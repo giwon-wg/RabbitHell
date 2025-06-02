@@ -52,6 +52,7 @@ public class Item extends BaseEntity {
 
 	private Long weight;
 
+	@Column(nullable = false)
 	private Integer durability;
 
 	@Column(nullable = false)

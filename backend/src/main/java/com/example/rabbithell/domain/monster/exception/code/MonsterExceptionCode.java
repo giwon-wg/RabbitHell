@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MonsterExceptionCode {
-    ERROR_CODE_NAME(false, HttpStatus.NOT_FOUND, "에러 메시지"),
-    ;
+    MONSTER_NOT_FOUND(false, HttpStatus.NOT_FOUND, "몬스터가 존재하지 않습니다."),
+    NO_MONSTER_ON_FIELD(false, HttpStatus.BAD_REQUEST, "해당 필드에 존재하지 않는 몬스터입니다.");
 
     private final boolean success;
     private final HttpStatus status;
