@@ -60,9 +60,9 @@ public class InventoryItem extends BaseEntity {
 		this.slot = null;
 	}
 
-	// TODO: 나중에 기능 수정 필요: 1. 소모품만 사용 가능 2. 내구도 닳는 양 필요
-	public void use() {
-		this.durability = 0;
+	// TODO: 나중에 기능 수정 필요: 내구도 닳는 양 필요
+	public void use(int amount) {
+		this.durability -= amount;
 	}
 
 }

@@ -18,6 +18,7 @@ import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
+import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
@@ -91,13 +92,14 @@ public class InventoryItemController {
 	@PostMapping("/{inventoryItemId}/use")
 	public ResponseEntity<CommonResponse<UseResponse>> useItem(
 		@AuthenticationPrincipal AuthUser authUser,
-		@PathVariable Long inventoryItemId
+		@PathVariable Long inventoryItemId,
+		@RequestBody UseRequest useRequest
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 사용 성공",
-			inventoryItemService.useItem(authUser.getUserId(), inventoryItemId)
+			inventoryItemService.useItem(authUser.getUserId(), inventoryItemId, useRequest)
 		));
 	}
 
