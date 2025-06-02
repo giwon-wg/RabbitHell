@@ -77,20 +77,17 @@ public class VillageService {
 	@Transactional
 	public void cureCharacter(AuthUser authUser, Long characterId) {
 
-		Long cureCost = 0L;
+		int cureCost = 0;
 
-		Character character = verifyCharacter(authUser, characterId);
-
-		if (cureCost > character.getSaving()) {
-			if (cureCost > character.getCash()) {
-				throw new VillageException(NOT_ENOUGH_MONEY);
-			}
-			character.useMoneyFromSaving(cureCost);
-		} else {
-			character.useMoneyFromCash(cureCost);
-		}
-
-		character.refill();
-
+		// todo 클로버 주석 푼 후에 풀기
+		// Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
+		//
+		// List<Character> members = clover.getMembers();
+		//
+		// clover.useFromSaving(cureCost);
+		//
+		// for (Character member : members) {
+		// 	member.refill();
+		// }
 	}
 }
