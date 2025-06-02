@@ -11,6 +11,7 @@ import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.community.post.dto.request.PostRequest;
 import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
 import com.example.rabbithell.domain.community.post.entity.Post;
+import com.example.rabbithell.domain.community.post.entity.PostCategory;
 import com.example.rabbithell.domain.community.post.repository.PostRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
@@ -32,7 +33,8 @@ public class PostServiceImpl implements PostService {
 		Post post = new Post(
 			user,
 			postRequest.title(),
-			postRequest.content()
+			postRequest.content(),
+			postRequest.postCategory()
 		);
 
 		Post savedPost = postRepository.save(post);
@@ -43,18 +45,6 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponse getPostById(Long postId) {
 		return PostResponse.fromEntity(postRepository.findByIdOrElseThrow(postId));
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public PageResponse<PostResponse> getAllPosts(Pageable pageable) {
-		Page<Post> page = postRepository.findAllByIsDeletedFalse(pageable);
-
-		List<PostResponse> dtoList = page.getContent().stream()
-			.map(PostResponse::fromEntity)
-			.toList();
-
-		return PageResponse.of(dtoList, page);
 	}
 
 	@Transactional
@@ -75,5 +65,17 @@ public class PostServiceImpl implements PostService {
 		post.update(postRequest.title(), postRequest.content());
 
 		return PostResponse.fromEntity(post);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public PageResponse<PostResponse> getPostsByCategory(PostCategory postCategory, Pageable pageable) {
+		Page<Post> page = postRepository.findByIsDeletedFalseAndPostCategory(postCategory, pageable);
+
+		List<PostResponse> dtoList = page.getContent().stream()
+			.map(PostResponse::fromEntity)
+			.toList();
+
+		return PageResponse.of(dtoList, page);
 	}
 }
