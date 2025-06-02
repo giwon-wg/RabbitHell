@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.inventory.entity;
 
 import com.example.rabbithell.common.audit.BaseEntity;
+import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.item.entity.Item;
 
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "inventory_item")
 public class InventoryItem extends BaseEntity {
 
+	// 복합키 시작
 	@EmbeddedId
 	private InventoryItemId id;
 
@@ -38,10 +40,25 @@ public class InventoryItem extends BaseEntity {
 	@MapsId("itemId") // InventoryItemId.itemId 매핑
 	@JoinColumn(name = "item_id")
 	private Item item;
+	// 복합키 끝
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "character_id")
+	private Character character; // 장착 캐릭터
 
 	private Integer durability;
 
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
+
+	// TODO: 아이템 종류에 따라 장착 부위가 정해지도록 기능 수정 필요
+	public void equip(Character character, Slot slot) {
+		this.character = character;
+		this.slot = slot;
+	}
+
+	public void unequip() {
+		this.slot = null;
+	}
 
 }

@@ -42,7 +42,6 @@ public class Inventory {
 		if (amount <= 0) {
 			throw new InventoryException(AMOUNT_TOO_SMALL);
 		}
-		// TODO: 골드 소모 로직 추가
 		this.capacity += amount;
 	}
 
