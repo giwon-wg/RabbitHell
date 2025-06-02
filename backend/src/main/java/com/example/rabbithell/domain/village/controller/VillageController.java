@@ -32,7 +32,11 @@ public class VillageController {
 
 		villageService.moveVillage(authUser, request.targetVillageId());
 
-		return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "마을 이동 성공"));
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"마을 이동 성공"
+		));
 
 	}
 
