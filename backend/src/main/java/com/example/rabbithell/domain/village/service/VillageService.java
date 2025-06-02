@@ -58,35 +58,19 @@ public class VillageService {
 	}
 
 	@Transactional
-	public void saveMoney(AuthUser authUser, Long characterId, Long saveMoney) {
+	public void saveMoney(AuthUser authUser, int saveMoney) {
 
-		Character character = verifyCharacter(authUser, characterId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
-		if (saveMoney <= 0) {
-			throw new VillageException(BELOW_ZERO);
-		}
-
-		if (character.getCash() < saveMoney) {
-			throw new VillageException(NOT_ENOUGH_MONEY);
-		}
-
-		character.saveToBank(saveMoney);
+		clover.depositToSaving(Math.toIntExact(saveMoney));
 	}
 
 	@Transactional
-	public void withdrawMoney(AuthUser authUser, Long characterId, Long withdrawMoney) {
+	public void withdrawMoney(AuthUser authUser, int withdrawMoney) {
 
-		Character character = verifyCharacter(authUser, characterId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
-		if (withdrawMoney <= 0) {
-			throw new VillageException(BELOW_ZERO);
-		}
-
-		if (character.getSaving() < withdrawMoney) {
-			throw new VillageException(NOT_ENOUGH_MONEY);
-		}
-
-		character.withdrawFromBank(withdrawMoney);
+		clover.withdrawFromSaving(withdrawMoney);
 
 	}
 
