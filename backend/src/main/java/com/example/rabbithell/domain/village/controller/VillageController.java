@@ -74,7 +74,11 @@ public class VillageController {
 	) {
 		villageService.cureCharacter(authUser, request.characterId());
 
-		return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "치료가 완료되었습니다."));
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"치료가 완료되었습니다."
+		));
 	}
 
 }
