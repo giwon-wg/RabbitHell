@@ -1,16 +1,13 @@
 package com.example.rabbithell.domain.chat.entity;
 
-import com.example.rabbithell.domain.user.model.User;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.springframework.data.annotation.CreatedDate;
+import com.example.rabbithell.domain.user.model.User;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -31,5 +28,13 @@ public class ChatMessage {
 	@CreatedDate
 	@Column(updatable = false, nullable = false)
 	private LocalDateTime createdAt;
+
+	@Column(nullable = false)
+	private boolean isDeleted = false;
+
+	// 소프트 딜리트 메서드
+	public void softDelete() {
+		this.isDeleted = true;
+	}
 
 }

@@ -1,13 +1,16 @@
 package com.example.rabbithell.domain.chat.service;
 
-import com.example.rabbithell.domain.chat.dto.ChatMessageDto;
+import com.example.rabbithell.domain.chat.dto.request.ChatMessageRequestDto;
+import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.domain.user.model.User;
-
-import jakarta.validation.constraints.NotBlank;
-
-import org.springframework.stereotype.Service;
 
 
 public interface ChatMessageService {
-	void saveMessage(Long roomId, ChatMessageDto dto);
+	void saveMessage(Long roomId, String message);
+
+	void deleteMessage(Long roomId, Long chatMessageId);
+
+	void isOnCooldown(Long roomId, Long userId);
+
+	void sendAdminMessage(Long roomId, ChatMessageResponseDto dto, User adminUser);
 }
