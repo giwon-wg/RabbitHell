@@ -3,6 +3,7 @@ package com.example.rabbithell.domain.character.service;
 import static com.example.rabbithell.domain.job.entity.Job.*;
 
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,8 @@ public class CharacterServiceImpl implements CharacterService {
 	private final UserRepository userRepository;
 	private final CloverRepository cloverRepository;
 
+	private static final Random random = new Random();
+
 	@Override
 	public Long createCharacter(AuthUser authUser, CreateCharacterRequest request) {
 
@@ -52,11 +55,16 @@ public class CharacterServiceImpl implements CharacterService {
 			.hp(100)
 			.maxMp(50)
 			.mp(50)
-			.strength(10)
-			.agility(10)
-			.intelligence(10)
-			.focus(10)
-			.luck(10)
+			.strength(8)
+			.maxStrength(20)
+			.agility(8)
+			.maxAgility(20)
+			.intelligence(8)
+			.maxIntelligence(20)
+			.focus(8)
+			.maxFocus(20)
+			.luck(8)
+			.maxLuck(20)
 			.incompetentPoint(0)
 			.warriorPoint(0)
 			.thiefPoint(0)
