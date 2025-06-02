@@ -7,6 +7,7 @@ import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
 
 public interface InventoryItemService {
 
@@ -17,5 +18,7 @@ public interface InventoryItemService {
 	EquipResponse equipItem(Long userId, Long itemId, EquipRequest equipRequest);
 
 	UnequipResponse unequipItem(Long userId, Long inventoryItemId);
+
+	UseResponse useItem(Long userId, Long inventoryItemId);
 
 }

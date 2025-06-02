@@ -14,6 +14,7 @@ import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
 
@@ -74,6 +75,19 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 		// 응답은 장착 해제한 아이템
 		return UnequipResponse.fromEntity(inventoryItem);
+	}
+
+	@Transactional
+	@Override
+	public UseResponse useItem(Long userId, Long inventoryItemId) {
+		// 인벤토리 아이템 조회
+		InventoryItem inventoryItem = inventoryItemRepository.findByIdAndValidateOwner(inventoryItemId, userId);
+
+		// 아이템 사용
+		inventoryItem.use();
+
+		// 응답은 사용한 아이템
+		return UseResponse.fromEntity(inventoryItem);
 	}
 
 }
