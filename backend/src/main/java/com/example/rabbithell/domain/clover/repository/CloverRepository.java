@@ -11,13 +11,15 @@ import com.example.rabbithell.domain.clover.exception.CloverException;
 
 public interface CloverRepository extends JpaRepository<Clover, Long> {
 
+	boolean existsByUserId(Long id);
+
 	Optional<Clover> findByUserId(Long userId);
 
 	boolean existsByName(String name);
 
 	default Clover findByUserIdOrElseThrow(Long userId) {
 		return findByUserId(userId)
-			.orElseThrow(() -> new CloverException(Clover_NOT_FOUND));
+			.orElseThrow(() -> new CloverException(CLOVER_NOT_FOUND));
 	}
 
 }

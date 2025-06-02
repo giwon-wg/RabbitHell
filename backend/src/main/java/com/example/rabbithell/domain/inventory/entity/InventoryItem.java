@@ -1,17 +1,19 @@
 package com.example.rabbithell.domain.inventory.entity;
 
 import com.example.rabbithell.common.audit.BaseEntity;
+import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.item.entity.Item;
 
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,22 +28,41 @@ import lombok.NoArgsConstructor;
 @Table(name = "inventory_item")
 public class InventoryItem extends BaseEntity {
 
-	@EmbeddedId
-	private InventoryItemId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("inventoryId") // InventoryItemId.inventoryId 매핑
-	@JoinColumn(name = "inventory_id")
+	@JoinColumn(name = "inventory_id", nullable = false)
 	private Inventory inventory;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("itemId") // InventoryItemId.itemId 매핑
-	@JoinColumn(name = "item_id")
+	@JoinColumn(name = "item_id", nullable = false)
 	private Item item;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "game_character_id")
+	private GameCharacter character; // 장착 캐릭터
 
 	private Integer durability;
 
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
+
+	// TODO: 아이템 종류에 따라 장착 부위가 정해지도록 기능 수정 필요
+	public void equip(GameCharacter character, Slot slot) {
+		this.character = character;
+		this.slot = slot;
+	}
+
+	public void unequip() {
+		this.character = null;
+		this.slot = null;
+	}
+
+	// TODO: 나중에 기능 수정 필요: 내구도 닳는 양 필요
+	public void use(int amount) {
+		this.durability -= amount;
+	}
 
 }
