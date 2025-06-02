@@ -22,11 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(
-	name = "character",
-	indexes = {
-		@Index(name = "idx_character_id_user_id", columnList = "id, user_id")
-	})
+@Table(name = "character", indexes = {@Index(name = "idx_character_id_user_id", columnList = "id, user_id")})
 public class GameCharacter extends BaseEntity {
 
 	@Id
@@ -79,8 +75,7 @@ public class GameCharacter extends BaseEntity {
 	private int skillPoint;
 
 	@Builder
-	public GameCharacter(
-		User user,
+	public GameCharacter(User user,
 		Clover clover,
 		String name,
 		Job job,
@@ -130,7 +125,7 @@ public class GameCharacter extends BaseEntity {
 		this.mp = this.maxMp;
 	}
 
-	public void updateJob(Job newJob){
+	public void updateJob(Job newJob) {
 		this.job = newJob;
 	}
 

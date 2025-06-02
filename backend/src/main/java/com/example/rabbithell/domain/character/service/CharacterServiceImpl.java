@@ -108,7 +108,6 @@ public class CharacterServiceImpl implements CharacterService {
 			.toList();
 	}
 
-
 	@Override
 	public boolean canChangeJob(Long authUserId, GameCharacter gameCharacter, Job changeJob) {
 
@@ -117,7 +116,6 @@ public class CharacterServiceImpl implements CharacterService {
 		}
 
 		Job currentJob = gameCharacter.getJob();
-
 
 		// 지금 직업이 무능한 토끼일때
 		if (currentJob == Job.INCOMPETENT && changeJob.getTier() == JobTier.FIRST) {

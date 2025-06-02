@@ -11,11 +11,11 @@ import com.example.rabbithell.domain.character.exception.CharacterException;
 
 public interface CharacterRepository extends JpaRepository<GameCharacter, Long> {
 
-    default GameCharacter findByIdOrElseThrow(Long id) {
-        return findById(id)
-            .orElseThrow(()-> new CharacterException(CHARACTER_NOT_FOUND));
-    }
+	default GameCharacter findByIdOrElseThrow(Long id) {
+		return findById(id)
+			.orElseThrow(() -> new CharacterException(CHARACTER_NOT_FOUND));
+	}
 
-    List<GameCharacter> findByUser_Id(Long userId);
+	List<GameCharacter> findByUser_Id(Long userId);
 
 }
