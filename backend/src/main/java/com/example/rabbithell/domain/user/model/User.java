@@ -17,9 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor
 public class User extends BaseEntity {
 
 	@Id
@@ -39,9 +37,17 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private Role role;
 
-	@Builder.Default
 	@Column(nullable = false)
 	private boolean isDeleted = false;
+
+	@Builder
+	public User(String name, String email, String password, Role role, boolean isDeleted) {
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.role = role;
+		this.isDeleted = isDeleted;
+	}
 
 	public enum Role {
 		USER, ADMIN
@@ -49,5 +55,9 @@ public class User extends BaseEntity {
 
 	public void markAsDeleted() {
 		this.isDeleted = true;
+	}
+
+	public void updateNickname(String nickname) {
+		this.name = nickname;
 	}
 }
