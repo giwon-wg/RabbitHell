@@ -3,8 +3,9 @@ package com.example.rabbithell.domain.inventory.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryResponse;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
@@ -20,11 +21,14 @@ public class InventoryServiceImpl implements InventoryService {
 	private final InventoryRepository inventoryRepository;
 	private final InventoryItemRepository inventoryItemRepository;
 	private final CharacterRepository characterRepository;
+	private final CloverRepository cloverRepository;
 
 	@Transactional
 	@Override
 	public InventoryResponse expandInventory(Long userId, int amount) {
-		Inventory inventory = inventoryRepository.findByIdOrElseThrow(userId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
+
+		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
 
 		// TODO: 골드 소모
 
