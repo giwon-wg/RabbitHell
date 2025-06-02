@@ -12,6 +12,8 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.character.exception.CharacterException;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.village.entity.Village;
 import com.example.rabbithell.domain.village.exception.VillageException;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
@@ -22,87 +24,89 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VillageService {
 
-    private final VillageRepository villageRepository;
-    private final CharacterRepository characterRepository;
+	private final VillageRepository villageRepository;
+	private final CharacterRepository characterRepository;
+	private final CloverRepository cloverRepository;
 
-    @Transactional
-    public void moveVillage(AuthUser authUser, Long characterId, Long villageId) {
-        Character character = verifyCharacter(authUser, characterId);
+	@Transactional
+	public void moveVillage(AuthUser authUser, Long villageId) {
 
-        Village currentVillage = villageRepository.findByIdOrElseThrow(Long.valueOf(character.getCurrentVillage()));
-        Village targetVillage = villageRepository.findByIdOrElseThrow(villageId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
-        boolean isConnected = currentVillage.getConnections().stream()
-            .anyMatch(conn -> conn.getToVillage().getId().equals(targetVillage.getId()));
+		Village currentVillage = villageRepository.findByIdOrElseThrow(clover.getCurrentVillage());
+		Village targetVillage = villageRepository.findByIdOrElseThrow(villageId);
 
-        if (!isConnected) {
-            throw new VillageException(VILLAGE_NOT_CONNECTED);
-        }
+		boolean isConnected = currentVillage.getConnections().stream()
+			.anyMatch(conn -> conn.getToVillage().getId().equals(targetVillage.getId()));
 
-        character.updateCurrentVillage(targetVillage);
-    }
+		if (!isConnected) {
+			throw new VillageException(VILLAGE_NOT_CONNECTED);
+		}
 
-    private Character verifyCharacter(AuthUser authUser, Long characterId) {
+		clover.updateCurrentVillage(targetVillage);
+	}
 
-        Character character = characterRepository.findByIdOrElseThrow(characterId);
+	private Character verifyCharacter(AuthUser authUser, Long characterId) {
 
-        if (!Objects.equals(character.getUser().getId(), authUser.getUserId())) {
-            throw new CharacterException(CHARACTER_NOT_FOUND);
-        }
+		Character character = characterRepository.findByIdOrElseThrow(characterId);
 
-        return character;
-    }
+		if (!Objects.equals(character.getUser().getId(), authUser.getUserId())) {
+			throw new CharacterException(CHARACTER_NOT_FOUND);
+		}
 
-    @Transactional
-    public void saveMoney(AuthUser authUser, Long characterId, Long saveMoney) {
+		return character;
+	}
 
-        Character character = verifyCharacter(authUser, characterId);
+	@Transactional
+	public void saveMoney(AuthUser authUser, Long characterId, Long saveMoney) {
 
-        if (saveMoney <= 0) {
-            throw new VillageException(BELOW_ZERO);
-        }
+		Character character = verifyCharacter(authUser, characterId);
 
-        if (character.getCash() < saveMoney) {
-            throw new VillageException(NOT_ENOUGH_MONEY);
-        }
+		if (saveMoney <= 0) {
+			throw new VillageException(BELOW_ZERO);
+		}
 
-        character.saveToBank(saveMoney);
-    }
+		if (character.getCash() < saveMoney) {
+			throw new VillageException(NOT_ENOUGH_MONEY);
+		}
 
-    @Transactional
-    public void withdrawMoney(AuthUser authUser, Long characterId, Long withdrawMoney) {
+		character.saveToBank(saveMoney);
+	}
 
-        Character character = verifyCharacter(authUser, characterId);
+	@Transactional
+	public void withdrawMoney(AuthUser authUser, Long characterId, Long withdrawMoney) {
 
-        if (withdrawMoney <= 0) {
-            throw new VillageException(BELOW_ZERO);
-        }
+		Character character = verifyCharacter(authUser, characterId);
 
-        if (character.getSaving() < withdrawMoney) {
-            throw new VillageException(NOT_ENOUGH_MONEY);
-        }
+		if (withdrawMoney <= 0) {
+			throw new VillageException(BELOW_ZERO);
+		}
 
-        character.withdrawFromBank(withdrawMoney);
+		if (character.getSaving() < withdrawMoney) {
+			throw new VillageException(NOT_ENOUGH_MONEY);
+		}
 
-    }
+		character.withdrawFromBank(withdrawMoney);
 
-    @Transactional
-    public void cureCharacter(AuthUser authUser, Long characterId) {
+	}
 
-        Long cureCost = 0L;
+	@Transactional
+	public void cureCharacter(AuthUser authUser, Long characterId) {
 
-        Character character = verifyCharacter(authUser, characterId);
+		Long cureCost = 0L;
 
-        if (cureCost > character.getSaving()) {
-            if (cureCost > character.getCash()) {
-                throw new VillageException(NOT_ENOUGH_MONEY);
-            }
-            character.useMoneyFromSaving(cureCost);
-        } else {
-            character.useMoneyFromCash(cureCost);
-        }
+		Character character = verifyCharacter(authUser, characterId);
 
-        character.refill();
+		if (cureCost > character.getSaving()) {
+			if (cureCost > character.getCash()) {
+				throw new VillageException(NOT_ENOUGH_MONEY);
+			}
+			character.useMoneyFromSaving(cureCost);
+		} else {
+			character.useMoneyFromCash(cureCost);
+		}
 
-    }
+		character.refill();
+
+	}
 }
