@@ -8,6 +8,8 @@ import java.util.Set;
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.kingdom.entity.Kingdom;
+import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.village.entity.Village;
 
@@ -48,8 +50,16 @@ public class Clover extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 
-	@OneToMany(mappedBy = "Clover", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "clover", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<GameCharacter> members = new ArrayList<>();
+
+	private Integer stamina;
+
+	// @OneToMany(fetch = FetchType.LAZY)
+	// private Kingdom kingdom;
+	//
+	// @OneToMany(fetch = FetchType.LAZY)
+	// private Specie specie;
 
 	@Column(nullable = false)
 	private long cash = 0;
