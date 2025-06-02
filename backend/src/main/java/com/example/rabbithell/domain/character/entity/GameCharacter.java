@@ -51,10 +51,15 @@ public class GameCharacter extends BaseEntity {
 	private int mp;
 
 	private int strength;
+	private int maxStrength;
 	private int agility;
+	private int maxAgility;
 	private int intelligence;
+	private int maxIntelligence;
 	private int focus;
+	private int maxFocus;
 	private int luck;
+	private int maxLuck;
 
 	@Column(name = "incompetent_point")
 	private int incompetentPoint;
@@ -86,10 +91,15 @@ public class GameCharacter extends BaseEntity {
 		int maxMp,
 		int mp,
 		int strength,
+		int maxStrength,
 		int agility,
+		int maxAgility,
 		int intelligence,
+		int maxIntelligence,
 		int focus,
+		int maxFocus,
 		int luck,
+		int maxLuck,
 		int incompetentPoint,
 		int warriorPoint,
 		int thiefPoint,
@@ -117,7 +127,7 @@ public class GameCharacter extends BaseEntity {
 		this.thiefPoint = thiefPoint;
 		this.wizardPoint = wizardPoint;
 		this.archerPoint = archerPoint;
-		this.skillPoint = skillPoint;
+		this.skillPoint = (warriorPoint + thiefPoint + wizardPoint + archerPoint);
 	}
 
 	public void refill() {
