@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/Battle")
+@RequestMapping("/battles")
 @RequiredArgsConstructor
 public class BattleController {
 
