@@ -18,8 +18,7 @@ public record PostResponse(
 		return new PostResponse(
 			post.getId(),
 			post.getUser().getId(),
-			//닉네임 생기면 변경
-			post.getUser().getEmail(),
+			post.getUser().getName(),
 			post.getTitle(),
 			post.getContent(),
 			post.getCommentCount(),

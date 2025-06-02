@@ -1,7 +1,7 @@
 package com.example.rabbithell.domain.stigmasocket.entity;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.character.entity.Character;
+// import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.stigma.entity.Stigma;
 import com.example.rabbithell.domain.stigmasocket.enums.StigmaSocketStatus;
 
@@ -33,9 +33,9 @@ public class StigmaSoket extends BaseEntity {
     @JoinColumn(name = "stigma_id", nullable = false)
     private Stigma stigma;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "character_id", nullable = false)
-    private Character character;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "character_id", nullable = false)
+    // private Character character;
 
     @Column(nullable = false)
     private StigmaSocketStatus stigmaStatus;
