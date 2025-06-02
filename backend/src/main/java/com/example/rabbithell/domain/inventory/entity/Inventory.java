@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "inventory")
 public class Inventory {
 
@@ -38,6 +36,12 @@ public class Inventory {
 
 	@Column(nullable = false)
 	private Integer capacity; // 용량
+
+	@Builder
+	public Inventory(Clover clover, Integer capacity) {
+		this.clover = clover;
+		this.capacity = capacity;
+	}
 
 	public void expand(int amount) {
 		if (amount <= 0) {
