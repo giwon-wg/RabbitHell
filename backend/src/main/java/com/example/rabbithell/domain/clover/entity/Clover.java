@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
-import com.example.rabbithell.domain.character.entity.Character;
+import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.village.entity.Village;
 
@@ -48,8 +48,8 @@ public class Clover extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 
-	// @OneToMany(mappedBy = "Clover", cascade = CascadeType.ALL, orphanRemoval = true)
-	// private final List<Character> members = new ArrayList<>();
+	@OneToMany(mappedBy = "Clover", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<GameCharacter> members = new ArrayList<>();
 
 	@Column(nullable = false)
 	private long cash = 0;
@@ -57,7 +57,7 @@ public class Clover extends BaseEntity {
 	@Column(nullable = false)
 	private long saving = 0;
 
-	//현재 마을 저장
+	// 현재 마을 저장
 	@Column(name = "current_village")
 	private Long currentVillage;
 
@@ -153,19 +153,19 @@ public class Clover extends BaseEntity {
 		this.cash += amount;
 	}
 
-	// public void addMember(Character character) {
-	// 	if (members.size() >= 4) {
-	// 		throw new IllegalStateException("원정대에는 4명까지만 추가할 수 있습니다.");
-	// 	}
-	// 	this.members.add(character);
-	// }
-	//
-	// public boolean isFull() {
-	// 	return members.size() >= 4;
-	// }
-	//
-	// public boolean isMember(Character character) {
-	// 	return members.contains(character);
-	// }
+	public void addMember(GameCharacter character) {
+		if (members.size() >= 4) {
+			throw new IllegalStateException("원정대에는 4명까지만 추가할 수 있습니다.");
+		}
+		this.members.add(character);
+	}
+
+	public boolean isFull() {
+		return members.size() >= 4;
+	}
+
+	public boolean isMember(GameCharacter character) {
+		return members.contains(character);
+	}
 
 }
