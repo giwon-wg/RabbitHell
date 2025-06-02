@@ -32,6 +32,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		String token = resolveToken(request);
 
+		if (!StringUtils.hasText(token)) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		if (!jwtUtil.validateToken(token)) {
+			log.warn("유효하지 않은 토큰: {}", token);
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
 			Long userId = Long.parseLong(jwtUtil.extractSubject(token));
 			String role = jwtUtil.extractRole(token);
@@ -55,13 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 		}
-
-		log.info("토큰 있음, subject={}, role={}, cloverId={}, cloverName={}",
-			jwtUtil.extractSubject(token),
-			jwtUtil.extractRole(token),
-			jwtUtil.extractCloverId(token),
-			jwtUtil.extractCloverName(token)
-		);
 
 		filterChain.doFilter(request, response);
 	}
