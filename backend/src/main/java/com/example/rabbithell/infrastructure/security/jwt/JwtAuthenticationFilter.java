@@ -56,6 +56,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		}
 
+		log.info("토큰 있음, subject={}, role={}, cloverId={}, cloverName={}",
+			jwtUtil.extractSubject(token),
+			jwtUtil.extractRole(token),
+			jwtUtil.extractCloverId(token),
+			jwtUtil.extractCloverName(token)
+		);
+
 		filterChain.doFilter(request, response);
 	}
 
