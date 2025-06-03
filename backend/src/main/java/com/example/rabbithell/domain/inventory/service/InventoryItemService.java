@@ -22,4 +22,6 @@ public interface InventoryItemService {
 
 	UseResponse useItem(Long userId, Long inventoryItemId, UseRequest useRequest);
 
+	void discardItem(Long userId, Long inventoryItemId);
+
 }

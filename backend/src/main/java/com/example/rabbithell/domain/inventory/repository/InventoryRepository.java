@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.exception.InventoryException;
 
@@ -15,10 +16,10 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 		return findById(id).orElseThrow(() -> new InventoryException(USER_MISMATCH));
 	}
 
-	Optional<Inventory> findByUserId(Long userId);
+	Optional<Inventory> findByClover(Clover clover);
 
-	default Inventory findByUserIdOrElseThrow(Long userId) {
-		return findByUserId(userId).orElseThrow(() -> new InventoryException(USER_MISMATCH));
+	default Inventory findByCloverOrElseThrow(Clover clover) {
+		return findByClover(clover).orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
 	}
 
 }

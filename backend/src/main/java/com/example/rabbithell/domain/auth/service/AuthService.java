@@ -52,14 +52,13 @@ public class AuthService {
             .role(User.Role.valueOf(request.role().toUpperCase()))
             .isDeleted(false)
             .build();
-
         User savedUser = userRepository.save(user);
 
 		Clover clover = new Clover(request.cloverName(), savedUser);
-		cloverRepository.save(clover);
+		Clover savedClover = cloverRepository.save(clover);
 
-        Inventory inventory = Inventory.builder()
-            .user(savedUser)
+		Inventory inventory = Inventory.builder()
+            .clover(savedClover)
             .capacity(100)
             .build();
 

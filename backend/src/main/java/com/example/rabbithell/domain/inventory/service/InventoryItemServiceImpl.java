@@ -85,7 +85,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 	@Transactional
 	@Override
 	public UseResponse useItem(Long userId, Long inventoryItemId, UseRequest useRequest) {
-		// 인벤토리 아이템 조회
+		// 인벤토리 아이템 조회 및 유저 검증
 		InventoryItem inventoryItem = inventoryItemRepository.findByIdAndValidateOwner(inventoryItemId, userId);
 
 		// 아이템 타입 체크
@@ -104,6 +104,16 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 		// 응답은 사용한 아이템
 		return UseResponse.fromEntity(inventoryItem);
+	}
+
+	@Transactional
+	@Override
+	public void discardItem(Long userId, Long inventoryItemId) {
+		// 인벤토리 아이템 조회 및 유저 검증
+		InventoryItem inventoryItem = inventoryItemRepository.findByIdAndValidateOwner(inventoryItemId, userId);
+
+		// 인벤토리 아이템 삭제
+		inventoryItemRepository.delete(inventoryItem);
 	}
 
 }

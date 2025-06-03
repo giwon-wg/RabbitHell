@@ -49,7 +49,7 @@ public class BattleController {
 			true,
 			HttpStatus.OK.value(),
 			"전투 완료",
-			battleService.doBattle(authUser, request.characterId(), request.battleFieldType())
+			battleService.doBattle(authUser, request.battleFieldType())
 		));
 	}
 }

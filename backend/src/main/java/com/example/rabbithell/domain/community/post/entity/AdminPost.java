@@ -13,19 +13,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Post extends BaseEntity {
+public class AdminPost extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "post_id")
+	@Column(name = "adminPost_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -43,17 +41,17 @@ public class Post extends BaseEntity {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private PostCategory postCategory;
+	private AdminPostCategory adminPostCategory;
 
 	@Column(nullable = false)
 	private Boolean isDeleted;
 
-	public Post(User user, String title, String content, PostCategory postCategory) {
+	public AdminPost(User user, String title, String content, AdminPostCategory adminPostCategory) {
 		this.user = user;
 		this.title = title;
 		this.content = content;
 		this.commentCount = 0;
-		this.postCategory = postCategory;
+		this.adminPostCategory = adminPostCategory;
 		this.isDeleted = false;
 	}
 
