@@ -144,8 +144,14 @@ public class DataInitializer implements CommandLineRunner {
 		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200);
 		monsterRepository.save(slime);
 
-		MonsterEncounter monsterEncounter = new MonsterEncounter(1.0, slime, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(monsterEncounter);
+		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400);
+		monsterRepository.save(goblin);
+
+		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);
+		monsterEncounterRepository.save(slimeEncounter);
+
+		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
+		monsterEncounterRepository.save(goblinEncounter);
 
 	}
 }

@@ -50,10 +50,8 @@ public class BattleService {
 
 	public BattleResultResponse doBattle(AuthUser authUser, BattleFieldType battleFieldType) {
 
-		// Monster monster = monsterService.getRandomMonster(battleFieldType);
-
-		Monster monster = monsterRepository.findByIdOrElseThrow(1);
-
+		Monster monster = monsterService.getRandomMonster(battleFieldType);
+		
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
 		List<GameCharacter> team = clover.getMembers();

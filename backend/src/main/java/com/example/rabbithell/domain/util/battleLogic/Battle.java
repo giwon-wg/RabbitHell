@@ -51,7 +51,7 @@ public class Battle {
 		for (int turn = 0; turn < 30; turn++) {
 			if (currentHp <= 0 || monsterHp <= 0)
 				break;
-			log.append("\n[Turn ").append(turn + 1).append("]");
+			log.append("\n\n[Turn ").append(turn + 1).append("]");
 
 			for (ActionEntity actor : turnQueue) {
 				if (currentHp <= 0 || monsterHp <= 0)
