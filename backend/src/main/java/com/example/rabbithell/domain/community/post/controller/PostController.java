@@ -21,6 +21,7 @@ import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.community.post.dto.request.PostRequest;
 import com.example.rabbithell.domain.community.post.dto.response.PostResponse;
+import com.example.rabbithell.domain.community.post.entity.PostCategory;
 import com.example.rabbithell.domain.community.post.service.PostService;
 
 import jakarta.validation.Valid;
@@ -56,11 +57,12 @@ public class PostController {
 
 	@GetMapping
 	public ResponseEntity<CommonResponse<PageResponse<PostResponse>>> getAllPosts(
+		@RequestParam PostCategory category,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-		PageResponse<PostResponse> response = postService.getAllPosts(pageable);
+		PageResponse<PostResponse> response = postService.getPostsByCategory(category, pageable);
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,

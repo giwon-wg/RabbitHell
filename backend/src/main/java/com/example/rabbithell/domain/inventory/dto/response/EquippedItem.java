@@ -4,6 +4,7 @@ import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 
 public record EquippedItem(
+	Long inventoryItemId,
 	Long itemId,
 	Long characterId,
 	Slot slot,
@@ -11,6 +12,7 @@ public record EquippedItem(
 ) {
 	public static EquippedItem fromEntity(InventoryItem inventoryItem) {
 		return new EquippedItem(
+			inventoryItem.getId(),
 			inventoryItem.getItem().getId(),
 			inventoryItem.getCharacter().getId(),
 			inventoryItem.getSlot(),

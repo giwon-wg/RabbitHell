@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "item")
 public class Item extends BaseEntity {
 
@@ -44,11 +41,15 @@ public class Item extends BaseEntity {
 	private ItemType itemType;
 
 	@Enumerated(EnumType.STRING)
-	private Rarity rarity; // enum
+	private Rarity rarity;
 
 	private Long price;
 
-	private Long attack;
+	private Long power; // 아이템 위력
+
+	private Long maxPower;
+
+	private Long minPower;
 
 	private Long weight;
 
@@ -58,22 +59,32 @@ public class Item extends BaseEntity {
 	@Column(nullable = false)
 	private boolean isDeleted;
 
-	public void update(
-		Shop shop,
-		String name,
-		ItemType itemType,
-		Rarity rarity,
-		Long price,
-		Long attack,
-		Long weight,
-		Integer durability
-	) {
+	@Builder
+	public Item(Shop shop, String name, ItemType itemType, Rarity rarity, Long price, Long power, Long maxPower,
+		Long minPower, Long weight, Integer durability, boolean isDeleted) {
 		this.shop = shop;
 		this.name = name;
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
-		this.attack = attack;
+		this.power = power;
+		this.maxPower = maxPower;
+		this.minPower = minPower;
+		this.weight = weight;
+		this.durability = durability;
+		this.isDeleted = isDeleted;
+	}
+
+	public void update(Shop shop, String name, ItemType itemType, Rarity rarity, Long price, Long power, Long maxPower,
+		Long minPower, Long weight, Integer durability) {
+		this.shop = shop;
+		this.name = name;
+		this.itemType = itemType;
+		this.rarity = rarity;
+		this.price = price;
+		this.power = power;
+		this.maxPower = maxPower;
+		this.minPower = minPower;
 		this.weight = weight;
 		this.durability = durability;
 	}

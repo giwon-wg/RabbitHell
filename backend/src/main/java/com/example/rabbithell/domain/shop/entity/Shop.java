@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "shop")
 public class Shop extends BaseEntity {
 
@@ -38,6 +36,13 @@ public class Shop extends BaseEntity {
 
 	@Column(nullable = false)
 	private Boolean isDeleted;
+
+	@Builder
+	public Shop(Village village, String name, Boolean isDeleted) {
+		this.village = village;
+		this.name = name;
+		this.isDeleted = isDeleted;
+	}
 
 	public void update(Village village, String name) {
 		this.village = village;
