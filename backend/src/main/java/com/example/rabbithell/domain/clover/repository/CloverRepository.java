@@ -25,4 +25,10 @@ public interface CloverRepository extends JpaRepository<Clover, Long> {
 			.orElseThrow(() -> new CloverException(CLOVER_NOT_FOUND));
 	}
 
+
+	default Clover findByIdOrElseThrow(Long id) {
+		return findById(id)
+			.orElseThrow(() -> new CloverException(CLOVER_NOT_FOUND));
+	}
+
 }
