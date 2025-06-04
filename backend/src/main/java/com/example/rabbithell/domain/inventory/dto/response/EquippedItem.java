@@ -6,9 +6,11 @@ import com.example.rabbithell.domain.inventory.enums.Slot;
 public record EquippedItem(
 	Long inventoryItemId,
 	Long itemId,
-	String name,
+	String itemName,
 	Long characterId,
 	String characterName,
+	String description,
+	Long power,
 	Slot slot,
 	Integer durability
 ) {
@@ -19,6 +21,8 @@ public record EquippedItem(
 			inventoryItem.getItem().getName(),
 			inventoryItem.getCharacter().getId(),
 			inventoryItem.getCharacter().getName(),
+			inventoryItem.getItem().getDescription(),
+			inventoryItem.getItem().getPower(),
 			inventoryItem.getSlot(),
 			inventoryItem.getDurability()
 		);

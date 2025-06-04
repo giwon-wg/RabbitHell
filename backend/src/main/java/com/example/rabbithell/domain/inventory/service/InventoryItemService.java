@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.inventory.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
@@ -11,6 +13,7 @@ import com.example.rabbithell.domain.inventory.dto.response.InventoryItemRespons
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
 import com.example.rabbithell.domain.inventory.enums.Slot;
+import com.example.rabbithell.domain.item.entity.Item;
 
 public interface InventoryItemService {
 
@@ -21,6 +24,8 @@ public interface InventoryItemService {
 	PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable);
 
 	EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId);
+
+	List<Item> getEquippedItemsByCharacter(Long characterId);
 
 	EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest);
 

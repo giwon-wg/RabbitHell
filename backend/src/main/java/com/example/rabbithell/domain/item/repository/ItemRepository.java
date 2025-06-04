@@ -15,8 +15,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 		return findById(id).orElseThrow(() -> new ItemException(NO_SUCH_ITEM));
 	}
 
-	default List<Item> findEquipable() {
-
-	}
-
 }
