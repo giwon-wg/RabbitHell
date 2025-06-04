@@ -26,7 +26,7 @@ public class AdminDeckController {
 	private final AdminDeckService adminDeckService;
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping("/admin/clovers/{cloverId}/decks")
+	@PostMapping("/clovers/{cloverId}/decks")
 	public ResponseEntity<CommonResponse<DeckResponse>> createDeck(
 		@PathVariable Long cloverId,
 		@RequestBody @Valid CreateDeckRequest request
