@@ -4,6 +4,7 @@ import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.item.enums.ItemType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -56,10 +57,9 @@ public class InventoryItem extends BaseEntity {
 		this.slot = slot;
 	}
 
-	// TODO: 아이템 종류에 따라 장착 부위가 정해지도록 기능 수정 필요
-	public void equip(GameCharacter character, Slot slot) {
+	public void equip(GameCharacter character) {
 		this.character = character;
-		this.slot = slot;
+		this.slot = Slot.getSlotByItemType(this.getItem().getItemType());
 	}
 
 	public void unequip() {

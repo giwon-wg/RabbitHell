@@ -123,7 +123,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 		inventoryItemRepository.findByIdOrElseThrow(equippedItemId).unequip();
 
 		// 아이템 장착
-		inventoryItem.equip(character, equipRequest.slot());
+		inventoryItem.equip(character);
 
 		// 응답은 캐릭터가 장착 중인 모든 아이템
 		return inventoryItemRepository.findEquipmentStatusByCharacter(characterId);
