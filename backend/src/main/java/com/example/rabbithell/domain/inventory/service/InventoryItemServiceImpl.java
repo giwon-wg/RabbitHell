@@ -17,6 +17,7 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
@@ -71,19 +72,19 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public PageResponse<InventoryItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable) {
+	public PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable) {
 		Inventory inventory = getMyInventory(userId);
 
 		// 조건으로 쓰기 위한 장착 가능한 아이템 타입 리스트
 		List<ItemType> equipableTypes = ItemType.getEquipableTypes();
 
 		// 장착 가능한 인벤토리 아이템만 조회
-		Page<InventoryItem> page = inventoryItemRepository.findByInventoryAndItem_ItemTypeIn(
-			inventory, equipableTypes, pageable);
+		Page<InventoryItem> page = inventoryItemRepository.findByInventoryAndItem_ItemTypeIn(inventory, equipableTypes,
+			pageable);
 
 		// DTO로 매핑
-		List<InventoryItemResponse> dtoList = page.stream()
-			.map(InventoryItemResponse::fromEntity)
+		List<EquipableItemResponse> dtoList = page.stream()
+			.map(EquipableItemResponse::fromEntity)
 			.toList();
 
 		return PageResponse.of(dtoList, page);
