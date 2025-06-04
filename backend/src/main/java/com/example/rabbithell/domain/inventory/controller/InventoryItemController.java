@@ -24,6 +24,7 @@ import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
+import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,8 @@ public class InventoryItemController {
 	@GetMapping
 	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(required = false) Slot slot
 	) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
@@ -59,7 +61,7 @@ public class InventoryItemController {
 			true,
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 전체 조회 성공",
-			inventoryItemService.getAllInventoryItems(pageable)
+			inventoryItemService.getAllInventoryItemsFilterBySlot(slot, pageable)
 		));
 	}
 
