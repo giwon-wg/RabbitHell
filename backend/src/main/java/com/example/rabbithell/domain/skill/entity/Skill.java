@@ -25,21 +25,37 @@ public class Skill {
 
 	private String description;
 
-	private Integer tier;
+	private int requiredSkillPoint;
 
-	private Integer mpCost;
+	private int probability;
 
-	private Integer coolTime;
+	private int tier;
 
-	private Integer dmg;
+	private int mpCost;
+
+	private int coolTime;
+
+	private int dmg;
 
 	@Enumerated(EnumType.STRING)
 	private Job job;
 
 	@Builder
-	public Skill(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {
+	public Skill(
+		String name,
+		String description,
+		int requiredSkillPoint,
+		int probability,
+		int tier,
+		int mpCost,
+		int coolTime,
+		int dmg,
+		Job job
+	) {
 		this.name = name;
 		this.description = description;
+		this.requiredSkillPoint = requiredSkillPoint;
+		this.probability = probability;
 		this.tier = tier;
 		this.mpCost = mpCost;
 		this.coolTime = coolTime;
@@ -47,9 +63,21 @@ public class Skill {
 		this.job = job;
 	}
 
-	public void skillUpdate(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {
+	public void skillUpdate(
+		String name,
+		String description,
+		int requiredSkillPoint,
+		int probability,
+		int tier,
+		int mpCost,
+		int coolTime,
+		int dmg,
+		Job job
+	) {
 		this.name = name;
 		this.description = description;
+		this.requiredSkillPoint = requiredSkillPoint;
+		this.probability = probability;
 		this.tier = tier;
 		this.mpCost = mpCost;
 		this.coolTime = coolTime;

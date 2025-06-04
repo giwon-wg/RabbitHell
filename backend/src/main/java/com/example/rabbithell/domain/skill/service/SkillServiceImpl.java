@@ -1,14 +1,22 @@
 package com.example.rabbithell.domain.skill.service;
 
+import static com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.characterSkill.entity.CharacterSkill;
+import com.example.rabbithell.domain.characterSkill.repository.CharacterSkillRepository;
 import com.example.rabbithell.domain.skill.dto.request.SkillCreateRequest;
 import com.example.rabbithell.domain.skill.dto.request.SkillUpdateRequest;
 import com.example.rabbithell.domain.skill.dto.response.AllSkillResponse;
 import com.example.rabbithell.domain.skill.entity.Skill;
+import com.example.rabbithell.domain.skill.exception.SkillException;
+import com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode;
 import com.example.rabbithell.domain.skill.repository.SkillRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class SkillServiceImpl implements SkillService {
 
 	private final SkillRepository skillRepository;
+	private final CharacterRepository characterRepository;
+	private final CharacterSkillRepository characterSkillRepository;
 
 	@Override
 	public Long createSkill(SkillCreateRequest request) {
@@ -25,6 +35,7 @@ public class SkillServiceImpl implements SkillService {
 		Skill skill = Skill.builder()
 			.name(request.name())
 			.description(request.description())
+			.requiredSkillPoint(request.requiredSkillPoint())
 			.tier(request.tier())
 			.mpCost(request.mpCost())
 			.coolTime(request.coolTime())
@@ -58,6 +69,8 @@ public class SkillServiceImpl implements SkillService {
 		skill.skillUpdate(
 			request.name(),
 			request.description(),
+			request.requiredSkillPoint(),
+			request.probability(),
 			request.tier(),
 			request.mpCost(),
 			request.coolTime(),
