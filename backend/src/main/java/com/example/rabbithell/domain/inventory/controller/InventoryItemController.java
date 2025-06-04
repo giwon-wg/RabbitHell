@@ -21,6 +21,7 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
@@ -51,6 +52,7 @@ public class InventoryItemController {
 
 	@GetMapping
 	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
+		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(required = false) Slot slot
@@ -60,8 +62,38 @@ public class InventoryItemController {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			"인벤토리 아이템 전체 조회 성공",
-			inventoryItemService.getAllInventoryItemsFilterBySlot(slot, pageable)
+			"(슬롯 별) 인벤토리 아이템 전체 조회 성공",
+			inventoryItemService.getAllInventoryItemsFilterBySlot(authUser.getUserId(), slot, pageable)
+		));
+	}
+
+	@GetMapping("/equipable")
+	public ResponseEntity<CommonResponse<PageResponse<EquipableItemResponse>>> getAllEquipableInventoryItems(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(required = false) Slot slot
+	) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"장착 가능한 인벤토리 아이템 전체 조회 성공",
+			inventoryItemService.getAllEquipableInventoryItems(authUser.getUserId(), pageable)
+		));
+	}
+
+	@GetMapping("/equipped")
+	public ResponseEntity<CommonResponse<EquipResponse>> getEquippedItemsByCharacter(
+		@AuthenticationPrincipal AuthUser authUser,
+		@RequestParam Long characterId
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"캐릭터 장착 아이템 조회 성공",
+			inventoryItemService.getEquippedItemsByCharacter(authUser.getUserId(), characterId)
 		));
 	}
 

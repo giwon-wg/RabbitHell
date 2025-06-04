@@ -6,6 +6,7 @@ import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
@@ -15,7 +16,11 @@ public interface InventoryItemService {
 
 	InventoryItemResponse getInventoryItemById(Long userId, Long inventoryItemId);
 
-	PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Slot slot, Pageable pageable);
+	PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot, Pageable pageable);
+
+	PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable);
+
+	EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId);
 
 	EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest);
 
