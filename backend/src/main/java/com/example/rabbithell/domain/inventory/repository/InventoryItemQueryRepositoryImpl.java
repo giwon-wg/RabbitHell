@@ -49,8 +49,9 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 				t.get(inventoryItem.character.name),
 				t.get(inventoryItem.item.description),
 				t.get(inventoryItem.item.power),
-				t.get(inventoryItem.slot),
-				t.get(inventoryItem.durability)
+				t.get(inventoryItem.item.durability),
+				t.get(inventoryItem.durability),
+				t.get(inventoryItem.slot)
 			))
 			.toList();
 
@@ -101,4 +102,5 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 	private BooleanExpression itemTypeIn(QItem item, List<ItemType> itemTypes) {
 		return (itemTypes != null && !itemTypes.isEmpty()) ? item.itemType.in(itemTypes) : null;
 	}
+
 }

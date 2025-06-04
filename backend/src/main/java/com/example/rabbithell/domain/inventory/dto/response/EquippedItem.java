@@ -11,8 +11,9 @@ public record EquippedItem(
 	String characterName,
 	String description,
 	Long power,
-	Slot slot,
-	Integer durability
+	Integer maxDurability,
+	Integer durability,
+	Slot slot
 ) {
 	public static EquippedItem fromEntity(InventoryItem inventoryItem) {
 		return new EquippedItem(
@@ -23,8 +24,9 @@ public record EquippedItem(
 			inventoryItem.getCharacter().getName(),
 			inventoryItem.getItem().getDescription(),
 			inventoryItem.getItem().getPower(),
-			inventoryItem.getSlot(),
-			inventoryItem.getDurability()
+			inventoryItem.getItem().getDurability(),
+			inventoryItem.getDurability(),
+			inventoryItem.getSlot()
 		);
 	}
 }
