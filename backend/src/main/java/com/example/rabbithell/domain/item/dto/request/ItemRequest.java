@@ -13,6 +13,9 @@ public record ItemRequest(
 	@Schema(description = "아이템명", example = "장미칼")
 	String name,
 
+	@Schema(description = "설명", example = "장미 문양이 새겨진 날카로운 칼")
+	String description,
+
 	@Schema(description = "타입", example = "SWORD")
 	ItemType itemType,
 

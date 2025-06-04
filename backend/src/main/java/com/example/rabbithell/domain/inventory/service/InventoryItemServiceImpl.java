@@ -12,15 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.inventory.exception.InventoryItemException;
 import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
+import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
+import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.ItemType;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +38,8 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	private final InventoryItemRepository inventoryItemRepository;
 	private final CharacterRepository characterRepository;
+	private final InventoryRepository inventoryRepository;
+	private final CloverRepository cloverRepository;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -42,14 +51,64 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable) {
-		Page<InventoryItem> page = inventoryItemRepository.findAll(pageable);
+	public PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot,
+		Pageable pageable) {
+		Inventory inventory = getMyInventory(userId);
+
+		Page<InventoryItem> page;
+
+		// 슬롯 조건이 있으면 적용, 없으면 인벤토리 내 모든 아이템 조회
+		if (slot != null) {
+			page = inventoryItemRepository.findByInventoryAndSlot(inventory, slot, pageable);
+		} else {
+			page = inventoryItemRepository.findAll(pageable);
+		}
 
 		List<InventoryItemResponse> dtoList = page.getContent().stream()
 			.map(InventoryItemResponse::fromEntity)
 			.toList();
 
 		return PageResponse.of(dtoList, page);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable) {
+		Inventory inventory = getMyInventory(userId);
+
+		// 조건으로 쓰기 위한 장착 가능한 아이템 타입 리스트
+		List<ItemType> equipableTypes = ItemType.getEquipableTypes();
+
+		// 장착 가능한 인벤토리 아이템만 조회
+		Page<InventoryItem> page = inventoryItemRepository.findByInventoryAndItem_ItemTypeIn(inventory, equipableTypes,
+			pageable);
+
+		// DTO로 매핑
+		List<EquipableItemResponse> dtoList = page.stream()
+			.map(EquipableItemResponse::fromEntity)
+			.toList();
+
+		return PageResponse.of(dtoList, page);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId) {
+		// 현재 로그인한 유저의 캐릭터가 맞는지 검증
+		// characterRepository.validateOwner(characterId, userId);
+
+		// 캐릭터가 장착한 아이템 반환
+		return inventoryItemRepository.findEquipmentStatusByCharacterId(characterId);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<Item> getEquippedItemsByCharacter(Long characterId) {
+		List<InventoryItem> inventoryItems = inventoryItemRepository.findByCharacter_Id(characterId);
+
+		return inventoryItems.stream()
+			.map(InventoryItem::getItem)
+			.toList();
 	}
 
 	@Transactional
@@ -114,6 +173,12 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 		// 인벤토리 아이템 삭제
 		inventoryItemRepository.delete(inventoryItem);
+	}
+
+	// 나의 인벤토리 조회
+	private Inventory getMyInventory(Long userId) {
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
+		return inventoryRepository.findByCloverOrElseThrow(clover);
 	}
 
 }

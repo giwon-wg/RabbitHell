@@ -37,6 +37,9 @@ public class Item extends BaseEntity {
 	@Column(nullable = false, length = 20)
 	private String name;
 
+	@Column(nullable = false, length = 100)
+	private String description;
+
 	@Enumerated(EnumType.STRING)
 	private ItemType itemType;
 
@@ -60,10 +63,11 @@ public class Item extends BaseEntity {
 	private boolean isDeleted;
 
 	@Builder
-	public Item(Shop shop, String name, ItemType itemType, Rarity rarity, Long price, Long power, Long maxPower,
-		Long minPower, Long weight, Integer durability, boolean isDeleted) {
+	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price, Long power,
+		Long maxPower, Long minPower, Long weight, Integer durability, boolean isDeleted) {
 		this.shop = shop;
 		this.name = name;
+		this.description = description;
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
@@ -75,10 +79,11 @@ public class Item extends BaseEntity {
 		this.isDeleted = isDeleted;
 	}
 
-	public void update(Shop shop, String name, ItemType itemType, Rarity rarity, Long price, Long power, Long maxPower,
-		Long minPower, Long weight, Integer durability) {
+	public void update(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
+		Long power, Long maxPower, Long minPower, Long weight, Integer durability) {
 		this.shop = shop;
 		this.name = name;
+		this.description = description;
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
