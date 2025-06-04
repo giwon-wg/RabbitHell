@@ -1,7 +1,6 @@
 package com.example.rabbithell.domain.stigmasocket.entity;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.character.entity.Character;
 import com.example.rabbithell.domain.stigma.entity.Stigma;
 import com.example.rabbithell.domain.stigmasocket.enums.StigmaSocketStatus;
 
@@ -25,22 +24,22 @@ import lombok.NoArgsConstructor;
 @Entity
 public class StigmaSoket extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stigma_id", nullable = false)
-    private Stigma stigma;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "stigma_id", nullable = false)
+	private Stigma stigma;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "character_id", nullable = false)
-    private Character character;
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "character_id", nullable = false)
+	// private Character character;
 
-    @Column(nullable = false)
-    private StigmaSocketStatus stigmaStatus;
+	@Column(nullable = false)
+	private StigmaSocketStatus stigmaStatus;
 
-    public void initStigma() {
-        this.stigmaStatus = StigmaSocketStatus.UNEQUIP;
-    }
+	public void initStigma() {
+		this.stigmaStatus = StigmaSocketStatus.UNEQUIP;
+	}
 }

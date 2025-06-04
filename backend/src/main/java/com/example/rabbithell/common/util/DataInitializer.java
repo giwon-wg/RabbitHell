@@ -232,10 +232,10 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(inventoryArmor4);
 		inventoryItemRepository.save(inventoryAccessory4);
 
-		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200);
+		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
 		monsterRepository.save(slime);
 
-		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400);
+		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40);
 		monsterRepository.save(goblin);
 
 		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);

@@ -38,4 +38,13 @@ public class InventoryServiceImpl implements InventoryService {
 		return InventoryResponse.fromEntity(inventory);
 	}
 
+	@Override
+	public EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId) {
+		// 현재 로그인한 유저의 캐릭터가 맞는지 검증
+		//characterRepository.validateOwner(characterId, userId);
+
+		// 캐릭터가 장착한 아이템 반환
+		return inventoryItemRepository.findEquipmentStatusByCharacterId(characterId);
+	}
+
 }
