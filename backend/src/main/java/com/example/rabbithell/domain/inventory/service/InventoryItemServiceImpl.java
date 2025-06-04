@@ -12,15 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.inventory.exception.InventoryItemException;
 import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
+import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.item.enums.ItemType;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,8 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	private final InventoryItemRepository inventoryItemRepository;
 	private final CharacterRepository characterRepository;
+	private final InventoryRepository inventoryRepository;
+	private final CloverRepository cloverRepository;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -42,8 +49,20 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public PageResponse<InventoryItemResponse> getAllInventoryItems(Pageable pageable) {
-		Page<InventoryItem> page = inventoryItemRepository.findAll(pageable);
+	public PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot,
+		Pageable pageable) {
+		// 나의 인벤토리 조회
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
+		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
+
+		Page<InventoryItem> page;
+
+		// 슬롯 조건이 있으면 적용, 없으면 인벤토리 내 모든 아이템 조회
+		if (slot != null) {
+			page = inventoryItemRepository.findByInventoryAndSlot(inventory, slot, pageable);
+		} else {
+			page = inventoryItemRepository.findAll(pageable);
+		}
 
 		List<InventoryItemResponse> dtoList = page.getContent().stream()
 			.map(InventoryItemResponse::fromEntity)

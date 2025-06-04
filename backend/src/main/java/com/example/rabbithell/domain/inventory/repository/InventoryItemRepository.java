@@ -2,9 +2,13 @@ package com.example.rabbithell.domain.inventory.repository;
 
 import static com.example.rabbithell.domain.inventory.exception.code.InventoryItemExceptionCode.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.inventory.exception.InventoryItemException;
 
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long>, InventoryItemQueryRepository {
@@ -21,5 +25,7 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 		}
 		return inventoryItem;
 	}
+
+	Page<InventoryItem> findByInventoryAndSlot(Inventory inventory, Slot slot, Pageable pageable);
 
 }
