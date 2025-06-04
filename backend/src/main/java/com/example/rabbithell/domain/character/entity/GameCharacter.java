@@ -59,15 +59,10 @@ public class GameCharacter extends BaseEntity {
 	private int mp;
 
 	private int strength;
-	private int minStrength;
 	private int agility;
-	private int minAgility;
 	private int intelligence;
-	private int minIntelligence;
 	private int focus;
-	private int minFocus;
 	private int luck;
-	private int minLuck;
 
 	@Column(name = "incompetent_point")
 	private int incompetentPoint;
@@ -86,6 +81,8 @@ public class GameCharacter extends BaseEntity {
 
 	@Column(name = "skill_point")
 	private int skillPoint;
+
+	// 스킬 장착
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "character_job_tier_history", joinColumns = @JoinColumn(name = "character_id"))
