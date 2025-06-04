@@ -26,11 +26,14 @@ public class TokenService {
 		User user = userRepository.findByIdOrElseThrow(userId);
 
 		user.updateNickname(nickname);
+		// 사이드 임펙트 방지
 		userRepository.save(user);
 
 		Clover clover = Clover.builder()
 			.user(user)
 			.name(cloverName)
+			.cash(0L)
+			.saving(0L)
 			.build();
 		cloverRepository.save(clover);
 

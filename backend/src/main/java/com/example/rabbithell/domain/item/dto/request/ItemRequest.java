@@ -16,11 +16,25 @@ public record ItemRequest(
 	@Schema(description = "타입", example = "SWORD")
 	ItemType itemType,
 
-	@Schema(description = "희귀도", example = "1")
+	@Schema(description = "희귀도", example = "LEGENDARY")
 	Rarity rarity,
+
+	@Schema(description = "가격", example = "150000")
 	Long price,
-	Long attack,
+
+	@Schema(description = "위력", example = "900")
+	Long power,
+
+	@Schema(description = "최대 위력", example = "1000")
+	Long maxPower,
+
+	@Schema(description = "최소 위력", example = "800")
+	Long minPower,
+
+	@Schema(description = "무게", example = "15")
 	Long weight,
+
+	@Schema(description = "내구도", example = "1000")
 	Integer durability
 ) {
 }
