@@ -25,6 +25,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -53,13 +54,15 @@ public class Clover extends BaseEntity {
 	@OneToMany(mappedBy = "clover", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<GameCharacter> members = new ArrayList<>();
 
-	private Integer stamina;
+	private Integer stamina = 10000;
 
-	// @OneToMany(fetch = FetchType.LAZY)
-	// private Kingdom kingdom;
-	//
-	// @OneToMany(fetch = FetchType.LAZY)
-	// private Specie specie;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "kingdom_id")
+	private Kingdom kingdom;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "specie_id")
+	private Specie specie;
 
 	@Column(nullable = false)
 	private long cash = 0;
@@ -82,10 +85,12 @@ public class Clover extends BaseEntity {
 	private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
 
 	@Builder
-	public Clover(String name, User user, long cash, long saving, Long currentVillage,
+	public Clover(String name, User user, Kingdom kingdom, Specie specie, long cash, long saving, Long currentVillage,
 		Set<BattleFieldType> unlockedRareMaps) {
 		this.name = name;
 		this.user = user;
+		this.kingdom = kingdom;
+		this.specie = specie;
 		this.cash = cash;
 		this.saving = saving;
 		this.currentVillage = currentVillage;
