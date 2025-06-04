@@ -29,6 +29,7 @@ spring:
             hibernate:
                 show_sql: true
                 format_sql: true
+                dialect: org.hibernate.dialect.MySQLDialect
             use_sql_comments: true
 
     # Redis 설정
