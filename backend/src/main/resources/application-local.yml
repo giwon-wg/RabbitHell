@@ -11,7 +11,7 @@ spring:
         pathmatch:
             matching-strategy: ant_path_matcher
 
-    jackson: {}
+    jackson: { }
 
     # 데이터베이스 연결 정보
     datasource:

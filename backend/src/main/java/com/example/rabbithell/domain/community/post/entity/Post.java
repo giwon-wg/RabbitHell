@@ -5,6 +5,8 @@ import com.example.rabbithell.domain.user.model.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,13 +42,18 @@ public class Post extends BaseEntity {
 	private Integer commentCount;
 
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PostCategory postCategory;
+
+	@Column(nullable = false)
 	private Boolean isDeleted;
 
-	public Post(User user, String title, String content) {
+	public Post(User user, String title, String content, PostCategory postCategory) {
 		this.user = user;
 		this.title = title;
 		this.content = content;
 		this.commentCount = 0;
+		this.postCategory = postCategory;
 		this.isDeleted = false;
 	}
 

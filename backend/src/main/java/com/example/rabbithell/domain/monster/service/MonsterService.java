@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.rabbithell.domain.battle.entity.BattleField;
 import com.example.rabbithell.domain.battle.repository.BattleFieldRepository;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.monster.entity.Monster;
@@ -26,9 +25,8 @@ public class MonsterService {
 	private final MonsterEncounterRepository monsterEncounterRepository;
 
 	public Monster getRandomMonster(BattleFieldType battleFieldType) {
-		BattleField battleField = battleFieldRepository.findByTypeOrElseThrow(battleFieldType);
 
-		List<MonsterEncounter> encounters = monsterEncounterRepository.findByBattleField(battleField);
+		List<MonsterEncounter> encounters = monsterEncounterRepository.findByBattleFieldType(battleFieldType);
 
 		if (encounters.isEmpty()) {
 			throw new MonsterException(NO_MONSTER_ON_FIELD);
