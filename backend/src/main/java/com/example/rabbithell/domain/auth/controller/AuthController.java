@@ -17,13 +17,16 @@ import com.example.rabbithell.domain.auth.domain.MiniAuthUser;
 import com.example.rabbithell.domain.auth.dto.request.FullJwtRequest;
 import com.example.rabbithell.domain.auth.dto.request.LoginRequest;
 import com.example.rabbithell.domain.auth.dto.request.SignupRequest;
+import com.example.rabbithell.domain.auth.dto.request.TokenRefresRequest;
 import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
 import com.example.rabbithell.domain.auth.dto.response.TokenResponse;
 import com.example.rabbithell.domain.auth.service.AuthService;
 import com.example.rabbithell.domain.auth.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -68,9 +71,10 @@ public class AuthController {
 	}
 
 	@PostMapping("/reissue")
-	public ResponseEntity<CommonResponse<TokenResponse>> reissue(@RequestHeader("Authorization") String bearerToken) {
-		String refreshToken = bearerToken.replace("Bearer ", "");
-		TokenResponse tokenResponse = authService.reissue(refreshToken);
+	public ResponseEntity<CommonResponse<TokenResponse>> reissue(
+		@RequestBody TokenRefresRequest request
+	) {
+		TokenResponse tokenResponse = authService.reissue(request);
 		return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "토큰 재발행 성공", tokenResponse));
 	}
 
@@ -79,5 +83,4 @@ public class AuthController {
 		authService.logout(authUser.getUserId());
 		return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "로그아웃 성공"));
 	}
-
 }
