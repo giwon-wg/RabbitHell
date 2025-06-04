@@ -31,7 +31,7 @@ public record SkillCreateRequest(
 	Integer dmg,
 
 	@Schema(description = "스킬이 속한 직업명", example = "전사 1차")
-	@NotBlank(message = "직업명 필수입니다")
+	@NotNull(message = "직업명 필수입니다")
 	Job job
 ) {
 }
