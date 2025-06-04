@@ -5,18 +5,35 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.vo.BattleResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
+import com.example.rabbithell.domain.inventory.dto.response.EquippedItem;
+import com.example.rabbithell.domain.inventory.service.InventoryService;
+import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.item.service.ItemService;
 import com.example.rabbithell.domain.monster.entity.Monster;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@Component
 public class Battle {
 
-	public BattleResultVo executeBattle(List<GameCharacter> clover, Monster monster) {
+	private final InventoryService inventoryService;
+	private final ItemService itemService;
+
+	@Autowired
+	public Battle(InventoryService inventoryService, ItemService itemService) {
+		this.inventoryService = inventoryService;
+		this.itemService = itemService;
+	}
+
+	public BattleResultVo executeBattle(AuthUser authUser, List<GameCharacter> clover, Monster monster) {
 
 		List<Integer> playerAttack = new ArrayList<>();
 		List<Integer> playerDefense = new ArrayList<>();
@@ -25,8 +42,21 @@ public class Battle {
 		int maxHp = 0, maxMp = 0, currentHp = 0, currentMp = 0;
 
 		// 아이템 추가부분 포카드
+		List<Item> weapon = new ArrayList<>();
+		List<Item> armor = new ArrayList<>();
+		List<Item> accessory = new ArrayList<>();
 
 		for (GameCharacter rabbit : clover) {
+
+			EquipResponse response = inventoryService.getEquippedItemsByCharacter(authUser.getUserId(), rabbit.getId());
+
+			List<EquippedItem> equippedItems = response.equippedItems();
+			List<Long> equippedItemIds = new ArrayList<>();
+			for (EquippedItem equippedItem : equippedItems) {
+				equippedItemIds.add(equippedItem.itemId());
+
+			}
+
 			playerAttack.add(rabbit.getStrength());
 			playerDefense.add(rabbit.getStrength());  // 실제로는 Defense 필드 분리 필요
 			playerSpeed.add(rabbit.getAgility());
@@ -66,7 +96,7 @@ public class Battle {
 				if (actor.isPlayer) {
 					log.append("\n").append(actor.name).append("의 ").append(attackCount).append("회 공격!");
 					for (int i = 0; i < attackCount; i++) {
-						int damage = calculateDamage(actor.attack, monster.getDefence(), actor.criticalChance, random,
+						int damage = calculateDamage(actor.attack, monster.getDefense(), actor.criticalChance, random,
 							log, actor.name);
 						monsterHp -= damage;
 					}
@@ -93,7 +123,7 @@ public class Battle {
 			.playerDefense(playerDefense)
 			.playerSpeed(playerSpeed)
 			.monsterAttack(monster.getAttack())
-			.monsterDefence(monster.getDefence())
+			.monsterDefense(monster.getDefense())
 			.monsterSpeed(monster.getSpeed())
 			.log(log.toString())
 			.build();
@@ -111,7 +141,7 @@ public class Battle {
 		}
 
 		queue.add(new ActionEntity(monster.getMonsterName(), monster.getSpeed(), false,
-			monster.getAttack(), monster.getDefence(), 0, null));
+			monster.getAttack(), monster.getDefense(), 0, null));
 
 		queue.sort((a, b) -> Integer.compare(b.speed, a.speed));
 		return queue;

@@ -6,8 +6,10 @@ import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.item.entity.Item;
 
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
+@Getter
 public class BattleResultVo {
 	private BattleResult battleResult;
 	private int usedPotionHp;
@@ -15,7 +17,7 @@ public class BattleResultVo {
 
 	private List<Integer> playerAttack, playerDefense, playerSpeed;
 	private List<Item> weapon, armor, accessory;
-	private int monsterAttack, monsterDefence, monsterSpeed;
+	private int monsterAttack, monsterDefense, monsterSpeed;
 
 	private String log;
 
