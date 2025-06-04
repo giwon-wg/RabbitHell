@@ -73,15 +73,11 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable) {
+	public PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Slot slot,
+		Pageable pageable) {
 		Inventory inventory = getMyInventory(userId);
 
-		// 조건으로 쓰기 위한 장착 가능한 아이템 타입 리스트
-		List<ItemType> equipableTypes = ItemType.getEquipableTypes();
-
-		// 장착 가능한 인벤토리 아이템만 조회
-		Page<InventoryItem> page = inventoryItemRepository.findByInventoryAndItem_ItemTypeIn(inventory, equipableTypes,
-			pageable);
+		Page<InventoryItem> page = inventoryItemRepository.findEquipableItemBySlot(inventory, slot, pageable);
 
 		// DTO로 매핑
 		List<EquipableItemResponse> dtoList = page.stream()
@@ -98,7 +94,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 		// characterRepository.validateOwner(characterId, userId);
 
 		// 캐릭터가 장착한 아이템 반환
-		return inventoryItemRepository.findEquipmentStatusByCharacterId(characterId);
+		return inventoryItemRepository.findEquipmentStatusByCharacter(characterId);
 	}
 
 	@Transactional(readOnly = true)
@@ -125,7 +121,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 		inventoryItem.equip(character, equipRequest.slot());
 
 		// 응답은 캐릭터가 장착 중인 모든 아이템
-		return inventoryItemRepository.findEquipmentStatusByCharacterId(characterId);
+		return inventoryItemRepository.findEquipmentStatusByCharacter(characterId);
 	}
 
 	@Transactional
