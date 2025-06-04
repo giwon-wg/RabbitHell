@@ -42,6 +42,8 @@ public class InventoryItem extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "game_character_id")
 	private GameCharacter character; // 장착 캐릭터
+	
+	private Long power; // Item 엔티티의 maxPower와 minPower 사이
 
 	private Integer durability;
 
