@@ -25,14 +25,13 @@ public class Skill {
 
 	private String description;
 
-	private int tier;
+	private Integer tier;
 
-	private int mpCost;
+	private Integer mpCost;
 
-	// 이거 필요한가?
-	private int coolTime;
+	private Integer coolTime;
 
-	private int dmg;
+	private Integer dmg;
 
 	@Enumerated(EnumType.STRING)
 	private Job job;
