@@ -51,9 +51,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 	@Override
 	public PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot,
 		Pageable pageable) {
-		// 나의 인벤토리 조회
-		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
-		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
+		Inventory inventory = getMyInventory(userId);
 
 		Page<InventoryItem> page;
 
@@ -65,6 +63,26 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 		}
 
 		List<InventoryItemResponse> dtoList = page.getContent().stream()
+			.map(InventoryItemResponse::fromEntity)
+			.toList();
+
+		return PageResponse.of(dtoList, page);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public PageResponse<InventoryItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable) {
+		Inventory inventory = getMyInventory(userId);
+
+		// 조건으로 쓰기 위한 장착 가능한 아이템 타입 리스트
+		List<ItemType> equipableTypes = ItemType.getEquipableTypes();
+
+		// 장착 가능한 인벤토리 아이템만 조회
+		Page<InventoryItem> page = inventoryItemRepository.findByInventoryAndItem_ItemTypeIn(
+			inventory, equipableTypes, pageable);
+
+		// DTO로 매핑
+		List<InventoryItemResponse> dtoList = page.stream()
 			.map(InventoryItemResponse::fromEntity)
 			.toList();
 
@@ -133,6 +151,12 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 		// 인벤토리 아이템 삭제
 		inventoryItemRepository.delete(inventoryItem);
+	}
+
+	// 나의 인벤토리 조회
+	private Inventory getMyInventory(Long userId) {
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
+		return inventoryRepository.findByCloverOrElseThrow(clover);
 	}
 
 }

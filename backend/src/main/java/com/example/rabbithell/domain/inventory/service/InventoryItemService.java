@@ -17,6 +17,8 @@ public interface InventoryItemService {
 
 	PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot, Pageable pageable);
 
+	PageResponse<InventoryItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable);
+
 	EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest);
 
 	UnequipResponse unequipItem(Long userId, Long inventoryItemId);
