@@ -23,7 +23,9 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
 
 		List<Tuple> tuples = queryFactory
-			.select(inventoryItem.item.id, inventoryItem.character.id, inventoryItem.slot, inventoryItem.durability)
+			.select(inventoryItem.id, inventoryItem.item.id, inventoryItem.item.name, inventoryItem.character.id,
+				inventoryItem.character.name, inventoryItem.item.description, inventoryItem.item.power,
+				inventoryItem.slot, inventoryItem.durability)
 			.from(inventoryItem)
 			.where(inventoryItem.character.id.eq(characterId))
 			.fetch();
@@ -32,7 +34,11 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 			.map(t -> new EquippedItem(
 				t.get(inventoryItem.id),
 				t.get(inventoryItem.item.id),
+				t.get(inventoryItem.item.name),
 				t.get(inventoryItem.character.id),
+				t.get(inventoryItem.character.name),
+				t.get(inventoryItem.item.description),
+				t.get(inventoryItem.item.power),
 				t.get(inventoryItem.slot),
 				t.get(inventoryItem.durability)
 			))
