@@ -3,6 +3,7 @@ package com.example.rabbithell.domain.character.service;
 import static com.example.rabbithell.domain.job.entity.Job.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class CharacterServiceImpl implements CharacterService {
 			.maxMp(50)
 			.mp(50)
 			.strength(100)
-			.minxStrength(200)
+			.minStrength(200)
 			.agility(100)
 			.minAgility(200)
 			.intelligence(100)
