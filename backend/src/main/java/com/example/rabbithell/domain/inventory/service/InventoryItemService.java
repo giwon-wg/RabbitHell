@@ -19,6 +19,8 @@ public interface InventoryItemService {
 
 	PageResponse<InventoryItemResponse> getAllEquipableInventoryItems(Long userId, Pageable pageable);
 
+	EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId);
+
 	EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest);
 
 	UnequipResponse unequipItem(Long userId, Long inventoryItemId);
