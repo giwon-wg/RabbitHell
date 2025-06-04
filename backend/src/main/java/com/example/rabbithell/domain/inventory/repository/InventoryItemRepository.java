@@ -16,7 +16,7 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 	default InventoryItem findByIdAndValidateOwner(Long id, Long userId) {
 		InventoryItem inventoryItem = findByIdOrElseThrow(id);
 
-		if (!inventoryItem.getInventory().getUser().getId().equals(userId)) {
+		if (!inventoryItem.getInventory().getClover().getUser().getId().equals(userId)) {
 			throw new InventoryItemException(USER_MISMATCH);
 		}
 		return inventoryItem;
