@@ -37,17 +37,4 @@ public class InventoryController {
 		));
 	}
 
-	@GetMapping("/equipped")
-	public ResponseEntity<CommonResponse<EquipResponse>> getEquippedItemsByCharacter(
-		@AuthenticationPrincipal AuthUser authUser,
-		@RequestParam Long characterId
-	) {
-		return ResponseEntity.ok(CommonResponse.of(
-			true,
-			HttpStatus.OK.value(),
-			"캐릭터 장착 아이템 조회 성공",
-			inventoryService.getEquippedItemsByCharacter(authUser.getUserId(), characterId)
-		));
-	}
-
 }
