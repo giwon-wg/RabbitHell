@@ -3,7 +3,7 @@ package com.example.rabbithell.domain.monster.entity;
 import java.math.BigDecimal;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.stigma.entity.Stigma;
+import com.example.rabbithell.domain.pawcard.entity.PawCard;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +35,7 @@ public class StigmaDropRate extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stigma_id", nullable = false)
-    private Stigma stigma;
+    private PawCard pawCard;
 
     @Column(name = "drop_rate", nullable = false)
     private BigDecimal dropRate;
