@@ -6,6 +6,7 @@ import com.example.rabbithell.domain.inventory.enums.Slot;
 public record InventoryItemResponse(
 	Long inventoryId,
 	Long itemId,
+	String itemName,
 	Integer durability,
 	Slot slot
 ) {
@@ -13,6 +14,7 @@ public record InventoryItemResponse(
 		return new InventoryItemResponse(
 			inventoryItem.getInventory().getId(),
 			inventoryItem.getItem().getId(),
+			inventoryItem.getItem().getName(),
 			inventoryItem.getDurability(),
 			inventoryItem.getSlot()
 		);
