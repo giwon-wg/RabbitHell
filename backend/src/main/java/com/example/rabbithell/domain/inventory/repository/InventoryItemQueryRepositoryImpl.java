@@ -28,6 +28,7 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 
 	private final JPAQueryFactory queryFactory;
 
+	// 해당 캐릭터의 장비 장착 현황 조회
 	@Override
 	public EquipResponse findEquipmentStatusByCharacter(Long characterId) {
 		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
@@ -99,8 +100,26 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
 	}
 
+	// 아이템 타입 동적 조건
 	private BooleanExpression itemTypeIn(QItem item, List<ItemType> itemTypes) {
 		return (itemTypes != null && !itemTypes.isEmpty()) ? item.itemType.in(itemTypes) : null;
+	}
+
+	// 캐릭터가 특정 슬롯에 장착한 아이템 조회
+	@Override
+	public Long findByCharacterAndSlot(Long characterId, Slot slot) {
+		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
+
+		Long inventoryItemId = queryFactory
+			.select(inventoryItem.id)
+			.from(inventoryItem)
+			.where(
+				inventoryItem.character.id.eq(characterId),
+				inventoryItem.slot.eq(slot)
+			)
+			.fetchFirst();
+
+		return inventoryItemId;
 	}
 
 }

@@ -14,4 +14,6 @@ public interface InventoryItemQueryRepository {
 
 	Page<InventoryItem> findEquipableItemBySlot(Inventory inventory, Slot slot, Pageable pageable);
 
+	Long findByCharacterAndSlot(Long characterId, Slot slot);
+
 }

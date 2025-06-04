@@ -117,6 +117,11 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 		Long characterId = equipRequest.characterId();
 		GameCharacter character = characterRepository.findByIdOrElseThrow(characterId);
 
+		// 캐릭터가 장착 중인 아이템 조회해서 같은 부위에 아이템이 있으면 그 아이템 장착 해제
+		Slot slot = Slot.getSlotByItemType(inventoryItem.getItem().getItemType());
+		Long equippedItemId = inventoryItemRepository.findByCharacterAndSlot(characterId, slot);
+		inventoryItemRepository.findByIdOrElseThrow(equippedItemId).unequip();
+
 		// 아이템 장착
 		inventoryItem.equip(character, equipRequest.slot());
 
