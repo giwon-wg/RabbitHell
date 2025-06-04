@@ -4,7 +4,6 @@ import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.item.entity.Item;
-import com.example.rabbithell.domain.item.enums.ItemType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +40,7 @@ public class InventoryItem extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "game_character_id")
 	private GameCharacter character; // 장착 캐릭터
-	
+
 	private Long power; // Item 엔티티의 maxPower와 minPower 사이
 
 	private Integer durability;

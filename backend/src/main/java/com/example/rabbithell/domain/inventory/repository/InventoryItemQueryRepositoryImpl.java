@@ -110,7 +110,7 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 	public Long findByCharacterAndSlot(Long characterId, Slot slot) {
 		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
 
-		Long inventoryItemId = queryFactory
+		return queryFactory
 			.select(inventoryItem.id)
 			.from(inventoryItem)
 			.where(
@@ -118,8 +118,6 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 				inventoryItem.slot.eq(slot)
 			)
 			.fetchFirst();
-
-		return inventoryItemId;
 	}
 
 }
