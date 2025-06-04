@@ -1,12 +1,21 @@
 package com.example.rabbithell.domain.character.entity;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import javax.print.attribute.standard.MediaSize;
+
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
+import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.user.model.User;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +23,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKey;
+import jakarta.persistence.MapKeyEnumerated;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,6 +90,12 @@ public class GameCharacter extends BaseEntity {
 	@Column(name = "skill_point")
 	private int skillPoint;
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "character_job_tier_history", joinColumns = @JoinColumn(name = "character_id"))
+	@MapKeyEnumerated(EnumType.STRING)
+	@Column(name = "tier")
+	private Map<JobCategory, Integer> jobHistory = new EnumMap<>(JobCategory.class);
+
 	@Builder
 	public GameCharacter(User user,
 		Clover clover,
@@ -91,7 +108,7 @@ public class GameCharacter extends BaseEntity {
 		int maxMp,
 		int mp,
 		int strength,
-		int minxStrength,
+		int minStrength,
 		int agility,
 		int minAgility,
 		int intelligence,
@@ -118,15 +135,24 @@ public class GameCharacter extends BaseEntity {
 		this.maxMp = maxMp;
 		this.mp = mp;
 		this.strength = strength;
+		this.minStrength = minStrength;
 		this.agility = agility;
+		this.minAgility = minAgility;
 		this.intelligence = intelligence;
+		this.minIntelligence = minIntelligence;
 		this.focus = focus;
+		this.minFocus = minFocus;
 		this.luck = luck;
+		this.minLuck = minLuck;
 		this.incompetentPoint = incompetentPoint;
 		this.warriorPoint = warriorPoint;
 		this.thiefPoint = thiefPoint;
 		this.wizardPoint = wizardPoint;
 		this.archerPoint = archerPoint;
+		this.skillPoint = (warriorPoint + thiefPoint + wizardPoint + archerPoint);
+	}
+
+	public void updateSkillPoint() {
 		this.skillPoint = (warriorPoint + thiefPoint + wizardPoint + archerPoint);
 	}
 
@@ -143,7 +169,15 @@ public class GameCharacter extends BaseEntity {
 		this.strength = value;
 	}
 
+	public void updateMinStrength(int value) {
+		this.strength = value;
+	}
+
 	public void updateAgility(int value) {
+		this.agility = value;
+	}
+
+	public void updateMinAgility(int value) {
 		this.agility = value;
 	}
 
@@ -151,8 +185,40 @@ public class GameCharacter extends BaseEntity {
 		this.intelligence = value;
 	}
 
+	public void updateMinIntelligence(int value) {
+		this.intelligence = value;
+	}
+
 	public void updateFocus(int value) {
 		this.focus = value;
+	}
+
+	public void updateMinFocus(int value) {
+		this.focus = value;
+	}
+
+	// 전직시 저장
+	public void addJobTierHistory(JobCategory category, int tier) {
+		Integer currentTier = jobHistory.getOrDefault(category, 0);
+		if (tier > currentTier) {
+			jobHistory.put(category, tier);
+		}
+	}
+
+	// 직업군 별로 전직했는지 확인
+	public boolean hasExperienced(JobCategory category, int atLeastTier) {
+		return jobHistory.getOrDefault(category, 0) >= atLeastTier;
+	}
+
+	// 행운
+	public void updateLuck(int value) {
+		this.luck = value;
+	}
+
+	// 스킬 배울시 스킬포인트 소모
+	public void learnSkillBySkillPoint(int amount) {
+		if (skillPoint < amount) throw new IllegalArgumentException("스킬 포인트 부족");
+		this.skillPoint -= amount;
 	}
 
 
