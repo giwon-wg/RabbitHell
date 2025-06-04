@@ -3,8 +3,6 @@ package com.example.rabbithell.domain.character.entity;
 import java.util.EnumMap;
 import java.util.Map;
 
-import javax.print.attribute.standard.MediaSize;
-
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
@@ -23,7 +21,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapKey;
 import jakarta.persistence.MapKeyEnumerated;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -108,15 +105,10 @@ public class GameCharacter extends BaseEntity {
 		int maxMp,
 		int mp,
 		int strength,
-		int minStrength,
 		int agility,
-		int minAgility,
 		int intelligence,
-		int minIntelligence,
 		int focus,
-		int minFocus,
 		int luck,
-		int minLuck,
 		int incompetentPoint,
 		int warriorPoint,
 		int thiefPoint,
@@ -135,15 +127,10 @@ public class GameCharacter extends BaseEntity {
 		this.maxMp = maxMp;
 		this.mp = mp;
 		this.strength = strength;
-		this.minStrength = minStrength;
 		this.agility = agility;
-		this.minAgility = minAgility;
 		this.intelligence = intelligence;
-		this.minIntelligence = minIntelligence;
 		this.focus = focus;
-		this.minFocus = minFocus;
 		this.luck = luck;
-		this.minLuck = minLuck;
 		this.incompetentPoint = incompetentPoint;
 		this.warriorPoint = warriorPoint;
 		this.thiefPoint = thiefPoint;
@@ -169,15 +156,7 @@ public class GameCharacter extends BaseEntity {
 		this.strength = value;
 	}
 
-	public void updateMinStrength(int value) {
-		this.strength = value;
-	}
-
 	public void updateAgility(int value) {
-		this.agility = value;
-	}
-
-	public void updateMinAgility(int value) {
 		this.agility = value;
 	}
 
@@ -185,15 +164,7 @@ public class GameCharacter extends BaseEntity {
 		this.intelligence = value;
 	}
 
-	public void updateMinIntelligence(int value) {
-		this.intelligence = value;
-	}
-
 	public void updateFocus(int value) {
-		this.focus = value;
-	}
-
-	public void updateMinFocus(int value) {
 		this.focus = value;
 	}
 
