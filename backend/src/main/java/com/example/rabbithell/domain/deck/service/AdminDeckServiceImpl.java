@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.deck.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
@@ -21,6 +22,7 @@ public class AdminDeckServiceImpl implements AdminDeckService {
 	private final PawCardRepository pawCardRepository;
 	private final CloverRepository cloverRepository;
 
+	@Transactional
 	@Override
 	public DeckResponse createDeck(Long cloverId, CreateDeckRequest request) {
 		Clover clover = cloverRepository.findByIdOrElseThrow(cloverId);
@@ -30,6 +32,6 @@ public class AdminDeckServiceImpl implements AdminDeckService {
 			.pawCard(pawCard)
 			.build();
 		deckRepository.save(deck);
-		return DeckResponse.fromEntity(deck, clover, pawCard);
+		return DeckResponse.fromEntity(deck);
 	}
 }
