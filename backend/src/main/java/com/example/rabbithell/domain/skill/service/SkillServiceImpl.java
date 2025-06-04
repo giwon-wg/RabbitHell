@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.skill.dto.request.SkillCreateRequest;
 import com.example.rabbithell.domain.skill.dto.request.SkillUpdateRequest;
 import com.example.rabbithell.domain.skill.dto.response.AllSkillResponse;
