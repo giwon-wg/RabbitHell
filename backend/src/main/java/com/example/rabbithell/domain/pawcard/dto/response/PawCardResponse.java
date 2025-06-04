@@ -10,7 +10,7 @@ import com.example.rabbithell.domain.pawcard.entity.PawCard;
 import com.example.rabbithell.domain.pawcard.enums.CardEmblem;
 
 public record PawCardResponse(
-	Long stigmaId,
+	Long pawCardId,
 	BigDecimal ratio,
 	String description,
 	Integer cardNumber,
