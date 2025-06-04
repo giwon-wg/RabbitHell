@@ -71,7 +71,8 @@ public class InventoryItemController {
 	public ResponseEntity<CommonResponse<PageResponse<EquipableItemResponse>>> getAllEquipableInventoryItems(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(required = false) Slot slot
 	) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 

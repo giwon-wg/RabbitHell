@@ -33,5 +33,4 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 
 	Page<InventoryItem> findByInventoryAndItem_ItemTypeIn(Inventory inventory, List<ItemType> itemTypes,
 		Pageable pageable);
-
 }

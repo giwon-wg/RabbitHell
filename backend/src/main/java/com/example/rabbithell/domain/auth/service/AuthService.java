@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.dto.request.SignupRequest;
+import com.example.rabbithell.domain.auth.dto.request.TokenRefresRequest;
 import com.example.rabbithell.domain.auth.dto.response.LoginResponse;
 import com.example.rabbithell.domain.auth.dto.response.TokenResponse;
 import com.example.rabbithell.domain.auth.exception.AuthException;
@@ -22,7 +23,9 @@ import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
 import com.example.rabbithell.infrastructure.security.persistence.RedisRefreshTokenAdapter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -85,10 +88,14 @@ public class AuthService {
     }
 
 	@Transactional
-    public TokenResponse reissue(String refreshToken) {
+    public TokenResponse reissue(TokenRefresRequest tokenRefresRequest) {
+
+		String refreshToken = tokenRefresRequest.refreshToken();
+
+		log.info("리프레쉬 토큰 값: " + refreshToken);
 
         if (!jwtUtil.validateToken(refreshToken)) {
-            throw new AuthException(REFRESH_TOKEN_MISMATCH);
+            throw new AuthException(INVALID_REFRESH_TOKEN);
         }
 
         Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
