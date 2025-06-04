@@ -13,14 +13,12 @@ spring:
 
     jackson: {}
 
-    # 데이터베이스 연결 정보
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: ${MYSQL_URL}
         username: ${MYSQL_USERNAME}
         password: ${MYSQL_PASSWORD}
 
-    # JPA 설정
     jpa:
         hibernate:
             ddl-auto: validate        # update/create 로 바꾸면 혼낼꺼임
@@ -29,7 +27,6 @@ spring:
             hibernate:
                 show_sql: false
                 format_sql: false
-                dialect: org.hibernate.dialect.MySQL8Dialect
             use_sql_comments: false
 
     data:
