@@ -1,27 +1,27 @@
-package com.example.rabbithell.domain.item.dto.response;
+package com.example.rabbithell.domain.shop.dto.response;
 
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.Rarity;
 
-public record ItemResponse(
-	Long itemId,
-	String itemName,
+public record ShopItemResponse(
 	Long shopId,
 	String shopName,
+	Long itemId,
+	String itemName,
 	String description,
 	Rarity rarity,
 	Long price,
 	Long maxPower,
 	Long minPower,
 	Long weight,
-	Integer durability
+	Integer maxDurability
 ) {
-	public static ItemResponse fromEntity(Item item) {
-		return new ItemResponse(
+	public static ShopItemResponse fromEntity(Item item) {
+		return new ShopItemResponse(
+			item.getShop().getId(),
+			item.getShop().getName(),
 			item.getId(),
 			item.getName(),
-			item.getShop() != null ? item.getShop().getId() : null,
-			item.getShop() != null ? item.getShop().getName() : null,
 			item.getDescription(),
 			item.getRarity(),
 			item.getPrice(),
