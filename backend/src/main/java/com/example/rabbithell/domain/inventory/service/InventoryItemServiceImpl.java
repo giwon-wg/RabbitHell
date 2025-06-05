@@ -115,18 +115,19 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional
 	@Override
-	public EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest) {
+	public EquipResponse equipItem(Long userId, Long inventoryItemId, Long characterId) {
 		// 인벤토리 아이템 조회
 		InventoryItem inventoryItem = inventoryItemRepository.findByIdAndValidateOwner(inventoryItemId, userId);
 
 		// 아이템을 장착하기 위해 캐릭터 조회
-		Long characterId = equipRequest.characterId();
 		GameCharacter character = characterRepository.findByIdOrElseThrow(characterId);
 
 		// 캐릭터가 장착 중인 아이템 조회해서 같은 부위에 아이템이 있으면 그 아이템 장착 해제
 		Slot slot = Slot.getSlotByItemType(inventoryItem.getItem().getItemType());
 		Long equippedItemId = inventoryItemRepository.findByCharacterAndSlot(characterId, slot);
-		inventoryItemRepository.findByIdOrElseThrow(equippedItemId).unequip();
+		if (equippedItemId != null) {
+			inventoryItemRepository.findByIdOrElseThrow(equippedItemId).unequip();
+		}
 
 		// 아이템 장착
 		inventoryItem.equip(character);
