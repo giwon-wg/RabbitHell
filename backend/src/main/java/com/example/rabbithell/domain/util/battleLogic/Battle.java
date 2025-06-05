@@ -124,8 +124,16 @@ public class Battle {
 			for (ActionEntity actor : turnQueue) {
 				if (playerHpCheck(playerHp) || monsterHp <= 0)
 					break;
-				if (actor.hp <= 0) {
-					continue;
+
+				if (actor.isPlayer) {
+					int playerIndex = findPlayerIndex(clover, actor.name);
+					if (playerIndex == -1 || playerHp.get(playerIndex) <= 0) {
+						continue; // 죽은 플레이어는 턴 스킵
+					}
+				} else {
+					if (actor.hp <= 0) {
+						continue;
+					}
 				}
 
 				int attackCount = Math.max(1, actor.speed / 50 + random.nextInt(3) - 1);
@@ -154,7 +162,9 @@ public class Battle {
 
 						log.append("\n")
 							.append(monster.getMonsterName())
-							.append("의 ")
+							.append("이 ")
+							.append(clover.get(targetIndex).getName())
+							.append("을(를) ")
 							.append(attackCount)
 							.append("회 공격!");
 						for (int i = 0; i < attackCount; i++) {
@@ -246,6 +256,15 @@ public class Battle {
 		}
 		log.append("\n").append(name).append("이(가) ").append(damage).append(" 데미지를 입혔습니다.");
 		return damage;
+	}
+
+	private int findPlayerIndex(List<GameCharacter> clover, String name) {
+		for (int i = 0; i < clover.size(); i++) {
+			if (clover.get(i).getName().equals(name)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	@AllArgsConstructor
