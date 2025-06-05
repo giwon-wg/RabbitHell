@@ -2,6 +2,9 @@ package com.example.rabbithell.domain.battle.vo;
 
 import java.util.List;
 
+import lombok.Builder;
+
+@Builder
 public record BattleRewardResultVo(
 	int earnedExp,
 	int earnedSkillPoints,

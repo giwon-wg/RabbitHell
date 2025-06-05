@@ -4,11 +4,11 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 
 import lombok.Getter;
 
+@Getter
 public class ExpRewardCommand implements BattleRewardCommand {
 
 	private final GameCharacter character;
 	private final int earnedExp;
-	@Getter
 	private int resultExp;
 
 	public ExpRewardCommand(GameCharacter character, int earnedExp) {

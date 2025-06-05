@@ -9,17 +9,19 @@ import com.example.rabbithell.domain.battle.enums.BattleResult;
 
 @Component
 public class BattleRewardStrategyFactory {
+
 	private final Map<BattleResult, BattleRewardStrategy> strategyMap;
 
-	public BattleRewardStrategyFactory() {
-		strategyMap = new HashMap<>();
-		strategyMap.put(BattleResult.WIN, new WinRewardStrategy());
-		// strategyMap.put(BattleResult.LOSE, new LoseRewardStrategy());
-		// strategyMap.put(BattleResult.DRAW, new DrawRewardStrategy());
+	public BattleRewardStrategyFactory(WinRewardStrategy winStrategy
+		/*, LoseRewardStrategy loseStrategy, DrawRewardStrategy drawStrategy */) {
+
+		this.strategyMap = new HashMap<>();
+		strategyMap.put(BattleResult.WIN, winStrategy);
+		// strategyMap.put(BattleResult.LOSE, loseStrategy);
+		// strategyMap.put(BattleResult.DRAW, drawStrategy);
 	}
 
 	public BattleRewardStrategy getStrategy(BattleResult result) {
-		return strategyMap.getOrDefault(result, new WinRewardStrategy());
+		return strategyMap.getOrDefault(result, strategyMap.get(BattleResult.WIN));
 	}
-
 }
