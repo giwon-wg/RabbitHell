@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
-import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
