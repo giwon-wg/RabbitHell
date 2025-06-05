@@ -13,7 +13,7 @@ public enum Slot {
 		}
 
 		for (Slot slot : Slot.values()) {
-			List<ItemType> types = ItemType.getItemTypeBySlot(slot);
+			List<ItemType> types = ItemType.getItemTypesBySlot(slot);
 			if (types != null && types.contains(itemType)) {
 				return slot;
 			}
