@@ -6,12 +6,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "village_connections")
+@Table(name = "village_connection")
 @NoArgsConstructor
 public class VillageConnection {
 
@@ -19,13 +20,13 @@ public class VillageConnection {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	private Village fromVillage;
+	@NotNull
+	private Long fromVillage;
 
-	@ManyToOne
-	private Village toVillage;
+	@NotNull
+	private Long toVillage;
 
-	public VillageConnection(Village fromVillage, Village toVillage) {
+	public VillageConnection(Long fromVillage, Long toVillage) {
 		this.fromVillage = fromVillage;
 		this.toVillage = toVillage;
 	}

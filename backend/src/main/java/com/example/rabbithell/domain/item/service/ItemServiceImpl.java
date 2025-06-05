@@ -31,14 +31,15 @@ public class ItemServiceImpl implements ItemService {
 		Item item = Item.builder()
 			.shop(shop)
 			.name(itemRequest.name())
+			.description(itemRequest.description())
 			.itemType(itemRequest.itemType())
 			.rarity(itemRequest.rarity())
 			.price(itemRequest.price())
-			.power(itemRequest.power())
 			.maxPower(itemRequest.maxPower())
 			.minPower(itemRequest.minPower())
-			.weight(itemRequest.weight())
-			.durability(itemRequest.durability())
+			.maxWeight(itemRequest.maxWeight())
+			.minWeight(itemRequest.minWeight())
+			.maxDurability(itemRequest.maxDurability())
 			.build();
 
 		Item savedItem = itemRepository.save(item);
@@ -73,14 +74,15 @@ public class ItemServiceImpl implements ItemService {
 		item.update(
 			shop,
 			itemRequest.name(),
+			itemRequest.description(),
 			itemRequest.itemType(),
 			itemRequest.rarity(),
 			itemRequest.price(),
-			itemRequest.power(),
 			itemRequest.maxPower(),
 			itemRequest.minPower(),
-			itemRequest.weight(),
-			itemRequest.durability()
+			itemRequest.maxWeight(),
+			itemRequest.minWeight(),
+			itemRequest.maxDurability()
 		);
 
 		return ItemResponse.fromEntity(item);

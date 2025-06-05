@@ -5,24 +5,32 @@ import com.example.rabbithell.domain.item.enums.Rarity;
 
 public record ItemResponse(
 	Long itemId,
+	String itemName,
 	Long shopId,
-	String name,
+	String shopName,
+	String description,
 	Rarity rarity,
 	Long price,
-	Long attack,
-	Long weight,
+	Long maxPower,
+	Long minPower,
+	Long maxWeight,
+	Long minWeight,
 	Integer durability
 ) {
 	public static ItemResponse fromEntity(Item item) {
 		return new ItemResponse(
 			item.getId(),
-			item.getShop() != null ? item.getShop().getId() : null,
 			item.getName(),
+			item.getShop() != null ? item.getShop().getId() : null,
+			item.getShop() != null ? item.getShop().getName() : null,
+			item.getDescription(),
 			item.getRarity(),
 			item.getPrice(),
-			item.getPower(),
-			item.getWeight(),
-			item.getDurability()
+			item.getMaxPower(),
+			item.getMinPower(),
+			item.getMaxWeight(),
+			item.getMinWeight(),
+			item.getMaxDurability()
 		);
 	}
 }

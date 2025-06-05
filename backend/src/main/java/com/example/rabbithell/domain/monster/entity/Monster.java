@@ -31,17 +31,21 @@ public class Monster {
 	private int attack;
 
 	@Column(nullable = false)
-	private int defence;
+	private int defense;
 
 	@Column(nullable = false)
 	private int speed;
 
-	public Monster(Rating rating, String monsterName, int hp, int attack, int defence, int speed) {
+	@Column(nullable = false)
+	private int exp;
+
+	public Monster(Rating rating, String monsterName, int hp, int attack, int defense, int speed, int exp) {
 		this.rating = rating;
 		this.monsterName = monsterName;
 		this.hp = hp;
 		this.attack = attack;
-		this.defence = defence;
+		this.defense = defense;
 		this.speed = speed;
+		this.exp = exp;
 	}
 }

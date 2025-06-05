@@ -23,7 +23,7 @@ public class MonsterEncounter {
 	private Long id;
 
 	@Column(nullable = false)
-	private Double spawnRate;
+	private int spawnRate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "monster_id", nullable = false)
@@ -32,7 +32,7 @@ public class MonsterEncounter {
 	@Column(nullable = false)
 	private BattleFieldType battleFieldType;
 
-	public MonsterEncounter(Double spawnRate, Monster monster, BattleFieldType battleFieldType) {
+	public MonsterEncounter(int spawnRate, Monster monster, BattleFieldType battleFieldType) {
 		this.spawnRate = spawnRate;
 		this.monster = monster;
 		this.battleFieldType = battleFieldType;

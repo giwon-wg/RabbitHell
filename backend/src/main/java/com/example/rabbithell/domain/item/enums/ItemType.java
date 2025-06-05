@@ -1,5 +1,47 @@
 package com.example.rabbithell.domain.item.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.example.rabbithell.domain.inventory.enums.Slot;
+
 public enum ItemType {
-	SWORD, SHIELD, BOW, DAGGER, HP, MP
+	// equipable
+	SWORD, BOW, DAGGER, WAND, SHIELD, ARMOR, ACCESSORY,
+
+	// consumable
+	HP, MP;
+
+	public static List<ItemType> getEquipableTypes() {
+		return Arrays.stream(values())
+			.filter(ItemType::isEquipable)
+			.toList();
+	}
+
+	public static List<ItemType> getItemTypeBySlot(Slot slot) {
+		if (slot == null) {
+			return null;
+		}
+
+		return switch (slot) {
+			case HEAD -> List.of(ACCESSORY);
+			case BODY -> List.of(SHIELD, ARMOR);
+			case HAND -> List.of(SWORD, BOW, DAGGER, WAND);
+			default -> null;
+		};
+	}
+
+	public boolean isEquipable() {
+		return switch (this) {
+			case SWORD, SHIELD, BOW, DAGGER -> true;
+			default -> false;
+		};
+	}
+
+	public boolean isConsumable() {
+		return switch (this) {
+			case HP, MP -> true;
+			default -> false;
+		};
+	}
 }

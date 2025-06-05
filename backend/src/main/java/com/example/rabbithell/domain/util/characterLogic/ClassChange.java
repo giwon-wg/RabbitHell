@@ -23,7 +23,8 @@ public class ClassChange {
 		{99999, 199999}  // 4차
 	};
 
-	public static int generateStat(int tier, int currentSkill) {
+	// TODO 수정 필요
+	public static int generateStat(int tier, int currentJobPoint) {
 		int[] range = STAT_RANGES[tier];
 		int min = range[0];
 		int max = range[1] - 20;
@@ -34,7 +35,7 @@ public class ClassChange {
 
 		// 비율 계산: 0.0 ~ 1.0
 		double ratio = (maxSkill - minSkill == 0) ? 1.0 :
-			Math.max(0.0, Math.min(1.0, (double)(currentSkill - minSkill) / (maxSkill - minSkill)));
+			Math.max(0.0, Math.min(1.0, (double)(currentJobPoint - minSkill) / (maxSkill - minSkill)));
 
 		// 편향값 계산: 비율로 중간값 이상으로 편향되도록
 		double bias = min + (max - min) * ratio;
