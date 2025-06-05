@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.character.entity;
 
+import static com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode.*;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -7,6 +9,7 @@ import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
+import com.example.rabbithell.domain.skill.exception.SkillException;
 import com.example.rabbithell.domain.user.model.User;
 
 import jakarta.persistence.CollectionTable;
@@ -133,11 +136,40 @@ public class GameCharacter extends BaseEntity {
 		this.thiefPoint = thiefPoint;
 		this.wizardPoint = wizardPoint;
 		this.archerPoint = archerPoint;
-		this.skillPoint = (warriorPoint + thiefPoint + wizardPoint + archerPoint);
+		this.skillPoint = skillPoint;
 	}
 
-	public void updateSkillPoint() {
-		this.skillPoint = (warriorPoint + thiefPoint + wizardPoint + archerPoint);
+	public int totalSkillPoint() {
+		return (warriorPoint + thiefPoint + wizardPoint + archerPoint);
+	}
+
+	// 스킬 포인트 증가
+	public void addWarriorPoint(int amount) {
+		warriorPoint += amount;
+		skillPoint += amount;
+	}
+
+	public void addThiefPoint(int amount) {
+		thiefPoint += amount;
+		skillPoint += amount;
+	}
+
+	public void addWizardPoint(int amount) {
+		wizardPoint += amount;
+		skillPoint += amount;
+	}
+
+	public void addArcherPoint(int amount) {
+		archerPoint += amount;
+		skillPoint += amount;
+	}
+
+	// 스킬 배울시 스킬포인트 소모
+	public void learnSkillBySkillPoint(int amount) {
+		if (skillPoint < amount) {
+			throw new SkillException(NOT_ENOUGH_SKILL_POINTS);
+		}
+		this.skillPoint -= amount;
 	}
 
 	public void refill() {
@@ -182,13 +214,6 @@ public class GameCharacter extends BaseEntity {
 	public void updateLuck(int value) {
 		this.luck = value;
 	}
-
-	// 스킬 배울시 스킬포인트 소모
-	public void learnSkillBySkillPoint(int amount) {
-		if (skillPoint < amount) throw new IllegalArgumentException("스킬 포인트 부족");
-		this.skillPoint -= amount;
-	}
-
 
 }
 
