@@ -7,6 +7,4 @@ public interface InventoryService {
 
 	InventoryResponse expandInventory(Long userId, int amount);
 
-	EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId);
-
 }

@@ -31,6 +31,7 @@ public class ItemServiceImpl implements ItemService {
 		Item item = Item.builder()
 			.shop(shop)
 			.name(itemRequest.name())
+			.description(itemRequest.description())
 			.itemType(itemRequest.itemType())
 			.rarity(itemRequest.rarity())
 			.price(itemRequest.price())
@@ -73,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
 		item.update(
 			shop,
 			itemRequest.name(),
+			itemRequest.description(),
 			itemRequest.itemType(),
 			itemRequest.rarity(),
 			itemRequest.price(),
