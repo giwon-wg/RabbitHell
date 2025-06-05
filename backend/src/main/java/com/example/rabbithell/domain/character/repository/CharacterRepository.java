@@ -18,4 +18,10 @@ public interface CharacterRepository extends JpaRepository<GameCharacter, Long> 
 
 	List<GameCharacter> findByUser_Id(Long userId);
 
+	default void validateOwner(Long id, Long userId) {
+		GameCharacter character = findByIdOrElseThrow(id);
+		if (!character.getUser().getId().equals(userId)) {
+			throw new CharacterException(ACCESS_DENIED);
+		}
+	}
 }
