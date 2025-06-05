@@ -228,7 +228,7 @@ public class DataInitializer implements CommandLineRunner {
 		Item mpPotion = new Item(null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000,
 			false);
 
-		Item feverRemedy = new Item(null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
+		Item feverRemedy = new Item(null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
 			10000, false);
 		Item somiGun = new Item(null, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L, 50L, 10L, 5L,
 			10000, false);
@@ -236,9 +236,9 @@ public class DataInitializer implements CommandLineRunner {
 			10000, false);
 		Item airplaneTicket = new Item(null, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 0L, 100L,
 			30L, 10L, 4L, 10000, false);
-		Item wakeUp = new Item(null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.MP, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
+		Item wakeUp = new Item(null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
 			false);
-		Item slimeBell = new Item(null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.MP, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
+		Item slimeBell = new Item(null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
 			false);
 
 		itemRepository.save(weapon);
