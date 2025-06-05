@@ -12,8 +12,7 @@ import lombok.Getter;
 @Getter
 public class BattleResultVo {
 	private BattleResult battleResult;
-	private int usedPotionHp;
-	private int usedPotionMp;
+	private List<Integer> playerHp, playerMp;
 
 	private List<Integer> playerAttack, playerDefense, playerSpeed;
 	private List<Item> weapon, armor, accessory;

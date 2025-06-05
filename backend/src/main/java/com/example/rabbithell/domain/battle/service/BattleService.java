@@ -65,6 +65,9 @@ public class BattleService {
 		BattleRewardStrategy strategy = battleRewardStrategyFactory.getStrategy(battleResultVo.getBattleResult());
 		BattleRewardResultVo reward = strategy.applyReward(clover, team, monster, battleFieldType);
 
+		int usedHpPotion = measurePotion(battleResultVo.getPlayerHp(), team);
+		int usedMpPotion = measurePotion(battleResultVo.getPlayerMp(), team);
+
 		// DB 업데이트예정?
 
 		return BattleResultResponse.builder()
@@ -93,9 +96,17 @@ public class BattleService {
 			.battleResult(battleResultVo.getBattleResult())
 			.battleLog(battleResultVo.getLog())
 			.earnedItem(null)
-			.usedPotionHp(battleResultVo.getUsedPotionHp())
-			.usedPotionMp(battleResultVo.getUsedPotionMp())
+			.usedPotionHp(usedHpPotion)
+			.usedPotionMp(usedMpPotion)
 			.build();
+	}
+
+	private int measurePotion(List<Integer> playerStat, List<GameCharacter> team) {
+		int result = 0;
+		for (int i = 0; i < playerStat.size(); i++) {
+			result += team.get(i).getMaxHp() - playerStat.get(i);
+		}
+		return result;
 	}
 
 }

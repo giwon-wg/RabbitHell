@@ -19,7 +19,7 @@ public class BattleRewardStrategyFactory {
 	}
 
 	public BattleRewardStrategy getStrategy(BattleResult result) {
-		return strategyMap.getOrDefault(result, new DrawRewardStrategy());
+		return strategyMap.getOrDefault(result, new WinRewardStrategy());
 	}
 
 }
