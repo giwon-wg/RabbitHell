@@ -55,14 +55,14 @@ public class Item extends BaseEntity {
 	private Long weight;
 
 	@Column(nullable = false)
-	private Integer durability;
+	private Integer maxDurability;
 
 	@Column(nullable = false)
 	private boolean isDeleted;
 
 	@Builder
 	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
-		Long maxPower, Long minPower, Long weight, Integer durability, boolean isDeleted) {
+		Long maxPower, Long minPower, Long weight, Integer maxDurability, boolean isDeleted) {
 		this.shop = shop;
 		this.name = name;
 		this.description = description;
@@ -72,12 +72,12 @@ public class Item extends BaseEntity {
 		this.maxPower = maxPower;
 		this.minPower = minPower;
 		this.weight = weight;
-		this.durability = durability;
+		this.maxDurability = maxDurability;
 		this.isDeleted = isDeleted;
 	}
 
 	public void update(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
-		Long maxPower, Long minPower, Long weight, Integer durability) {
+		Long maxPower, Long minPower, Long weight, Integer maxDurability) {
 		this.shop = shop;
 		this.name = name;
 		this.description = description;
@@ -87,7 +87,12 @@ public class Item extends BaseEntity {
 		this.maxPower = maxPower;
 		this.minPower = minPower;
 		this.weight = weight;
-		this.durability = durability;
+		this.maxDurability = maxDurability;
+	}
+
+	public void updateShop(Shop shop, Long price) {
+		this.shop = shop;
+		this.price = price;
 	}
 
 	public void markAsDeleted() {
