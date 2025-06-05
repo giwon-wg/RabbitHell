@@ -78,7 +78,7 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 		List<ItemType> equipableTypes = ItemType.getEquipableTypes();
 
 		// 슬롯 조건
-		List<ItemType> itemTypesBySlot = ItemType.getItemTypeBySlot(slot);
+		List<ItemType> itemTypesBySlot = ItemType.getItemTypesBySlot(slot);
 
 		List<InventoryItem> content = queryFactory
 			.selectFrom(inventoryItem)
