@@ -3,6 +3,8 @@ package com.example.rabbithell.domain.battle.postProcess.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardExecutor;
 import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
@@ -18,12 +20,13 @@ import com.example.rabbithell.domain.monster.entity.Monster;
 public class WinRewardStrategy implements BattleRewardStrategy {
 
 	@Override
+	@Transactional
 	public BattleRewardResultVo applyReward(Clover clover, List<GameCharacter> team, Monster monster,
 		BattleFieldType fieldType) {
 		int earnedExp = monster.getExp();
 		int earnedSkillPoints = fieldType.getSkillPoints();
 		long earnedCash = 1000L;
-
+		
 		List<Integer> updatedExps = new ArrayList<>();
 		List<Integer> updatedLevels = new ArrayList<>();
 		List<Integer> levelUps = new ArrayList<>();
@@ -32,6 +35,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		long newCash = 0L;
 
 		BattleRewardExecutor executor = new BattleRewardExecutor();
+
 		List<ExpRewardCommand> expCommands = new ArrayList<>();
 		List<LevelUpCommand> levelCommands = new ArrayList<>();
 		List<SkillPointRewardCommand> skillCommands = new ArrayList<>();

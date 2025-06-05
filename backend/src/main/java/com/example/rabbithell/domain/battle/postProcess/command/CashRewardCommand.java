@@ -16,6 +16,7 @@ public class CashRewardCommand implements BattleRewardCommand {
 	@Override
 	public void execute() {
 		resultCash = currentCash + earnedCash;
+
 	}
 
 }

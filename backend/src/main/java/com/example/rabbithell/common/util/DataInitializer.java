@@ -179,25 +179,29 @@ public class DataInitializer implements CommandLineRunner {
 
 		GameCharacter character9 = new GameCharacter(user3, clover3, "토끼9", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
 			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
-		GameCharacter character10 = new GameCharacter(user3, clover3, "토끼10", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
+		GameCharacter character10 = new GameCharacter(user3, clover3, "토끼10", Job.INCOMPETENT, 50, 4900, 1000, 1000,
+			1000,
 			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
-		GameCharacter character11 = new GameCharacter(user3, clover3, "토끼11", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
+		GameCharacter character11 = new GameCharacter(user3, clover3, "토끼11", Job.INCOMPETENT, 50, 4900, 1000, 1000,
+			1000,
 			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
-		GameCharacter character12 = new GameCharacter(user3, clover3, "토끼12", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
+		GameCharacter character12 = new GameCharacter(user3, clover3, "토끼12", Job.INCOMPETENT, 50, 4900, 1000, 1000,
+			1000,
 			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		characterRepository.save(character9);
 		characterRepository.save(character10);
 		characterRepository.save(character11);
 		characterRepository.save(character12);
 
-
-
 		Inventory inventory = new Inventory(clover, 100);
 		inventoryRepository.save(inventory);
 
-		Item weapon = new Item(null, "지존킹왕짱당근", ItemType.SWORD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
-		Item armor = new Item(null, "원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
-		Item accessory = new Item(null, "토끼풀귀걸이", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
+		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100,
+			false);
+		Item armor = new Item(null, "원피스", "예쁜원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100,
+			false);
+		Item accessory = new Item(null, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L,
+			100, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);

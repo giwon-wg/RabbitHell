@@ -12,8 +12,6 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.vo.BattleResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
-import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
-import com.example.rabbithell.domain.inventory.dto.response.EquippedItem;
 import com.example.rabbithell.domain.inventory.service.InventoryService;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.service.ItemService;
@@ -48,14 +46,14 @@ public class Battle {
 
 		for (GameCharacter rabbit : clover) {
 
-			EquipResponse response = inventoryService.getEquippedItemsByCharacter(authUser.getUserId(), rabbit.getId());
-
-			List<EquippedItem> equippedItems = response.equippedItems();
-			List<Long> equippedItemIds = new ArrayList<>();
-			for (EquippedItem equippedItem : equippedItems) {
-				equippedItemIds.add(equippedItem.itemId());
-
-			}
+			// EquipResponse response = inventoryService.getEquippedItemsByCharacter(authUser.getUserId(), rabbit.getId());
+			//
+			// List<EquippedItem> equippedItems = response.equippedItems();
+			// List<Long> equippedItemIds = new ArrayList<>();
+			// for (EquippedItem equippedItem : equippedItems) {
+			// 	equippedItemIds.add(equippedItem.itemId());
+			//
+			// }
 
 			playerAttack.add(rabbit.getStrength());
 			playerDefense.add(rabbit.getStrength());  // 실제로는 Defense 필드 분리 필요
