@@ -152,72 +152,76 @@ public class DataInitializer implements CommandLineRunner {
 		cloverRepository.save(clover3);
 
 		GameCharacter character1 = new GameCharacter(user, clover, "토끼1", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character2 = new GameCharacter(user, clover, "토끼2", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character3 = new GameCharacter(user, clover, "토끼3", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character4 = new GameCharacter(user, clover, "토끼4", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		characterRepository.save(character1);
 		characterRepository.save(character2);
 		characterRepository.save(character3);
 		characterRepository.save(character4);
 
 		GameCharacter character5 = new GameCharacter(user2, clover2, "토끼5", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character6 = new GameCharacter(user2, clover2, "토끼6", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character7 = new GameCharacter(user2, clover2, "토끼7", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character8 = new GameCharacter(user2, clover2, "토끼8", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		characterRepository.save(character5);
 		characterRepository.save(character6);
 		characterRepository.save(character7);
 		characterRepository.save(character8);
 
 		GameCharacter character9 = new GameCharacter(user3, clover3, "토끼9", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
-		GameCharacter character10 = new GameCharacter(user3, clover3, "토끼10", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
-		GameCharacter character11 = new GameCharacter(user3, clover3, "토끼11", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
-		GameCharacter character12 = new GameCharacter(user3, clover3, "토끼12", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+		GameCharacter character10 = new GameCharacter(user3, clover3, "토끼10", Job.INCOMPETENT, 50, 4900, 1000, 1000,
+			1000,
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+		GameCharacter character11 = new GameCharacter(user3, clover3, "토끼11", Job.INCOMPETENT, 50, 4900, 1000, 1000,
+			1000,
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+		GameCharacter character12 = new GameCharacter(user3, clover3, "토끼12", Job.INCOMPETENT, 50, 4900, 1000, 1000,
+			1000,
+			1000, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		characterRepository.save(character9);
 		characterRepository.save(character10);
 		characterRepository.save(character11);
 		characterRepository.save(character12);
 
-
-
 		Inventory inventory = new Inventory(clover, 100);
 		inventoryRepository.save(inventory);
 
-		Item weapon = new Item(null, "지존킹왕짱당근", ItemType.SWORD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
-		Item armor = new Item(null, "원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
-		Item accessory = new Item(null, "토끼풀귀걸이", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
+		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 100,
+			false);
+		Item armor = new Item(null, "원피스", "예쁜원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 20L, 20L, 3L, 100,
+			false);
+		Item accessory = new Item(null, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.SHIELD, Rarity.COMMON, 0L, 20L, 20L, 3L,
+			100, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
 		itemRepository.save(accessory);
 
-		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 100, Slot.HAND);
-		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 100, Slot.BODY);
-		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, Slot.HAND);
+		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, Slot.BODY);
+		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, Slot.HEAD);
 
-		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 100, Slot.HAND);
-		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 100, Slot.BODY);
-		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, Slot.HAND);
+		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, Slot.BODY);
+		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, Slot.HEAD);
 
-		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 100, Slot.HAND);
-		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 100, Slot.BODY);
-		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, Slot.HAND);
+		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, Slot.BODY);
+		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, Slot.HEAD);
 
-		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 100, Slot.HAND);
-		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 100, Slot.BODY);
-		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, Slot.HAND);
+		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, Slot.BODY);
+		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, Slot.HEAD);
 
 		inventoryItemRepository.save(inventoryWeapon1);
 		inventoryItemRepository.save(inventoryArmor1);
@@ -232,11 +236,17 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(inventoryArmor4);
 		inventoryItemRepository.save(inventoryAccessory4);
 
-		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200);
+		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
 		monsterRepository.save(slime);
 
-		MonsterEncounter monsterEncounter = new MonsterEncounter(1.0, slime, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(monsterEncounter);
+		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40);
+		monsterRepository.save(goblin);
+
+		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);
+		monsterEncounterRepository.save(slimeEncounter);
+
+		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
+		monsterEncounterRepository.save(goblinEncounter);
 
 	}
 }

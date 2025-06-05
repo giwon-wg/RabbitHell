@@ -45,7 +45,7 @@ public class AdminPostController {
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PutMapping("/{postId}")
 	public ResponseEntity<CommonResponse<AdminPostResponse>> updatePost(
-		@AuthenticationPrincipal AuthUser authUser,
+		@AuthenticationPrincipal AuthUser authUser, // 어드민 권한 이 필요한 부분은 MiniAuthUser
 		@PathVariable Long postId,
 		@Valid @RequestBody PostRequest request
 	) {
