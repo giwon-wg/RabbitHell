@@ -22,6 +22,7 @@ import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.shop.dto.request.AddItemRequest;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
 import com.example.rabbithell.domain.shop.dto.response.BuyItemResponse;
+import com.example.rabbithell.domain.shop.dto.response.SellItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
@@ -126,14 +127,14 @@ public class ShopServiceImpl implements ShopService {
 			throw new ShopException(INVENTORY_FULL);
 		}
 
-		// 돈 확인
+		// 현금 확인
 		long cash = clover.getCash();
 		long totalPrice = item.getPrice() * quantity;
 		if (cash < totalPrice) {
 			throw new ShopException(NOT_ENOUGH_CASH);
 		}
 
-		// 돈 차감
+		// 현금 차감
 		clover.spendCash((int)totalPrice);
 
 		// 인벤토리 아이템 생성 및 저장
@@ -143,6 +144,26 @@ public class ShopServiceImpl implements ShopService {
 		});
 
 		return BuyItemResponse.of(inventory, item, quantity, getAvailableSlots(inventory), clover.getCash());
+	}
+
+	@Transactional
+	@Override
+	public SellItemResponse sellItem(Long inventoryItemId) {
+		InventoryItem inventoryItem = inventoryItemRepository.findByIdOrElseThrow(inventoryItemId);
+		Inventory inventory = inventoryItem.getInventory();
+		Clover clover = inventoryItem.getCharacter().getClover();
+		Item item = inventoryItem.getItem();
+
+		// 가격 확인해서 현금 증가시킴
+		clover.earnCash(item.getPrice().intValue());
+
+		// TODO: 장착 중인 아이템은 판매하지 못하도록 수정?
+		// TODO: 내구도가 떨어진 아이템은 어떻게 처리할 것인지?
+
+		// 판매한 아이템 인벤토리에서 제거
+		inventoryItemRepository.delete(inventoryItem);
+
+		return SellItemResponse.of(inventory, item, getAvailableSlots(inventory), clover.getCash());
 	}
 
 	private int getAvailableSlots(Inventory inventory) {

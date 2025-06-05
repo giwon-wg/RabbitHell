@@ -20,6 +20,7 @@ import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.shop.dto.response.BuyItemResponse;
+import com.example.rabbithell.domain.shop.dto.response.SellItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.service.ShopService;
@@ -84,15 +85,12 @@ public class ShopUserController {
 	}
 
 	@PostMapping("/{shopId}/sell")
-	public ResponseEntity<CommonResponse<SellItemResponse>> sellItem(
-		@PathVariable Long shopId,
-		@RequestParam Long inventoryItemId
-	) {
+	public ResponseEntity<CommonResponse<SellItemResponse>> sellItem(@RequestParam Long inventoryItemId) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"아이템 판매 성공",
-			shopService.sellItem(shopId, inventoryItemId)
+			shopService.sellItem(inventoryItemId)
 		));
 	}
 

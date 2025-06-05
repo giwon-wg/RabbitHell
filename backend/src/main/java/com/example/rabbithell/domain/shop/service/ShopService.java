@@ -6,6 +6,7 @@ import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.domain.shop.dto.request.AddItemRequest;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
 import com.example.rabbithell.domain.shop.dto.response.BuyItemResponse;
+import com.example.rabbithell.domain.shop.dto.response.SellItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 
@@ -28,5 +29,7 @@ public interface ShopService {
 	PageResponse<ShopItemResponse> getAllShopItems(Long shopId, Pageable pageable);
 
 	BuyItemResponse buyItem(Long userId, Long itemId, int quantity);
+
+	SellItemResponse sellItem(Long inventoryItemId);
 
 }
