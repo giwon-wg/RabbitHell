@@ -3,7 +3,7 @@ package com.example.rabbithell.domain.battle.vo;
 import java.util.List;
 
 import com.example.rabbithell.domain.battle.enums.BattleResult;
-import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +15,7 @@ public class BattleResultVo {
 	private List<Integer> playerHp, playerMp;
 
 	private List<Integer> playerAttack, playerDefense, playerSpeed;
-	private List<Item> weapon, armor, accessory;
+	private List<InventoryItem> weapon, armor, accessory;
 	private int monsterAttack, monsterDefense, monsterSpeed;
 
 	private String log;

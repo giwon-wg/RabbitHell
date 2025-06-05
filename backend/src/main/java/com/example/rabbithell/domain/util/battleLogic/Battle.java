@@ -13,9 +13,11 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.vo.BattleResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.ItemType;
+import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.skill.entity.Skill;
@@ -26,10 +28,12 @@ import lombok.AllArgsConstructor;
 public class Battle {
 
 	private final InventoryItemService inventoryItemService;
+	private final ItemRepository itemRepository;
 
 	@Autowired
-	public Battle(InventoryItemService inventoryItemService) {
+	public Battle(InventoryItemService inventoryItemService, ItemRepository itemRepository) {
 		this.inventoryItemService = inventoryItemService;
+		this.itemRepository = itemRepository;
 	}
 
 	@Transactional
@@ -45,47 +49,39 @@ public class Battle {
 		List<Job> jobs = new ArrayList<>();
 
 		// 아이템 추가부분 포카드
-		List<Item> weapons = new ArrayList<>();
-		List<Item> armors = new ArrayList<>();
-		List<Item> accessories = new ArrayList<>();
+		List<InventoryItem> weapons = new ArrayList<>();
+		List<InventoryItem> armors = new ArrayList<>();
+		List<InventoryItem> accessories = new ArrayList<>();
 
-		Item weapon = null, armor = null, accessory = null;
+		InventoryItem weapon = null, armor = null, accessory = null;
 
 		List<List<Skill>> skills = new ArrayList<>();
 
 		for (GameCharacter rabbit : clover) {
 
-			// EquipResponse response = inventoryService.getEquippedItemsByCharacter(authUser.getUserId(), rabbit.getId());
-			//
-			// List<EquippedItem> equippedItems = response.equippedItems();
-			// List<Long> equippedItemIds = new ArrayList<>();
-			// for (EquippedItem equippedItem : equippedItems) {
-			// 	equippedItemIds.add(equippedItem.itemId());
-			//
-			// }
-
 			jobs.add(rabbit.getJob());
 
 			// skills.add(rabbit.getSkill());
 
-			List<Item> equipments = inventoryItemService.getEquippedItemsByCharacter(rabbit.getId());
-			for (Item equipment : equipments) {
-				if (equipment.getItemType() == ItemType.BOW || equipment.getItemType() == ItemType.DAGGER
-					|| equipment.getItemType() == ItemType.SWORD) {
-					weapon = equipment;
-					weapons.add(equipment);
-				} else if (equipment.getItemType() == ItemType.SHIELD) {
-					armor = equipment;
-					armors.add(equipment);
-				} else if (equipment.getItemType() == ItemType.SHIELD) {//ACCESSORY
-					accessory = equipment;
-					accessories.add(equipment);
+			List<InventoryItem> items = inventoryItemService.getEquippedInventoryItemsByCharacter(rabbit.getId());
+			for (InventoryItem inventoryItem : items) {
+				Item item = inventoryItem.getItem();
+				if (item.getItemType() == ItemType.BOW || item.getItemType() == ItemType.DAGGER
+					|| item.getItemType() == ItemType.SWORD || item.getItemType() == ItemType.WAND) {
+					weapon = inventoryItem;
+					weapons.add(weapon);
+				} else if (item.getItemType() == ItemType.ARMOR) {
+					armor = inventoryItem;
+					armors.add(armor);
+				} else if (item.getItemType() == ItemType.ACCESSORY) {//ACCESSORY
+					accessory = inventoryItem;
+					accessories.add(armor);
 				}
 			}
 
 			playerHp.add(rabbit.getHp());
 			playerMp.add(rabbit.getMp());
-			if (weapon != null && weapon.getItemType() == ItemType.HP) {//WAND
+			if (weapon != null && weapon.getItem().getItemType() == ItemType.WAND) {//WAND
 				playerAttack.add(rabbit.getStrength());
 				playerMagic.add((int)(rabbit.getIntelligence() + weapon.getPower()));
 			} else {
@@ -96,10 +92,10 @@ public class Battle {
 			playerDefense.add(
 				(int)(100 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() :
 					0)));
-			playerSpeed.add((int)(rabbit.getAgility() -
-				(weapon != null ? weapon.getWeight() : 0) -
-				(armor != null ? armor.getWeight() : 0) -
-				(accessory != null ? accessory.getWeight() : 0)
+			playerSpeed.add((int)(rabbit.getAgility() - 1
+				// (weapon != null ? weapon.getWeight() : 0) -
+				// (armor != null ? armor.getWeight() : 0) -
+				// (accessory != null ? accessory.getWeight() : 0)
 			));
 			criticalChances.add(20 + rabbit.getFocus() / 10);
 

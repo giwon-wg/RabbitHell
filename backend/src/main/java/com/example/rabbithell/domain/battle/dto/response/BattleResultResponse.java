@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.job.entity.Job;
 
@@ -29,9 +30,9 @@ public record BattleResultResponse(
 	List<Integer> jobSkillPoints,
 
 	Set<BattleFieldType> battleFieldTypes,
-	List<Item> weapon,
-	List<Item> armor,
-	List<Item> accessory,
+	List<InventoryItem> weapon,
+	List<InventoryItem> armor,
+	List<InventoryItem> accessory,
 	List<Integer> playerAttack,
 	List<Integer> playerDefense,
 	List<Integer> playerSpeed,
