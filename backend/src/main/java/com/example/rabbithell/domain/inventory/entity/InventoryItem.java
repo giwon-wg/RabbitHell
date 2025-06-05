@@ -57,6 +57,13 @@ public class InventoryItem extends BaseEntity {
 		this.slot = slot;
 	}
 
+	public InventoryItem(Inventory inventory, Item item) {
+		this.inventory = inventory;
+		this.item = item;
+		this.power = (item.getMaxPower() + item.getMinPower()) / 2;
+		this.durability = item.getMaxDurability();
+	}
+
 	public void equip(GameCharacter character) {
 		this.character = character;
 		this.slot = Slot.getSlotByItemType(this.getItem().getItemType());

@@ -1,10 +1,14 @@
 package com.example.rabbithell.domain.shop.controller;
 
+import java.security.Principal;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
+import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.shop.dto.response.BuyItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
@@ -64,17 +69,17 @@ public class ShopUserController {
 		));
 	}
 
-	@PostMapping("/{shopId}/items/{itemId}")
+	@PostMapping("/{shopId}/items/{itemId}/buy")
 	public ResponseEntity<CommonResponse<BuyItemResponse>> buyItem(
-		@PathVariable Long shopId,
+		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long itemId,
-		@RequestParam int quantity
-	) {
+		@RequestParam int quantity,
+		Principal principal, UserDetails authenticatedPrincipal) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"상점 아이템 구매 성공",
-			shopService.buyItem(shopId, itemId, quantity)
+			shopService.buyItem(authUser.getUserId(), itemId, quantity)
 		));
 	}
 

@@ -1,6 +1,9 @@
 package com.example.rabbithell.domain.shop.service;
 
+import static com.example.rabbithell.domain.shop.exception.code.ShopExceptionCode.*;
+
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,13 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
+import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
+import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.shop.dto.request.AddItemRequest;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
+import com.example.rabbithell.domain.shop.dto.response.BuyItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
+import com.example.rabbithell.domain.shop.exception.ShopException;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.village.entity.Village;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
@@ -28,6 +39,9 @@ public class ShopServiceImpl implements ShopService {
 	private final ShopRepository shopRepository;
 	private final VillageRepository villageRepository;
 	private final ItemRepository itemRepository;
+	private final InventoryItemRepository inventoryItemRepository;
+	private final InventoryRepository inventoryRepository;
+	private final CloverRepository cloverRepository;
 
 	@Override
 	public ShopResponse createShop(ShopRequest shopRequest) {
@@ -97,6 +111,44 @@ public class ShopServiceImpl implements ShopService {
 			.toList();
 
 		return PageResponse.of(dtoList, page);
+	}
+
+	@Transactional
+	@Override
+	public BuyItemResponse buyItem(Long userId, Long itemId, int quantity) {
+		Item item = itemRepository.findByIdOrElseThrow(itemId);
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
+		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
+
+		// 인벤토리 용량 확인
+		int availableSlots = getAvailableSlots(inventory);
+		if (quantity > availableSlots) {
+			throw new ShopException(INVENTORY_FULL);
+		}
+
+		// 돈 확인
+		long cash = clover.getCash();
+		long totalPrice = item.getPrice() * quantity;
+		if (cash < totalPrice) {
+			throw new ShopException(NOT_ENOUGH_CASH);
+		}
+
+		// 돈 차감
+		clover.spendCash((int)totalPrice);
+
+		// 인벤토리 아이템 생성 및 저장
+		IntStream.range(0, quantity).forEach(i -> {
+			InventoryItem inventoryItem = new InventoryItem(inventory, item);
+			inventoryItemRepository.save(inventoryItem);
+		});
+
+		return BuyItemResponse.of(inventory, item, quantity, getAvailableSlots(inventory), clover.getCash());
+	}
+
+	private int getAvailableSlots(Inventory inventory) {
+		int usedSlots = inventoryItemRepository.countByInventory_Id(inventory.getId());
+		int capacity = inventoryRepository.findCapacityById(inventory.getId());
+		return capacity - usedSlots;
 	}
 
 }

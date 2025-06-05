@@ -42,4 +42,6 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 
 	Page<InventoryItem> findByInventoryAndItem_ItemTypeInAndSlotAndCharacterIsNullAndSlotIsNull(Inventory inventory, Collection<ItemType> itemItemTypes, Slot slot, GameCharacter character,
 		Slot slot1, Pageable pageable);
+
+	int countByInventory_Id(Long inventoryId);
 }
