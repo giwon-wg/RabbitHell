@@ -163,6 +163,9 @@ public class DataInitializer implements CommandLineRunner {
 		userRepository.save(user2);
 		userRepository.save(user3);
 
+		User admin = new User("admin", "admin", encodedPassword, User.Role.ADMIN, false);
+		userRepository.save(admin);
+
 		Clover clover = new Clover("clover", user, LobbitKingdom, LopEared, 100000L, 100000L, 1L, null);
 		Clover clover2 = new Clover("clover2", user2, Angoland, angora, 100000L, 100000L, 2L, null);
 		Clover clover3 = new Clover("clover3", user3, Dwarfines, Dwarf, 100000L, 100000L, 3L, null);
@@ -240,6 +243,7 @@ public class DataInitializer implements CommandLineRunner {
 			false);
 		Item slimeBell = new Item(null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
 			false);
+		Item tuxedo = new Item(null, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 0L, 10L, 10L, 3L, 3L, 10000, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
@@ -252,6 +256,7 @@ public class DataInitializer implements CommandLineRunner {
 		itemRepository.save(somiGun);
 		itemRepository.save(fourCard);
 		itemRepository.save(slimeBell);
+		itemRepository.save(tuxedo);
 
 		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND);
 		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY);
@@ -281,6 +286,7 @@ public class DataInitializer implements CommandLineRunner {
 		InventoryItem iAirplaneTicket = new InventoryItem(inventory, airplaneTicket, null, 0L, 10000, 10000, 0L, null);
 		InventoryItem iWakeUp = new InventoryItem(inventory, wakeUp, null, 0L, 10000, 10000, 0L, null);
 		InventoryItem iSlimeBell = new InventoryItem(inventory, slimeBell, null, 0L, 10000, 10000, 0L, null);
+		InventoryItem iTuxedo = new InventoryItem(inventory, tuxedo, null, 10L, 10000, 10000, 3L, null);
 
 		inventoryItemRepository.save(inventoryWeapon1);
 		inventoryItemRepository.save(inventoryArmor1);
@@ -302,6 +308,7 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(iAirplaneTicket);
 		inventoryItemRepository.save(iWakeUp);
 		inventoryItemRepository.save(iSlimeBell);
+		inventoryItemRepository.save(iTuxedo);
 
 		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
 		monsterRepository.save(slime);
