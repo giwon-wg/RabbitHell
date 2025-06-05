@@ -16,7 +16,6 @@ import com.example.rabbithell.domain.skill.dto.request.SkillUpdateRequest;
 import com.example.rabbithell.domain.skill.dto.response.AllSkillResponse;
 import com.example.rabbithell.domain.skill.entity.Skill;
 import com.example.rabbithell.domain.skill.exception.SkillException;
-import com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode;
 import com.example.rabbithell.domain.skill.repository.SkillRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -86,5 +85,37 @@ public class SkillServiceImpl implements SkillService {
 	public void deleteSkill(Long skillId) {
 		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
 		skillRepository.delete(skill);
+	}
+
+
+	@Transactional
+	@Override
+	public void learnSkill(Long characterId, Long skillId) {
+
+		GameCharacter character = characterRepository.findByIdOrElseThrow(characterId);
+		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
+
+		if (characterSkillRepository.existsByCharacterAndSkill(character, skill)) {
+			throw new SkillException(ALREADY_LEARNED);
+		}
+
+		// 직업체크
+		if (character.getJob().getJobCategory() != skill.getJob().getJobCategory()) {
+			throw new SkillException(INVALID_JOB_FOR_SKILL);
+		}
+
+		// 직업티어체크
+		if (!character.getJob().getTier().isSameOrHigherThan(skill.getJob().getTier())) {
+			throw new SkillException(INSUFFICIENT_TIER_FOR_SKILL);
+		}
+		// 스킬 포인트 체크 및 차감
+		character.learnSkillBySkillPoint(skill.getRequiredSkillPoint());
+
+		// 캐릭터 저장(변경 반영)
+		characterRepository.save(character);
+
+		CharacterSkill characterSkill = new CharacterSkill(character, skill);
+		characterSkillRepository.save(characterSkill);
+
 	}
 }
