@@ -5,7 +5,9 @@ import java.util.Set;
 
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.job.entity.Job;
 
 import lombok.Builder;
 
@@ -16,30 +18,32 @@ public record BattleResultResponse(
 
 	List<Long> characterIds,
 	List<Integer> level,
-	List<Integer> earnedExp,
+	int earnedExp,
 	List<Integer> totalExp,
-	int earnedMoney,
-	int totalMoney,
-	int earnedCash,
-	int totalCash,
-	List<Integer> earnedSkillPoint,
-	List<Integer> totalSkillPoint,
+	List<Integer> levelUpAmounts,
+	Long lostOrEarnedCash,
+	Long totalCash,
+
+	List<Job> jobs,
+	int earnedSkillPoint,
+	List<Integer> totalSkillPoints,
+	List<Integer> jobSkillPoints,
 
 	Set<BattleFieldType> battleFieldTypes,
-	List<Item> weapon,
-	List<Item> armor,
-	List<Item> accessory,
+	List<InventoryItem> weapon,
+	List<InventoryItem> armor,
+	List<InventoryItem> accessory,
 	List<Integer> playerAttack,
 	List<Integer> playerDefense,
 	List<Integer> playerSpeed,
-	List<Integer> monsterAttack,
-	List<Integer> monsterDefence,
-	List<Integer> monsterSpeed,
+	int monsterAttack,
+	int monsterDefense,
+	int monsterSpeed,
 	BattleResult battleResult,
 	String battleLog,
 	Item earnedItem,
-	int usedPotionHP,
-	int usedPotionMP
+	int usedPotionHp,
+	int usedPotionMp
 ) {
 
 }

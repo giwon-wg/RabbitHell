@@ -13,6 +13,9 @@ public record ItemRequest(
 	@Schema(description = "아이템명", example = "장미칼")
 	String name,
 
+	@Schema(description = "설명", example = "장미 문양이 새겨진 날카로운 칼")
+	String description,
+
 	@Schema(description = "타입", example = "SWORD")
 	ItemType itemType,
 
@@ -31,10 +34,13 @@ public record ItemRequest(
 	@Schema(description = "최소 위력", example = "800")
 	Long minPower,
 
-	@Schema(description = "무게", example = "15")
-	Long weight,
+	@Schema(description = "최대 무게", example = "30")
+	Long maxWeight,
 
-	@Schema(description = "내구도", example = "1000")
-	Integer durability
+	@Schema(description = "최소 무게", example = "15")
+	Long minWeight,
+
+	@Schema(description = "최대 내구도", example = "1000")
+	Integer maxDurability
 ) {
 }

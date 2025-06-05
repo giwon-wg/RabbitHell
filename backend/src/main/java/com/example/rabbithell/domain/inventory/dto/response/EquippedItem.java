@@ -6,17 +6,27 @@ import com.example.rabbithell.domain.inventory.enums.Slot;
 public record EquippedItem(
 	Long inventoryItemId,
 	Long itemId,
+	String itemName,
 	Long characterId,
-	Slot slot,
-	Integer durability
+	String characterName,
+	String description,
+	Long power,
+	Integer maxDurability,
+	Integer durability,
+	Slot slot
 ) {
 	public static EquippedItem fromEntity(InventoryItem inventoryItem) {
 		return new EquippedItem(
 			inventoryItem.getId(),
 			inventoryItem.getItem().getId(),
+			inventoryItem.getItem().getName(),
 			inventoryItem.getCharacter().getId(),
-			inventoryItem.getSlot(),
-			inventoryItem.getDurability()
+			inventoryItem.getCharacter().getName(),
+			inventoryItem.getItem().getDescription(),
+			inventoryItem.getPower(),
+			inventoryItem.getItem().getMaxDurability(),
+			inventoryItem.getDurability(),
+			inventoryItem.getSlot()
 		);
 	}
 }
