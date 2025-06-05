@@ -101,13 +101,13 @@ public class InventoryItemController {
 	public ResponseEntity<CommonResponse<EquipResponse>> equipItem(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long inventoryItemId,
-		@RequestBody EquipRequest equipRequest
+		@RequestParam Long characterId
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 장착 성공",
-			inventoryItemService.equipItem(authUser.getUserId(), inventoryItemId, equipRequest)
+			inventoryItemService.equipItem(authUser.getUserId(), inventoryItemId, characterId)
 		));
 	}
 

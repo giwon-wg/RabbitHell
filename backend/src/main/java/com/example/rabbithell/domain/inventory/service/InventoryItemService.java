@@ -30,7 +30,7 @@ public interface InventoryItemService {
 
 	List<InventoryItem> getEquippedInventoryItemsByCharacter(Long characterId);
 
-	EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest);
+	EquipResponse equipItem(Long userId, Long inventoryItemId, Long characterId);
 
 	UnequipResponse unequipItem(Long userId, Long inventoryItemId);
 
