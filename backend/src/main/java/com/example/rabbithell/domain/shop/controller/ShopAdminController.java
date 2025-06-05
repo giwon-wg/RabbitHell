@@ -64,4 +64,17 @@ public class ShopAdminController {
 		));
 	}
 
+	@PostMapping("/{shopId}")
+	public ResponseEntity<CommonResponse<Void>> addItem(
+		@PathVariable Long shopId,
+		@RequestBody AddItemRequest addItemRequest
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"상점에 아이템 추가 성공",
+			shopService.addItem(shopId, addItemRequest)
+		));
+	}
+
 }

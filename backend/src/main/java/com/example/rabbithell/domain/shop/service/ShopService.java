@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.shop.service;
 
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
+import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 
 import jakarta.validation.Valid;
@@ -14,5 +15,7 @@ public interface ShopService {
 	ShopResponse updateShop(Long shopId, @Valid ShopRequest shopRequest);
 
 	void deleteShop(Long shopId);
+
+	ShopItemResponse getShopItem(Long itemId);
 
 }

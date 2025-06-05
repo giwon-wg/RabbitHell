@@ -3,7 +3,10 @@ package com.example.rabbithell.domain.shop.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
+import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
@@ -18,6 +21,7 @@ public class ShopServiceImpl implements ShopService {
 
 	private final ShopRepository shopRepository;
 	private final VillageRepository villageRepository;
+	private final ItemRepository itemRepository;
 
 	@Override
 	public ShopResponse createShop(ShopRequest shopRequest) {
@@ -57,5 +61,15 @@ public class ShopServiceImpl implements ShopService {
 		Shop shop = shopRepository.findByIdOrElseThrow(shopId);
 		shop.markAsDeleted();
 	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public ShopItemResponse getShopItem(Long itemId) {
+		Item item = itemRepository.findByIdOrElseThrow(itemId);
+
+		return ShopItemResponse.fromEntity(item);
+	}
+
+
 
 }

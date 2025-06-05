@@ -1,13 +1,20 @@
 package com.example.rabbithell.domain.shop.controller;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
+import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.service.ShopService;
 
@@ -27,6 +34,59 @@ public class ShopUserController {
 			HttpStatus.OK.value(),
 			"상점 조회 성공",
 			shopService.getShopById(shopId)
+		));
+	}
+
+	@GetMapping("/{shopId}/items/{itemId}")
+	public ResponseEntity<CommonResponse<ShopItemResponse>> getShopItem(@PathVariable Long itemId) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"상점 아이템 상세 조회 성공",
+			shopService.getShopItem(itemId)
+		));
+	}
+
+	@GetMapping("/{shopId}/items")
+	public ResponseEntity<CommonResponse<PageResponse<ShopItemResponse>>> getAllShopItems(
+		@PathVariable Long shopId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"상점 아이템 전체 조회 성공",
+			shopService.getAllShopItems(shopId, pageable)
+		));
+	}
+
+	@PostMapping("/{shopId}/items/{itemId}")
+	public ResponseEntity<CommonResponse<BuyItemResponse>> buyItem(
+		@PathVariable Long shopId,
+		@PathVariable Long itemId,
+		@RequestParam int quantity
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"상점 아이템 구매 성공",
+			shopService.buyItem(shopId, itemId, quantity)
+		));
+	}
+
+	@PostMapping("/{shopId}/sell")
+	public ResponseEntity<CommonResponse<SellItemResponse>> sellItem(
+		@PathVariable Long shopId,
+		@RequestParam Long inventoryItemId
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 판매 성공",
+			shopService.sellItem(shopId, inventoryItemId)
 		));
 	}
 
