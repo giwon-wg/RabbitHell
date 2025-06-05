@@ -1,14 +1,16 @@
 package com.example.rabbithell.domain.village.service;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.clover.dto.response.CloverResponse;
 
 public interface VillageService {
+
 	void moveVillage(AuthUser authUser, Long villageId);
 
-	void saveMoney(AuthUser authUser, int saveMoney);
+	CloverResponse  saveMoney(AuthUser authUser, int saveMoney);
 
-	void withdrawMoney(AuthUser authUser, int withdrawMoney);
+	CloverResponse withdrawMoney(AuthUser authUser, int withdrawMoney);
 
-	void cureCharacter(AuthUser authUser);
+	CloverResponse  cureCharacter(AuthUser authUser);
 
 }
