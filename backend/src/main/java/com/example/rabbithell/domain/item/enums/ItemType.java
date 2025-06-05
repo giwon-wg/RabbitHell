@@ -3,12 +3,34 @@ package com.example.rabbithell.domain.item.enums;
 import java.util.Arrays;
 import java.util.List;
 
+import com.example.rabbithell.domain.inventory.enums.Slot;
+
+import lombok.Getter;
+
+@Getter
 public enum ItemType {
 	// equipable
-	SWORD, SHIELD, BOW, DAGGER,
+	SWORD(true, false),
+	BOW(true, false),
+	DAGGER(true, false),
+	WAND(true, false),
+	ARMOR(true, false),
+	ACCESSORY(true, false),
 
 	// consumable
-	HP, MP;
+	HP(false, true),
+	MP(false, true),
+
+	// et cetera
+	ETC(false, false);
+
+	private final boolean equipable;
+	private final boolean consumable;
+
+	ItemType(boolean equipable, boolean consumable) {
+		this.equipable = equipable;
+		this.consumable = consumable;
+	}
 
 	public static List<ItemType> getEquipableTypes() {
 		return Arrays.stream(values())
@@ -16,17 +38,16 @@ public enum ItemType {
 			.toList();
 	}
 
-	public boolean isEquipable() {
-		return switch (this) {
-			case SWORD, SHIELD, BOW, DAGGER -> true;
-			default -> false;
-		};
-	}
+	public static List<ItemType> getItemTypesBySlot(Slot slot) {
+		if (slot == null) {
+			return null;
+		}
 
-	public boolean isConsumable() {
-		return switch (this) {
-			case HP, MP -> true;
-			default -> false;
+		return switch (slot) {
+			case HEAD -> List.of(ACCESSORY);
+			case BODY -> List.of(ARMOR);
+			case HAND -> List.of(SWORD, BOW, DAGGER, WAND);
+			default -> null;
 		};
 	}
 }

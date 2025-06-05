@@ -11,8 +11,10 @@ public record ItemResponse(
 	String description,
 	Rarity rarity,
 	Long price,
-	Long attack,
-	Long weight,
+	Long maxPower,
+	Long minPower,
+	Long maxWeight,
+	Long minWeight,
 	Integer durability
 ) {
 	public static ItemResponse fromEntity(Item item) {
@@ -24,9 +26,11 @@ public record ItemResponse(
 			item.getDescription(),
 			item.getRarity(),
 			item.getPrice(),
-			item.getPower(),
-			item.getWeight(),
-			item.getDurability()
+			item.getMaxPower(),
+			item.getMinPower(),
+			item.getMaxWeight(),
+			item.getMinWeight(),
+			item.getMaxDurability()
 		);
 	}
 }

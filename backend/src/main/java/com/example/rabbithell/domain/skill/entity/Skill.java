@@ -25,11 +25,14 @@ public class Skill {
 
 	private String description;
 
+	private int requiredSkillPoint;
+
+	private int probability;
+
 	private int tier;
 
 	private int mpCost;
 
-	// 이거 필요한가?
 	private int coolTime;
 
 	private int dmg;
@@ -38,9 +41,21 @@ public class Skill {
 	private Job job;
 
 	@Builder
-	public Skill(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {
+	public Skill(
+		String name,
+		String description,
+		int requiredSkillPoint,
+		int probability,
+		int tier,
+		int mpCost,
+		int coolTime,
+		int dmg,
+		Job job
+	) {
 		this.name = name;
 		this.description = description;
+		this.requiredSkillPoint = requiredSkillPoint;
+		this.probability = probability;
 		this.tier = tier;
 		this.mpCost = mpCost;
 		this.coolTime = coolTime;
@@ -48,9 +63,21 @@ public class Skill {
 		this.job = job;
 	}
 
-	public void skillUpdate(String name, String description, int tier, int mpCost, int coolTime, int dmg, Job job) {
+	public void skillUpdate(
+		String name,
+		String description,
+		int requiredSkillPoint,
+		int probability,
+		int tier,
+		int mpCost,
+		int coolTime,
+		int dmg,
+		Job job
+	) {
 		this.name = name;
 		this.description = description;
+		this.requiredSkillPoint = requiredSkillPoint;
+		this.probability = probability;
 		this.tier = tier;
 		this.mpCost = mpCost;
 		this.coolTime = coolTime;

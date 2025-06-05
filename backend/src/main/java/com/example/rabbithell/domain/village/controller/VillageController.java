@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.clover.dto.response.CloverResponse;
 import com.example.rabbithell.domain.village.dto.request.MoneyRequest;
 import com.example.rabbithell.domain.village.dto.request.MoveCharacterRequest;
 import com.example.rabbithell.domain.village.service.VillageService;
@@ -40,42 +41,46 @@ public class VillageController {
 	}
 
 	@PatchMapping("/banks/save")
-	public ResponseEntity<CommonResponse<Void>> saveMoney(
+	public ResponseEntity<CommonResponse<CloverResponse>> saveMoney(
 		@AuthenticationPrincipal AuthUser authUser,
 		@Valid @RequestBody MoneyRequest request
 	) {
-		villageService.saveMoney(authUser, request.money());
+		CloverResponse clover = villageService.saveMoney(authUser, request.money());
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			request.money() + "골드가 입금되었습니다."
+			request.money() + "골드가 입금되었습니다.",
+			clover
 		));
 	}
 
 	@PatchMapping("/banks/withdraw")
-	public ResponseEntity<CommonResponse<Void>> withdrawMoney(
+	public ResponseEntity<CommonResponse<CloverResponse>> withdrawMoney(
 		@AuthenticationPrincipal AuthUser authUser,
 		@Valid @RequestBody MoneyRequest request
 	) {
-		villageService.withdrawMoney(authUser, request.money());
+		CloverResponse clover = villageService.withdrawMoney(authUser, request.money());
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			request.money() + "골드가 출금되었습니다."));
+			request.money() + "골드가 출금되었습니다.",
+			clover
+		));
 	}
 
 	@PatchMapping("/hospitals/cure")
-	public ResponseEntity<CommonResponse<Void>> cureCharacter(
+	public ResponseEntity<CommonResponse<CloverResponse>> cureCharacter(
 		@AuthenticationPrincipal AuthUser authUser
 	) {
-		villageService.cureCharacter(authUser);
+		CloverResponse clover = villageService.cureCharacter(authUser);
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			"치료가 완료되었습니다."
+			"치료가 완료되었습니다.",
+			clover
 		));
 	}
 

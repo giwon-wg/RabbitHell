@@ -2,12 +2,22 @@ package com.example.rabbithell.domain.inventory.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.EquippedItem;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.entity.QInventoryItem;
+import com.example.rabbithell.domain.inventory.enums.Slot;
+import com.example.rabbithell.domain.item.entity.QItem;
+import com.example.rabbithell.domain.item.enums.ItemType;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -18,14 +28,24 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 
 	private final JPAQueryFactory queryFactory;
 
+	// 해당 캐릭터의 장비 장착 현황 조회
 	@Override
-	public EquipResponse findEquipmentStatusByCharacterId(Long characterId) {
+	public EquipResponse findEquipmentStatusByCharacter(Long characterId) {
 		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
 
 		List<Tuple> tuples = queryFactory
-			.select(inventoryItem.id, inventoryItem.item.id, inventoryItem.item.name, inventoryItem.character.id,
-				inventoryItem.character.name, inventoryItem.item.description, inventoryItem.item.power,
-				inventoryItem.slot, inventoryItem.durability)
+			.select(
+				inventoryItem.id,
+				inventoryItem.item.id,
+				inventoryItem.item.name,
+				inventoryItem.character.id,
+				inventoryItem.character.name,
+				inventoryItem.item.description,
+				inventoryItem.power,
+				inventoryItem.maxDurability,
+				inventoryItem.durability,
+				inventoryItem.slot
+			)
 			.from(inventoryItem)
 			.where(inventoryItem.character.id.eq(characterId))
 			.fetch();
@@ -38,13 +58,75 @@ public class InventoryItemQueryRepositoryImpl implements InventoryItemQueryRepos
 				t.get(inventoryItem.character.id),
 				t.get(inventoryItem.character.name),
 				t.get(inventoryItem.item.description),
-				t.get(inventoryItem.item.power),
-				t.get(inventoryItem.slot),
-				t.get(inventoryItem.durability)
+				t.get(inventoryItem.power),
+				t.get(inventoryItem.maxDurability),
+				t.get(inventoryItem.durability),
+				t.get(inventoryItem.slot)
 			))
 			.toList();
 
 		return new EquipResponse(equippedItems);
+	}
+
+	// 슬롯을 쿼리 파라미터 조건으로 해서 장착 가능한 아이템 리스트 조회
+	@Override
+	public Page<InventoryItem> findEquipableItemBySlot(Inventory inventory, Slot slot, Pageable pageable) {
+		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
+		QItem item = QItem.item;
+
+		// 조건으로 쓰기 위한 장착 가능한 아이템 타입 리스트
+		List<ItemType> equipableTypes = ItemType.getEquipableTypes();
+
+		// 슬롯 조건
+		List<ItemType> itemTypesBySlot = ItemType.getItemTypesBySlot(slot);
+
+		List<InventoryItem> content = queryFactory
+			.selectFrom(inventoryItem)
+			.join(inventoryItem.item, item).fetchJoin()
+			.where(
+				inventoryItem.inventory.eq(inventory),
+				item.itemType.in(equipableTypes),
+				inventoryItem.character.isNull(),
+				inventoryItem.slot.isNull(),
+				itemTypeIn(item, itemTypesBySlot) // 동적 조건
+			)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		JPAQuery<Long> countQuery = queryFactory
+			.select(inventoryItem.count())
+			.from(inventoryItem)
+			.join(inventoryItem.item, item)
+			.where(
+				inventoryItem.inventory.eq(inventory),
+				item.itemType.in(equipableTypes),
+				inventoryItem.character.isNull(),
+				inventoryItem.slot.isNull(),
+				itemTypeIn(item, itemTypesBySlot) // 동적 조건
+			);
+
+		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+	}
+
+	// 아이템 타입 동적 조건
+	private BooleanExpression itemTypeIn(QItem item, List<ItemType> itemTypes) {
+		return (itemTypes != null && !itemTypes.isEmpty()) ? item.itemType.in(itemTypes) : null;
+	}
+
+	// 캐릭터가 특정 슬롯에 장착한 아이템 조회
+	@Override
+	public Long findByCharacterAndSlot(Long characterId, Slot slot) {
+		QInventoryItem inventoryItem = QInventoryItem.inventoryItem;
+
+		return queryFactory
+			.select(inventoryItem.id)
+			.from(inventoryItem)
+			.where(
+				inventoryItem.character.id.eq(characterId),
+				inventoryItem.slot.eq(slot)
+			)
+			.fetchFirst();
 	}
 
 }

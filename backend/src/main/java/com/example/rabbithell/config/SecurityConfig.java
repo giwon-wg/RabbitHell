@@ -4,14 +4,14 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +20,6 @@ import com.example.rabbithell.infrastructure.security.jwt.JwtAuthenticationFilte
 import com.example.rabbithell.infrastructure.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.rabbithell.infrastructure.security.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.rabbithell.infrastructure.security.oauth.service.CustomOAuth2UserService;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
@@ -35,21 +34,21 @@ public class SecurityConfig {
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-	// private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
-			.cors()
-			.and()
-			.csrf(csrf -> csrf.disable())
-			.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.exceptionHandling()
-			.authenticationEntryPoint((request, response, authException) -> {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			})
-			.and()
+			.cors(Customizer.withDefaults())
+			.csrf(AbstractHttpConfigurer::disable)
+			.sessionManagement(sess ->
+				sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			)
+			.exceptionHandling(ex ->
+				ex.authenticationEntryPoint((request, response, authException) -> {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				})
+			)
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
 					"/auth/**",
@@ -60,11 +59,12 @@ public class SecurityConfig {
 				.anyRequest().authenticated()
 			)
 			.oauth2Login(oauth -> oauth
-				.authorizationEndpoint(auth -> auth
-					.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+				.authorizationEndpoint(auth ->
+					auth.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
 				)
-				.userInfoEndpoint(userInfo -> userInfo
-					.userService(customOAuth2UserService))
+				.userInfoEndpoint(userInfo ->
+					userInfo.userService(customOAuth2UserService)
+				)
 				.successHandler(oAuth2AuthenticationSuccessHandler)
 				.failureHandler((req, res, ex) -> {
 					Cookie[] cookies = req.getCookies();

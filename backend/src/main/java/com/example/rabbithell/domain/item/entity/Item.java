@@ -48,50 +48,66 @@ public class Item extends BaseEntity {
 
 	private Long price;
 
-	private Long power; // 아이템 위력
-
 	private Long maxPower;
 
 	private Long minPower;
 
-	private Long weight;
+	private Long maxWeight;
+
+	private Long minWeight;
 
 	@Column(nullable = false)
-	private Integer durability;
+	private Integer maxDurability;
 
 	@Column(nullable = false)
 	private boolean isDeleted;
 
 	@Builder
-	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price, Long power,
-		Long maxPower, Long minPower, Long weight, Integer durability, boolean isDeleted) {
+	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
+		Long maxPower, Long minPower, Long maxWeight, Long minWeight, Integer maxDurability, boolean isDeleted) {
 		this.shop = shop;
 		this.name = name;
 		this.description = description;
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
-		this.power = power;
 		this.maxPower = maxPower;
 		this.minPower = minPower;
-		this.weight = weight;
-		this.durability = durability;
+		this.maxWeight = maxWeight;
+		this.minWeight = minWeight;
+		this.maxDurability = maxDurability;
 		this.isDeleted = isDeleted;
 	}
 
-	public void update(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
-		Long power, Long maxPower, Long minPower, Long weight, Integer durability) {
+	public void update(
+		Shop shop,
+		String name,
+		String description,
+		ItemType itemType,
+		Rarity rarity,
+		Long price,
+		Long maxPower,
+		Long minPower,
+		Long maxWeight,
+		Long minWeight,
+		Integer maxDurability
+	) {
 		this.shop = shop;
 		this.name = name;
 		this.description = description;
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
-		this.power = power;
 		this.maxPower = maxPower;
 		this.minPower = minPower;
-		this.weight = weight;
-		this.durability = durability;
+		this.maxWeight = maxWeight;
+		this.minWeight = minWeight;
+		this.maxDurability = maxDurability;
+	}
+
+	public void updateShop(Shop shop, Long price) {
+		this.shop = shop;
+		this.price = price;
 	}
 
 	public void markAsDeleted() {

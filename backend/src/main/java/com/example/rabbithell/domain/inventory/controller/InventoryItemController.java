@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
-import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
@@ -51,7 +50,7 @@ public class InventoryItemController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
+	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItemsBySlot(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
@@ -68,7 +67,7 @@ public class InventoryItemController {
 	}
 
 	@GetMapping("/equipable")
-	public ResponseEntity<CommonResponse<PageResponse<EquipableItemResponse>>> getAllEquipableInventoryItems(
+	public ResponseEntity<CommonResponse<PageResponse<EquipableItemResponse>>> getAllEquipableInventoryItemsBySlot(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
@@ -79,8 +78,8 @@ public class InventoryItemController {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			"장착 가능한 인벤토리 아이템 전체 조회 성공",
-			inventoryItemService.getAllEquipableInventoryItems(authUser.getUserId(), pageable)
+			"(슬롯 별) 장착 가능한 인벤토리 아이템 전체 조회 성공",
+			inventoryItemService.getAllEquipableInventoryItems(authUser.getUserId(), slot, pageable)
 		));
 	}
 
@@ -101,13 +100,13 @@ public class InventoryItemController {
 	public ResponseEntity<CommonResponse<EquipResponse>> equipItem(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long inventoryItemId,
-		@RequestBody EquipRequest equipRequest
+		@RequestParam Long characterId
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"인벤토리 아이템 장착 성공",
-			inventoryItemService.equipItem(authUser.getUserId(), inventoryItemId, equipRequest)
+			inventoryItemService.equipItem(authUser.getUserId(), inventoryItemId, characterId)
 		));
 	}
 

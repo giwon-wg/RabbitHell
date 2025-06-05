@@ -6,6 +6,7 @@ import com.example.rabbithell.domain.item.enums.ItemType;
 import com.example.rabbithell.domain.item.enums.Rarity;
 
 public record InventoryItemResponse(
+	Long inventoryItemId,
 	Long inventoryId,
 	Long itemId,
 	String itemName,
@@ -21,6 +22,7 @@ public record InventoryItemResponse(
 ) {
 	public static InventoryItemResponse fromEntity(InventoryItem inventoryItem) {
 		return new InventoryItemResponse(
+			inventoryItem.getId(),
 			inventoryItem.getInventory().getId(),
 			inventoryItem.getItem().getId(),
 			inventoryItem.getItem().getName(),
@@ -28,9 +30,9 @@ public record InventoryItemResponse(
 			inventoryItem.getItem().getItemType(),
 			inventoryItem.getItem().getRarity(),
 			inventoryItem.getItem().getPrice(),
-			inventoryItem.getItem().getPower(),
-			inventoryItem.getItem().getWeight(),
-			inventoryItem.getItem().getDurability(),
+			inventoryItem.getPower(),
+			inventoryItem.getWeight(),
+			inventoryItem.getItem().getMaxDurability(),
 			inventoryItem.getDurability(),
 			inventoryItem.getSlot()
 		);

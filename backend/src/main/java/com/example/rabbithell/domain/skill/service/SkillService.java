@@ -17,4 +17,6 @@ public interface SkillService {
 
 	void deleteSkill(Long skillId);
 
+	void learnSkill(Long characterId, Long skillId);
+
 }

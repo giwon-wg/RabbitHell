@@ -34,10 +34,13 @@ public record ItemRequest(
 	@Schema(description = "최소 위력", example = "800")
 	Long minPower,
 
-	@Schema(description = "무게", example = "15")
-	Long weight,
+	@Schema(description = "최대 무게", example = "30")
+	Long maxWeight,
 
-	@Schema(description = "내구도", example = "1000")
-	Integer durability
+	@Schema(description = "최소 무게", example = "15")
+	Long minWeight,
+
+	@Schema(description = "최대 내구도", example = "1000")
+	Integer maxDurability
 ) {
 }

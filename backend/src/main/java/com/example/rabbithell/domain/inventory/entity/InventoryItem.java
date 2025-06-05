@@ -15,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,24 +41,42 @@ public class InventoryItem extends BaseEntity {
 	@JoinColumn(name = "game_character_id")
 	private GameCharacter character; // 장착 캐릭터
 
+	private Long power; // Item 엔티티의 maxPower와 minPower 사이
+
+	private Integer maxDurability;
+
 	private Integer durability;
+
+	private Long weight; // Item 엔티티의 maxWeight와 minWeight 사이
 
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
 
 	@Builder
-	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Integer durability, Slot slot) {
+	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Long power, Integer maxDurability,
+		Integer durability, Long weight, Slot slot) {
 		this.inventory = inventory;
 		this.item = item;
 		this.character = character;
+		this.power = power;
+		this.maxDurability = maxDurability;
 		this.durability = durability;
+		this.weight = weight;
 		this.slot = slot;
 	}
 
-	// TODO: 아이템 종류에 따라 장착 부위가 정해지도록 기능 수정 필요
-	public void equip(GameCharacter character, Slot slot) {
+	public InventoryItem(Inventory inventory, Item item) {
+		this.inventory = inventory;
+		this.item = item;
+		this.power = (item.getMaxPower() + item.getMinPower()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.maxDurability = item.getMaxDurability();
+		this.durability = item.getMaxDurability();
+		this.weight = (item.getMaxWeight() + item.getMinWeight()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+	}
+
+	public void equip(GameCharacter character) {
 		this.character = character;
-		this.slot = slot;
+		this.slot = Slot.getSlotByItemType(this.getItem().getItemType());
 	}
 
 	public void unequip() {
