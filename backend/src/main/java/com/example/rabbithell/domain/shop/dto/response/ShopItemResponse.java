@@ -13,7 +13,8 @@ public record ShopItemResponse(
 	Long price,
 	Long maxPower,
 	Long minPower,
-	Long weight,
+	Long maxWeight,
+	Long minWeight,
 	Integer maxDurability
 ) {
 	public static ShopItemResponse fromEntity(Item item) {
@@ -27,7 +28,8 @@ public record ShopItemResponse(
 			item.getPrice(),
 			item.getMaxPower(),
 			item.getMinPower(),
-			item.getWeight(),
+			item.getMaxWeight(),
+			item.getMinWeight(),
 			item.getMaxDurability()
 		);
 	}

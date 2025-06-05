@@ -79,8 +79,19 @@ public class Item extends BaseEntity {
 		this.isDeleted = isDeleted;
 	}
 
-	public void update(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
-		Long maxPower, Long minPower, Long weight, Integer maxDurability) {
+	public void update(
+		Shop shop,
+		String name,
+		String description,
+		ItemType itemType,
+		Rarity rarity,
+		Long price,
+		Long maxPower,
+		Long minPower,
+		Long maxWeight,
+		Long minWeight,
+		Integer maxDurability
+	) {
 		this.shop = shop;
 		this.name = name;
 		this.description = description;
