@@ -14,13 +14,15 @@ public enum ItemType {
 	BOW(true, false),
 	DAGGER(true, false),
 	WAND(true, false),
-	SHIELD(true, false),
 	ARMOR(true, false),
 	ACCESSORY(true, false),
 
 	// consumable
 	HP(false, true),
-	MP(false, true);
+	MP(false, true),
+
+	// et cetera
+	ETC(false, false);
 
 	private final boolean equipable;
 	private final boolean consumable;
@@ -43,7 +45,7 @@ public enum ItemType {
 
 		return switch (slot) {
 			case HEAD -> List.of(ACCESSORY);
-			case BODY -> List.of(SHIELD, ARMOR);
+			case BODY -> List.of(ARMOR);
 			case HAND -> List.of(SWORD, BOW, DAGGER, WAND);
 			default -> null;
 		};
