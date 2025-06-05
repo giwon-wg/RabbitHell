@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
-import com.example.rabbithell.domain.inventory.dto.request.EquipRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
