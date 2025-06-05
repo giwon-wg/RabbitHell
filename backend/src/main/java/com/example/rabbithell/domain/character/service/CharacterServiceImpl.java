@@ -3,7 +3,6 @@ package com.example.rabbithell.domain.character.service;
 import static com.example.rabbithell.domain.job.entity.Job.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;

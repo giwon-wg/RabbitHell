@@ -13,7 +13,8 @@ public record ItemResponse(
 	Long price,
 	Long maxPower,
 	Long minPower,
-	Long weight,
+	Long maxWeight,
+	Long minWeight,
 	Integer durability
 ) {
 	public static ItemResponse fromEntity(Item item) {
@@ -27,7 +28,8 @@ public record ItemResponse(
 			item.getPrice(),
 			item.getMaxPower(),
 			item.getMinPower(),
-			item.getWeight(),
+			item.getMaxWeight(),
+			item.getMinWeight(),
 			item.getMaxDurability()
 		);
 	}
