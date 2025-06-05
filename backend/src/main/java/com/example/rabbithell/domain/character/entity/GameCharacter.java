@@ -2,16 +2,20 @@ package com.example.rabbithell.domain.character.entity;
 
 import static com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode.*;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import com.example.rabbithell.common.audit.BaseEntity;
+import com.example.rabbithell.domain.characterSkill.entity.CharacterSkill;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.skill.exception.SkillException;
 import com.example.rabbithell.domain.user.model.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -25,6 +29,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyEnumerated;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -85,13 +90,14 @@ public class GameCharacter extends BaseEntity {
 	@Column(name = "skill_point")
 	private int skillPoint;
 
-	// 스킬 장착
-
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "character_job_tier_history", joinColumns = @JoinColumn(name = "character_id"))
 	@MapKeyEnumerated(EnumType.STRING)
 	@Column(name = "tier")
 	private Map<JobCategory, Integer> jobHistory = new EnumMap<>(JobCategory.class);
+
+	@OneToMany(mappedBy = "character", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CharacterSkill> characterSkills = new ArrayList<>();
 
 	@Builder
 	public GameCharacter(User user,
