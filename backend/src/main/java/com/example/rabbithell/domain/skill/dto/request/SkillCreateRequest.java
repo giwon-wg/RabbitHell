@@ -38,7 +38,7 @@ public record SkillCreateRequest(
 	@NotNull(message = "데미지 필수입니다")
 	int dmg,
 
-	@Schema(description = "스킬이 속한 직업명", example = "전사 1차")
+	@Schema(description = "스킬이 속한 직업명", example = "WARRIOR_TIER1")
 	@NotNull(message = "직업명 필수입니다")
 	Job job
 ) {
