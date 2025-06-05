@@ -196,32 +196,36 @@ public class DataInitializer implements CommandLineRunner {
 		Inventory inventory = new Inventory(clover, 100);
 		inventoryRepository.save(inventory);
 
-		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 100,
+		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
 			false);
-		Item armor = new Item(null, "원피스", "예쁜원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 20L, 20L, 3L, 100,
+		Item armor = new Item(null, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
 			false);
-		Item accessory = new Item(null, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.SHIELD, Rarity.COMMON, 0L, 20L, 20L, 3L,
+		Item accessory = new Item(null, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L,
 			100, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
 		itemRepository.save(accessory);
 
-		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, Slot.HAND);
-		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, Slot.BODY);
-		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND);
+		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY);
+		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, 100, 3L,
+			Slot.HEAD);
 
-		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, Slot.HAND);
-		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, Slot.BODY);
-		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, 100, 3L, Slot.HAND);
+		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, 100, 3L, Slot.BODY);
+		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, 100, 3L,
+			Slot.HEAD);
 
-		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, Slot.HAND);
-		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, Slot.BODY);
-		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, 100, 3L, Slot.HAND);
+		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, 100, 3L, Slot.BODY);
+		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, 100, 3L,
+			Slot.HEAD);
 
-		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, Slot.HAND);
-		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, Slot.BODY);
-		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, Slot.HEAD);
+		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, 100, 3L, Slot.HAND);
+		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, 100, 3L, Slot.BODY);
+		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, 100, 3L,
+			Slot.HEAD);
 
 		inventoryItemRepository.save(inventoryWeapon1);
 		inventoryItemRepository.save(inventoryArmor1);
