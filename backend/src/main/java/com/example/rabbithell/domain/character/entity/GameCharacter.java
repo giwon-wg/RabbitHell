@@ -96,6 +96,7 @@ public class GameCharacter extends BaseEntity {
 	@Column(name = "tier")
 	private Map<JobCategory, Integer> jobHistory = new EnumMap<>(JobCategory.class);
 
+	// TODO 스킬 부분 구현 후 주석 풀것
 	// @OneToMany(mappedBy = "character", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	// private List<CharacterSkill> characterSkills = new ArrayList<>();
 
