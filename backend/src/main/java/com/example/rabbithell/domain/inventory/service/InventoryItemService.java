@@ -12,6 +12,7 @@ import com.example.rabbithell.domain.inventory.dto.response.EquipableItemRespons
 import com.example.rabbithell.domain.inventory.dto.response.InventoryItemResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UnequipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.UseResponse;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.item.entity.Item;
 
@@ -26,6 +27,8 @@ public interface InventoryItemService {
 	EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId);
 
 	List<Item> getEquippedItemsByCharacter(Long characterId);
+
+	List<InventoryItem> getEquippedInventoryItemsByCharacter(Long characterId);
 
 	EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest);
 

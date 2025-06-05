@@ -107,6 +107,12 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 			.toList();
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public List<InventoryItem> getEquippedInventoryItemsByCharacter(Long characterId) {
+		return inventoryItemRepository.findByCharacter_Id(characterId);
+	}
+
 	@Transactional
 	@Override
 	public EquipResponse equipItem(Long userId, Long inventoryItemId, EquipRequest equipRequest) {
