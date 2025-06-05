@@ -161,7 +161,11 @@ public class Battle {
 							int damage = calculateDamage(actor.attack, playerDefense.get(targetIndex),
 								actor.criticalChance, random,
 								log, monster.getMonsterName());
-							playerHp.set(targetIndex, playerHp.get(targetIndex) - damage);
+							playerHp.set(targetIndex, Math.max(0, playerHp.get(targetIndex) - damage));
+							if (playerHp.get(targetIndex) == 0) {
+								log.append("\n").append(clover.get(targetIndex).getName()).append("이(가) 사망하였습니다.");
+								break;
+							}
 						}
 					}
 				}
