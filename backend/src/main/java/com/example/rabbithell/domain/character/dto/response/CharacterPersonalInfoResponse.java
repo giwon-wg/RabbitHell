@@ -1,10 +1,10 @@
 package com.example.rabbithell.domain.character.dto.response;
 
-import java.util.List;
+// import java.util.List;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
-import com.example.rabbithell.domain.characterSkill.dto.response.EquippedSkillResponse;
-import com.example.rabbithell.domain.characterSkill.dto.response.LearnedSkillResponse;
+// import com.example.rabbithell.domain.characterSkill.dto.response.EquippedSkillResponse;
+// import com.example.rabbithell.domain.characterSkill.dto.response.LearnedSkillResponse;
 
 public record CharacterPersonalInfoResponse(
 	Long cloverId,
