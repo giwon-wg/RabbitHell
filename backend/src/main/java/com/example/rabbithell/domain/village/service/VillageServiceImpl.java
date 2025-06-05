@@ -2,15 +2,20 @@ package com.example.rabbithell.domain.village.service;
 
 import static com.example.rabbithell.domain.village.exception.code.VillageExceptionCode.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.clover.dto.response.CloverResponse;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.village.entity.Village;
+import com.example.rabbithell.domain.village.entity.VillageConnection;
 import com.example.rabbithell.domain.village.exception.VillageException;
+import com.example.rabbithell.domain.village.repository.VillageConnectionRepository;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +27,7 @@ public class VillageServiceImpl implements VillageService {
 	private final VillageRepository villageRepository;
 	private final CharacterRepository characterRepository;
 	private final CloverRepository cloverRepository;
+	private final VillageConnectionRepository villageConnectionRepository;
 
 	@Override
 	@Transactional
@@ -30,10 +36,12 @@ public class VillageServiceImpl implements VillageService {
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
 		Village currentVillage = villageRepository.findByIdOrElseThrow(clover.getCurrentVillage());
+
 		Village targetVillage = villageRepository.findByIdOrElseThrow(villageId);
 
-		boolean isConnected = currentVillage.getConnections().stream()
-			.anyMatch(conn -> conn.getToVillage().getId().equals(targetVillage.getId()));
+		List<VillageConnection> connections = villageConnectionRepository.findByFromVillage(currentVillage.getId());
+		boolean isConnected = connections.stream()
+			.anyMatch(conn -> conn.getToVillage().equals(targetVillage.getId()));
 
 		if (!isConnected) {
 			throw new VillageException(VILLAGE_NOT_CONNECTED);
@@ -44,24 +52,25 @@ public class VillageServiceImpl implements VillageService {
 
 	@Override
 	@Transactional
-	public void saveMoney(AuthUser authUser, int saveMoney) {
+	public CloverResponse saveMoney(AuthUser authUser, int saveMoney) {
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
-
-		clover.depositToSaving(Math.toIntExact(saveMoney));
+		clover.depositToSaving(saveMoney);
+		return CloverResponse.from(clover);
 	}
 
 	@Transactional
-	public void withdrawMoney(AuthUser authUser, int withdrawMoney) {
+	public CloverResponse  withdrawMoney(AuthUser authUser, int withdrawMoney) {
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
-
 		clover.withdrawFromSaving(withdrawMoney);
+		return CloverResponse.from(clover);
 
 	}
 
 	@Transactional
-	public void cureCharacter(AuthUser authUser) {
+	public CloverResponse  cureCharacter(AuthUser authUser) {
+		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
 		int cureCost = 0;
 
@@ -75,5 +84,7 @@ public class VillageServiceImpl implements VillageService {
 		// for (Character member : members) {
 		// 	member.refill();
 		// }
+
+		return CloverResponse.from(clover);
 	}
 }
