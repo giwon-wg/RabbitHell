@@ -47,18 +47,21 @@ public class InventoryItem extends BaseEntity {
 
 	private Integer durability;
 
+	private Long weight; // Item 엔티티의 maxWeight와 minWeight 사이
+
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
 
 	@Builder
 	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Long power, Integer maxDurability,
-		Integer durability, Slot slot) {
+		Integer durability, Long weight, Slot slot) {
 		this.inventory = inventory;
 		this.item = item;
 		this.character = character;
 		this.power = power;
 		this.maxDurability = maxDurability;
 		this.durability = durability;
+		this.weight = weight;
 		this.slot = slot;
 	}
 
@@ -66,7 +69,9 @@ public class InventoryItem extends BaseEntity {
 		this.inventory = inventory;
 		this.item = item;
 		this.power = (item.getMaxPower() + item.getMinPower()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.maxDurability = item.getMaxDurability();
 		this.durability = item.getMaxDurability();
+		this.weight = (item.getMaxWeight() + item.getMinWeight()) / 2; // 일단 최대값과 최소값의 평균으로 설정
 	}
 
 	public void equip(GameCharacter character) {
