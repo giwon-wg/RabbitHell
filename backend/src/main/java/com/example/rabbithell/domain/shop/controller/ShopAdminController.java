@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
+import com.example.rabbithell.domain.shop.dto.request.AddItemRequest;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
+import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.service.ShopService;
 
@@ -65,7 +67,7 @@ public class ShopAdminController {
 	}
 
 	@PostMapping("/{shopId}")
-	public ResponseEntity<CommonResponse<Void>> addItem(
+	public ResponseEntity<CommonResponse<ShopItemResponse>> addItem(
 		@PathVariable Long shopId,
 		@RequestBody AddItemRequest addItemRequest
 	) {

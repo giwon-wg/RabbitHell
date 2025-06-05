@@ -14,7 +14,7 @@ public record ShopItemResponse(
 	Long maxPower,
 	Long minPower,
 	Long weight,
-	Integer durability
+	Integer maxDurability
 ) {
 	public static ShopItemResponse fromEntity(Item item) {
 		return new ShopItemResponse(
@@ -28,7 +28,7 @@ public record ShopItemResponse(
 			item.getMaxPower(),
 			item.getMinPower(),
 			item.getWeight(),
-			item.getDurability()
+			item.getMaxDurability()
 		);
 	}
 }

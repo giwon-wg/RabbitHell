@@ -28,7 +28,7 @@ public record ItemResponse(
 			item.getMaxPower(),
 			item.getMinPower(),
 			item.getWeight(),
-			item.getDurability()
+			item.getMaxDurability()
 		);
 	}
 }

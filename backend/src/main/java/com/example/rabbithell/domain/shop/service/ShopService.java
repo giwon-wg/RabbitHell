@@ -1,5 +1,9 @@
 package com.example.rabbithell.domain.shop.service;
 
+import org.springframework.data.domain.Pageable;
+
+import com.example.rabbithell.common.dto.response.PageResponse;
+import com.example.rabbithell.domain.shop.dto.request.AddItemRequest;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
 import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
@@ -16,6 +20,10 @@ public interface ShopService {
 
 	void deleteShop(Long shopId);
 
+	ShopItemResponse addItem(Long shopId, AddItemRequest addItemRequest);
+
 	ShopItemResponse getShopItem(Long itemId);
+
+	PageResponse<ShopItemResponse> getAllShopItems(Long shopId, Pageable pageable);
 
 }
