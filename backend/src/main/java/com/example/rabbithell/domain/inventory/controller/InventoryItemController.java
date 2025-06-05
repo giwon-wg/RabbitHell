@@ -51,7 +51,7 @@ public class InventoryItemController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
+	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItemsBySlot(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
@@ -68,7 +68,7 @@ public class InventoryItemController {
 	}
 
 	@GetMapping("/equipable")
-	public ResponseEntity<CommonResponse<PageResponse<EquipableItemResponse>>> getAllEquipableInventoryItems(
+	public ResponseEntity<CommonResponse<PageResponse<EquipableItemResponse>>> getAllEquipableInventoryItemsBySlot(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
@@ -79,8 +79,8 @@ public class InventoryItemController {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			"장착 가능한 인벤토리 아이템 전체 조회 성공",
-			inventoryItemService.getAllEquipableInventoryItems(authUser.getUserId(), pageable)
+			"(슬롯 별) 장착 가능한 인벤토리 아이템 전체 조회 성공",
+			inventoryItemService.getAllEquipableInventoryItems(authUser.getUserId(), slot, pageable)
 		));
 	}
 
