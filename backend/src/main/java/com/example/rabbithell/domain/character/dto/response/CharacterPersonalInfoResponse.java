@@ -1,6 +1,10 @@
 package com.example.rabbithell.domain.character.dto.response;
 
+import java.util.List;
+
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.characterSkill.dto.response.EquippedSkillResponse;
+import com.example.rabbithell.domain.characterSkill.dto.response.LearnedSkillResponse;
 
 public record CharacterPersonalInfoResponse(
 	Long cloverId,
@@ -25,15 +29,19 @@ public record CharacterPersonalInfoResponse(
 	int wizardPoint,
 	int archerPoint,
 	int skillPoint
+	// List<LearnedSkillResponse> learnedSkills,
+	// List<EquippedSkillResponse> equippedSkills
 ) implements CharacterInfoResponse {
-	public static CharacterPersonalInfoResponse from(GameCharacter gameCharacter) {
+	public static CharacterPersonalInfoResponse from(
+		GameCharacter gameCharacter
+		// List<LearnedSkillResponse> learnedSkills,
+		// List<EquippedSkillResponse> equippedSkills
+	) {
 		return new CharacterPersonalInfoResponse(
 			gameCharacter.getClover().getId(),
 			gameCharacter.getClover().getName(),
-			"왕국이름",
-			"종족명",
-			// gameCharacter.getClover().getKingdom().getName(),
-			// gameCharacter.getClover().getSpecies().getName(),
+			gameCharacter.getClover().getKingdom().getKingdomName(),
+			gameCharacter.getClover().getSpecie().getSpeciesName(),
 			gameCharacter.getName(),
 			gameCharacter.getJob().getName(),
 			gameCharacter.getLevel(),
@@ -52,6 +60,9 @@ public record CharacterPersonalInfoResponse(
 			gameCharacter.getWizardPoint(),
 			gameCharacter.getArcherPoint(),
 			gameCharacter.getSkillPoint()
+			// learnedSkills,
+			// equippedSkills
 		);
 	}
+
 }
