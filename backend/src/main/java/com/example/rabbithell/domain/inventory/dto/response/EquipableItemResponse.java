@@ -31,7 +31,7 @@ public record EquipableItemResponse(
 			inventoryItem.getItem().getRarity(),
 			inventoryItem.getItem().getPrice(),
 			inventoryItem.getPower(),
-			inventoryItem.getItem().getWeight(),
+			inventoryItem.getWeight(),
 			inventoryItem.getItem().getMaxDurability(),
 			inventoryItem.getDurability(),
 			inventoryItem.getSlot()
