@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "character", indexes = {@Index(name = "idx_character_id_user_id", columnList = "id, user_id")})
+@Table(name = "game_character", indexes = {@Index(name = "idx_character_id_user_id", columnList = "id, user_id")})
 public class GameCharacter extends BaseEntity {
 
 	@Id
@@ -30,7 +30,7 @@ public class GameCharacter extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false, unique = true)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)

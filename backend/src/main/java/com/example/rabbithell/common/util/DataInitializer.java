@@ -152,7 +152,7 @@ public class DataInitializer implements CommandLineRunner {
 		cloverRepository.save(clover3);
 
 		GameCharacter character1 = new GameCharacter(user, clover, "토끼1", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
-			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
+			1000, 82, 100, 94, 100, 96, 100, 72, 100, 15, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character2 = new GameCharacter(user, clover, "토끼2", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
 			1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 0);
 		GameCharacter character3 = new GameCharacter(user, clover, "토끼3", Job.INCOMPETENT, 50, 4900, 1000, 1000, 1000,
