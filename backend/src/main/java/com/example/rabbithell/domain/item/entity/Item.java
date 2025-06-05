@@ -48,8 +48,6 @@ public class Item extends BaseEntity {
 
 	private Long price;
 
-	private Long power; // 아이템 위력
-
 	private Long maxPower;
 
 	private Long minPower;
@@ -63,7 +61,7 @@ public class Item extends BaseEntity {
 	private boolean isDeleted;
 
 	@Builder
-	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price, Long power,
+	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
 		Long maxPower, Long minPower, Long weight, Integer durability, boolean isDeleted) {
 		this.shop = shop;
 		this.name = name;
@@ -71,7 +69,6 @@ public class Item extends BaseEntity {
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
-		this.power = power;
 		this.maxPower = maxPower;
 		this.minPower = minPower;
 		this.weight = weight;
@@ -80,14 +77,13 @@ public class Item extends BaseEntity {
 	}
 
 	public void update(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
-		Long power, Long maxPower, Long minPower, Long weight, Integer durability) {
+		Long maxPower, Long minPower, Long weight, Integer durability) {
 		this.shop = shop;
 		this.name = name;
 		this.description = description;
 		this.itemType = itemType;
 		this.rarity = rarity;
 		this.price = price;
-		this.power = power;
 		this.maxPower = maxPower;
 		this.minPower = minPower;
 		this.weight = weight;
