@@ -8,7 +8,9 @@ const CharacterDetailPage = () => {
 	const navigate = useNavigate();
 	const [character, setCharacter] = useState<CharacterPersonalInfoResponse | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [selectedItem, setSelectedItem] = useState<any | null>(null);
+	const [inventoryItems, setInventoryItems] = useState<any[]>([]);
+	const [hoveredItemKey, setHoveredItemKey] = useState<string | null>(null);
+	const [equippedItems, setEquippedItems] = useState<any[]>([]);
 
 	const sectionStyle: React.CSSProperties = {
 		backgroundColor: '#fff',
@@ -17,8 +19,33 @@ const CharacterDetailPage = () => {
 		boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
 		padding: 16,
 	};
-	const [equippedItems, setEquippedItems] = useState<any[]>([]);
 
+	const itemImageStyle: React.CSSProperties = {
+		width: 48,
+		height: 48,
+		cursor: 'pointer',
+		border: '2px solid #888',
+		borderRadius: 8,
+		boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+	};
+
+	const getSlotLabel = (slot: string): string => {
+		switch (slot) {
+			case 'HAND': return '무기';
+			case 'BODY': return '갑옷';
+			case 'HEAD': return '악세사리';
+			default: return '기타';
+		}
+	};
+
+	const getFolderBySlot = (slot: string): string => {
+		switch (slot) {
+			case 'HAND': return 'weapon';
+			case 'BODY': return 'armor';
+			case 'HEAD': return 'earring';
+			default: return 'etc';
+		}
+	};
 
 	useEffect(() => {
 		const token = localStorage.getItem('accessToken');
@@ -29,45 +56,46 @@ const CharacterDetailPage = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				const found = data.result.find(
-					(c: CharacterPersonalInfoResponse) => c.characterName === characterName
-				);
+				const found = data.result.find((c: CharacterPersonalInfoResponse) => c.characterName === characterName);
 				setCharacter(found || null);
 				if (found) {
-					fetch(`http://localhost:8080/inventory/equipped?characterId=${found.characterId}`, {
+					fetch(`http://localhost:8080/inventory/inventory-items/equipped?characterId=${found.characterId}`, {
 						headers: { Authorization: `Bearer ${token}` },
 					})
 						.then(res => res.json())
 						.then(data => {
-							if (data.success) {
-								setEquippedItems(data.result.equippedItems || []);
-							}
-						})
-						.catch(err => {
-							console.error('장착 아이템 불러오기 실패', err);
+							if (data.success) setEquippedItems(data.result.equippedItems || []);
 						});
 				}
-			})
-			.catch(err => {
-				console.error('캐릭터 불러오기 실패', err);
+				fetch('http://localhost:8080/inventory/inventory-items?page=0&size=30', {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+					.then(res => res.json())
+					.then(data => {
+						if (data.success) setInventoryItems(data.result.content);
+					});
 			})
 			.finally(() => setLoading(false));
 	}, [characterName]);
+
+	const weapons = inventoryItems.filter(item => item.slot === 'HAND');
+	const armors = inventoryItems.filter(item => item.slot === 'BODY');
+	const accessories = inventoryItems.filter(item => item.slot === 'HEAD');
 
 	if (loading) return <p>로딩 중...</p>;
 	if (!character) return <p>캐릭터를 찾을 수 없습니다</p>;
 
 	const statData = [
+		{ stat: '행운', value: character.luck },
 		{ stat: '힘', value: character.strength },
 		{ stat: '민첩', value: character.agility },
 		{ stat: '지력', value: character.intelligence },
 		{ stat: '집중력', value: character.focus },
-		{ stat: '행운', value: character.luck },
 	];
 
 	return (
 		<div style={{ display: 'flex', padding: 24, gap: 16 }}>
-			{/* 왼쪽: 기본 정보 */}
+			{/* 기본 정보 */}
 			<div style={{ width: '25%', ...sectionStyle }}>
 				<img src="/Character.png" alt="bunny" width={100} />
 				<h2>{character.characterName}</h2>
@@ -76,73 +104,105 @@ const CharacterDetailPage = () => {
 				<p>HP: {character.hp} / {character.maxHp}</p>
 				<p>MP: {character.mp} / {character.maxMp}</p>
 				<h4>스탯</h4>
-				<ResponsiveContainer width="100%" height={200}>
-					<RadarChart cx="50%" cy="50%" outerRadius="80%" data={statData}>
-						<PolarGrid />
-						<PolarAngleAxis dataKey="stat" />
-						<PolarRadiusAxis angle={30} domain={[0, 100]} />
-						<Radar name="스탯" dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-					</RadarChart>
-				</ResponsiveContainer>
+				<div
+					style={{
+						display: 'flex',
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						flexWrap: 'wrap', // 반응형 처리
+						gap: 12,
+					}}
+				>
+					{/* 왼쪽: 스탯 텍스트 */}
+					<div style={{ minWidth: 120, transform: 'translateY(-25px)' }}>
+						{statData.map(({ stat, value }) => (
+							<div key={stat} style={{ fontSize: 14 }}>
+								<strong>{stat}</strong>: {value}
+							</div>
+						))}
+					</div>
+
+					{/* 오른쪽: 차트 */}
+					<div style={{ flexShrink: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+						<ResponsiveContainer width={160} height={160}>
+							<RadarChart cx="50%" cy="50%" outerRadius="80%" data={statData}>
+								<PolarGrid radialLines={false} />
+								<PolarAngleAxis
+									dataKey="stat"
+									tick={({ payload, x, y }) => (
+										<text x={x} y={y} textAnchor="middle" fontSize={10} fill="#999">
+											{payload.value}
+										</text>
+									)}
+								/>
+								<PolarRadiusAxis tick={false} axisLine={false} />
+								<Radar dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+							</RadarChart>
+						</ResponsiveContainer>
+					</div>
+				</div>
 			</div>
 
-			{/* 중간: 성장/장비 */}
+			{/* 장착 아이템 */}
 			<div style={{ width: '30%', ...sectionStyle }}>
 				<h3>장착 아이템</h3>
-				<ul>
-					{equippedItems.length > 0 ? (
-						equippedItems.map(item => (
-							<li key={item.slot}>
-								{item.slot}: {item.itemId !== null ? `아이템 ID ${item.itemId} (내구도: ${item.durability})` : '없음'}
+				<ul style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', listStyle: 'none', padding: 0 }}>
+					{equippedItems.map(item => {
+						const key = `${item.itemId}-${item.slot}`;
+						return (
+							<li
+								key={item.slot}
+								onMouseEnter={() => setHoveredItemKey(key)}
+								onMouseLeave={() => setHoveredItemKey(null)}
+								style={{ position: 'relative', border: '1px solid #ccc', borderRadius: '10px', padding: '12px', textAlign: 'center', backgroundColor: '#f9f9f9' }}>
+								{hoveredItemKey === key && (
+									<div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: 8, backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 6px rgba(0,0,0,0.2)', padding: 12, zIndex: 10, width: 200, textAlign: 'left' }}>
+										<strong>{item.itemName}</strong>
+										<p>슬롯: {getSlotLabel(item.slot)}</p>
+										<p>내구도: {item.durability}</p>
+										<button onClick={() => alert("장착!")}>장착</button>
+									</div>
+								)}
+								<img src={`/assets/items/${getFolderBySlot(item.slot)}/${item.itemId}.png`} alt={item.itemName} style={{ width: 64, height: 64, objectFit: 'cover', marginBottom: 8 }} />
+								<div>{item.itemName}</div>
+								<div>내구도: {item.durability}</div>
 							</li>
-						))
-					) : (
-						<li>장착 아이템 없음</li>
-					)}
+						);
+					})}
 				</ul>
-
-				<div style={{ marginTop: 16 }}>
-					<h4>성장치</h4>
-					<div style={{ background: '#eee', height: 10, width: '100%', marginBottom: 8 }}>
-						<div style={{ width: '80%', height: '100%', background: '#4caf50' }} />
-					</div>
-
-					<h4>속도</h4>
-					<div style={{ background: '#eee', height: 10, width: '100%', marginBottom: 8 }}>
-						<div style={{ width: `${character.agility}%`, height: '100%', background: '#03a9f4' }} />
-					</div>
-
-					<h4>직업 숙련도</h4>
-					<div style={{ background: '#eee', height: 10, width: '100%', marginBottom: 8 }}>
-						<div style={{ width: `${Math.min(character.skillPoint, 100)}%`, height: '100%', background: '#ff9800' }} />
-					</div>
-				</div>
-
-				<button style={{ marginTop: 12 }} onClick={() => alert('강화!')}>강화</button>
 			</div>
 
-			{/* 오른쪽: 인벤토리 */}
+			{/* 착용 가능 장비 */}
 			<div style={{ flex: 1, ...sectionStyle }}>
-				<h3>착용가능 장비 (무기)</h3>
-				<div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-					{Array(8).fill(null).map((_, i) => (
-						<img
-							key={i}
-							src="/assets/item.png"
-							alt="item"
-							style={{ width: 48, height: 48, cursor: 'pointer' }}
-							onClick={() => setSelectedItem({ name: '전사의 방패', desc: '방어력 +10', price: 500 })}
-						/>
-					))}
-				</div>
-				{selectedItem && (
-					<div style={{ border: '1px solid #ccc', padding: 12, marginTop: 12 }}>
-						<h4>{selectedItem.name}</h4>
-						<p>{selectedItem.desc}</p>
-						<p>{selectedItem.price} 골드</p>
-						<button onClick={() => alert('장착!')}>장착</button>
+				<h3>착용 가능 장비</h3>
+				{[['무기', weapons, 'weapon'], ['갑옷', armors, 'armor'], ['악세사리', accessories, 'earring']].map(([label, items, folder]) => (
+					<div key={label as string} style={{ marginBottom: 16 }}>
+						<h4>{label}</h4>
+						<div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+							{(items as any[]).map((item, i) => {
+								const key = `${item.itemId}-${item.slot}`;
+								return (
+									<div
+										key={`${folder}-${item.itemId}-${i}`}
+										onMouseEnter={() => setHoveredItemKey(key)}
+										onMouseLeave={() => setHoveredItemKey(null)}
+										style={{ position: 'relative' }}>
+										<img src={`/assets/items/${folder}/${item.itemId}.png`} alt={item.itemName} style={itemImageStyle} />
+										{hoveredItemKey === key && (
+											<div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: 8, backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 2px 6px rgba(0,0,0,0.2)', padding: 12, zIndex: 20, width: 180, textAlign: 'left' }}>
+												<strong>{item.itemName}</strong>
+												<p>설명: {item.description}</p>
+												<p>슬롯: {getSlotLabel(item.slot)}</p>
+												<p>내구도: {item.durability}</p>
+											</div>
+										)}
+									</div>
+								);
+							})}
+						</div>
 					</div>
-				)}
+				))}
 			</div>
 		</div>
 	);

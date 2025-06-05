@@ -195,9 +195,9 @@ public class DataInitializer implements CommandLineRunner {
 		Inventory inventory = new Inventory(clover, 100);
 		inventoryRepository.save(inventory);
 
-		Item weapon = new Item(null, "지존킹왕짱당근", ItemType.SWORD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
-		Item armor = new Item(null, "원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
-		Item accessory = new Item(null, "토끼풀귀걸이", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
+		Item weapon = new Item(null, "지존킹왕짱당근","일딴 당근입니다." ,ItemType.SWORD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
+		Item armor = new Item(null, "원피스", "하늘하늘한 원피스", ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
+		Item accessory = new Item(null, "토끼풀귀걸이", "토끼풀로 엮은 귀걸이" ,ItemType.SHIELD, Rarity.COMMON, 0L, 10L, null, null, 3L, 100, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);

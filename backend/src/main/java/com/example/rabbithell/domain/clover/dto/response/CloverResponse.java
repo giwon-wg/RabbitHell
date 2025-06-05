@@ -9,7 +9,8 @@ public record CloverResponse(
 	String kingdomName,
 	String specieName,
 	long cash,
-	long saving
+	long saving,
+	long currentVillageId
 ) {
 	public static CloverResponse from(Clover clover) {
 		return new CloverResponse(
@@ -19,7 +20,8 @@ public record CloverResponse(
 			clover.getKingdom().getKingdomName(),
 			clover.getSpecie().getSpeciesName(),
 			clover.getCash(),
-			clover.getSaving()
+			clover.getSaving(),
+			clover.getCurrentVillage()
 		);
 	}
 }
