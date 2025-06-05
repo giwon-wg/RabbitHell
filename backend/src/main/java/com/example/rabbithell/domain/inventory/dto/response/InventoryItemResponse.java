@@ -30,9 +30,9 @@ public record InventoryItemResponse(
 			inventoryItem.getItem().getItemType(),
 			inventoryItem.getItem().getRarity(),
 			inventoryItem.getItem().getPrice(),
-			inventoryItem.getItem().getPower(),
+			inventoryItem.getPower(),
 			inventoryItem.getItem().getWeight(),
-			inventoryItem.getItem().getDurability(),
+			inventoryItem.getItem().getMaxDurability(),
 			inventoryItem.getDurability(),
 			inventoryItem.getSlot()
 		);

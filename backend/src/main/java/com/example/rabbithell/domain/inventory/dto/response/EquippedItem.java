@@ -23,8 +23,8 @@ public record EquippedItem(
 			inventoryItem.getCharacter().getId(),
 			inventoryItem.getCharacter().getName(),
 			inventoryItem.getItem().getDescription(),
-			inventoryItem.getItem().getPower(),
-			inventoryItem.getItem().getDurability(),
+			inventoryItem.getPower(),
+			inventoryItem.getItem().getMaxDurability(),
 			inventoryItem.getDurability(),
 			inventoryItem.getSlot()
 		);

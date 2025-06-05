@@ -7,7 +7,7 @@ import com.example.rabbithell.domain.inventory.enums.Slot;
 
 public enum ItemType {
 	// equipable
-	SWORD, SHIELD, BOW, DAGGER, CLOTHES, EARRINGS,
+	SWORD, BOW, DAGGER, WAND, SHIELD, ARMOR, ACCESSORY,
 
 	// consumable
 	HP, MP;
@@ -24,9 +24,9 @@ public enum ItemType {
 		}
 
 		return switch (slot) {
-			case HEAD -> List.of(EARRINGS);
-			case BODY -> List.of(SHIELD, CLOTHES);
-			case HAND -> List.of(SWORD, BOW, DAGGER);
+			case HEAD -> List.of(ACCESSORY);
+			case BODY -> List.of(SHIELD, ARMOR);
+			case HAND -> List.of(SWORD, BOW, DAGGER, WAND);
 			default -> null;
 		};
 	}

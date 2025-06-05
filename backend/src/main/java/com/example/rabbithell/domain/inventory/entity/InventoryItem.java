@@ -43,18 +43,30 @@ public class InventoryItem extends BaseEntity {
 
 	private Long power; // Item 엔티티의 maxPower와 minPower 사이
 
+	private Integer maxDurability;
+
 	private Integer durability;
 
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
 
 	@Builder
-	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Integer durability, Slot slot) {
+	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Long power, Integer maxDurability,
+		Integer durability, Slot slot) {
 		this.inventory = inventory;
 		this.item = item;
 		this.character = character;
+		this.power = power;
+		this.maxDurability = maxDurability;
 		this.durability = durability;
 		this.slot = slot;
+	}
+
+	public InventoryItem(Inventory inventory, Item item) {
+		this.inventory = inventory;
+		this.item = item;
+		this.power = (item.getMaxPower() + item.getMinPower()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.durability = item.getMaxDurability();
 	}
 
 	public void equip(GameCharacter character) {

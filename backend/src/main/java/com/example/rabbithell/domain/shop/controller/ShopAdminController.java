@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
+import com.example.rabbithell.domain.shop.dto.request.AddItemRequest;
 import com.example.rabbithell.domain.shop.dto.request.ShopRequest;
+import com.example.rabbithell.domain.shop.dto.response.ShopItemResponse;
 import com.example.rabbithell.domain.shop.dto.response.ShopResponse;
 import com.example.rabbithell.domain.shop.service.ShopService;
 
@@ -61,6 +63,19 @@ public class ShopAdminController {
 			true,
 			HttpStatus.OK.value(),
 			"상점 삭제 성공"
+		));
+	}
+
+	@PostMapping("/{shopId}")
+	public ResponseEntity<CommonResponse<ShopItemResponse>> addItem(
+		@PathVariable Long shopId,
+		@RequestBody AddItemRequest addItemRequest
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"상점에 아이템 추가 성공",
+			shopService.addItem(shopId, addItemRequest)
 		));
 	}
 
