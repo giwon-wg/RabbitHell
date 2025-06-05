@@ -34,6 +34,7 @@ import com.example.rabbithell.domain.specie.repository.SpecieRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
 import com.example.rabbithell.domain.village.entity.Village;
+import com.example.rabbithell.domain.village.entity.VillageConnection;
 import com.example.rabbithell.domain.village.repository.VillageConnectionRepository;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
@@ -91,6 +92,19 @@ public class DataInitializer implements CommandLineRunner {
 		villageRepository.save(village1);
 		villageRepository.save(village2);
 		villageRepository.save(village3);
+
+		VillageConnection villageConnection1 = new VillageConnection(1L, 2L);
+		VillageConnection villageConnection2 = new VillageConnection(2L, 3L);
+		VillageConnection villageConnection3 = new VillageConnection(3L, 1L);
+		VillageConnection villageConnection4 = new VillageConnection(2L, 1L);
+		VillageConnection villageConnection5 = new VillageConnection(3L, 2L);
+		VillageConnection villageConnection6 = new VillageConnection(1L, 3L);
+		villageConnectionRepository.save(villageConnection1);
+		villageConnectionRepository.save(villageConnection2);
+		villageConnectionRepository.save(villageConnection3);
+		villageConnectionRepository.save(villageConnection4);
+		villageConnectionRepository.save(villageConnection5);
+		villageConnectionRepository.save(villageConnection6);
 
 		Specie LopEared = Specie.builder()
 			.speciesName("롭이어")
