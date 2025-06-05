@@ -34,6 +34,7 @@ import com.example.rabbithell.domain.specie.repository.SpecieRepository;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
 import com.example.rabbithell.domain.village.entity.Village;
+import com.example.rabbithell.domain.village.entity.VillageConnection;
 import com.example.rabbithell.domain.village.repository.VillageConnectionRepository;
 import com.example.rabbithell.domain.village.repository.VillageRepository;
 
@@ -87,10 +88,29 @@ public class DataInitializer implements CommandLineRunner {
 		Village village1 = new Village("마을1");
 		Village village2 = new Village("마을2");
 		Village village3 = new Village("마을3");
+		Village village4 = new Village("마을4");
 
 		villageRepository.save(village1);
 		villageRepository.save(village2);
 		villageRepository.save(village3);
+		villageRepository.save(village4);
+
+		VillageConnection villageConnection1 = new VillageConnection(1L, 2L);
+		VillageConnection villageConnection2 = new VillageConnection(1L, 4L);
+		VillageConnection villageConnection3 = new VillageConnection(2L, 1L);
+		VillageConnection villageConnection4 = new VillageConnection(2L, 3L);
+		VillageConnection villageConnection5 = new VillageConnection(3L, 2L);
+		VillageConnection villageConnection6 = new VillageConnection(3L, 4L);
+		VillageConnection villageConnection7 = new VillageConnection(4L, 3L);
+		VillageConnection villageConnection8 = new VillageConnection(4L, 1L);
+		villageConnectionRepository.save(villageConnection1);
+		villageConnectionRepository.save(villageConnection2);
+		villageConnectionRepository.save(villageConnection3);
+		villageConnectionRepository.save(villageConnection4);
+		villageConnectionRepository.save(villageConnection5);
+		villageConnectionRepository.save(villageConnection6);
+		villageConnectionRepository.save(villageConnection7);
+		villageConnectionRepository.save(villageConnection8);
 
 		Specie LopEared = Specie.builder()
 			.speciesName("롭이어")
@@ -203,9 +223,35 @@ public class DataInitializer implements CommandLineRunner {
 		Item accessory = new Item(null, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L,
 			100, false);
 
+		Item hpPotion = new Item(null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000,
+			false);
+		Item mpPotion = new Item(null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000,
+			false);
+
+		Item feverRemedy = new Item(null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item somiGun = new Item(null, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L, 50L, 10L, 5L,
+			10000, false);
+		Item fourCard = new Item(null, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 0L, 90L, 89L, 19L, 4L,
+			10000, false);
+		Item airplaneTicket = new Item(null, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 0L, 100L,
+			30L, 10L, 4L, 10000, false);
+		Item wakeUp = new Item(null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
+			false);
+		Item slimeBell = new Item(null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
+			false);
+
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
 		itemRepository.save(accessory);
+		itemRepository.save(hpPotion);
+		itemRepository.save(mpPotion);
+		itemRepository.save(feverRemedy);
+		itemRepository.save(airplaneTicket);
+		itemRepository.save(wakeUp);
+		itemRepository.save(somiGun);
+		itemRepository.save(fourCard);
+		itemRepository.save(slimeBell);
 
 		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND);
 		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY);
@@ -227,6 +273,15 @@ public class DataInitializer implements CommandLineRunner {
 		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, 100, 3L,
 			Slot.HEAD);
 
+		InventoryItem iHpPotion = new InventoryItem(inventory, hpPotion, null, 0L, 10000, 10000, 0L, null);
+		InventoryItem iMpPotion = new InventoryItem(inventory, mpPotion, null, 0L, 10000, 10000, 0L, null);
+		InventoryItem iFeverRemedy = new InventoryItem(inventory, feverRemedy, null, 0L, 10000, 10000, 0L, null);
+		InventoryItem iSomiGun = new InventoryItem(inventory, somiGun, null, 80L, 10000, 10000, 8L, null);
+		InventoryItem iFourCard = new InventoryItem(inventory, fourCard, null, 80L, 10000, 10000, 10L, null);
+		InventoryItem iAirplaneTicket = new InventoryItem(inventory, airplaneTicket, null, 0L, 10000, 10000, 0L, null);
+		InventoryItem iWakeUp = new InventoryItem(inventory, wakeUp, null, 0L, 10000, 10000, 0L, null);
+		InventoryItem iSlimeBell = new InventoryItem(inventory, slimeBell, null, 0L, 10000, 10000, 0L, null);
+
 		inventoryItemRepository.save(inventoryWeapon1);
 		inventoryItemRepository.save(inventoryArmor1);
 		inventoryItemRepository.save(inventoryAccessory1);
@@ -239,6 +294,14 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(inventoryWeapon4);
 		inventoryItemRepository.save(inventoryArmor4);
 		inventoryItemRepository.save(inventoryAccessory4);
+		inventoryItemRepository.save(iHpPotion);
+		inventoryItemRepository.save(iMpPotion);
+		inventoryItemRepository.save(iFeverRemedy);
+		inventoryItemRepository.save(iSomiGun);
+		inventoryItemRepository.save(iFourCard);
+		inventoryItemRepository.save(iAirplaneTicket);
+		inventoryItemRepository.save(iWakeUp);
+		inventoryItemRepository.save(iSlimeBell);
 
 		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
 		monsterRepository.save(slime);
