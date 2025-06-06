@@ -1,49 +1,55 @@
-import React, { useState, useRef, useEffect } from 'react';
-
+import React, { useState, useEffect, useRef } from 'react';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 interface ChatMessage {
-	sender: string;
 	message: string;
+	username: string;
 	messageType: 'CHAT' | 'ENTER' | 'QUIT' | 'ADMIN';
-	timestamp: Date;
+	timestamp?: string;
 	isMe?: boolean;
 }
 
-function Send(props: { size: number }) {
-	return null;
-}
+const ChatMessageInterface = () => {
+	const [messages, setMessages] = useState<ChatMessage[]>([]);
+	const [newMessage, setNewMessage] = useState('');
+	const [isConnected, setIsConnected] = useState(false);
+	const stompClient = useRef<Client | null>(null);
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const ROOM_ID = '0';
 
-const ChatInterface = () => {
-	const [messages, setMessages] = useState<ChatMessage[]>([
-		{ sender: '시스템', message: '플레이어1님이 입장했습니다.', messageType: 'ENTER', timestamp: new Date(Date.now() - 300000) },
-		{ sender: '플레이어1', message: '안녕하세요! 새로운 플레이어입니다', messageType: 'CHAT', timestamp: new Date(Date.now() - 280000), isMe: false },
-		{ sender: '플레이어2', message: '환영합니다! 같이 던전 가실래요?', messageType: 'CHAT', timestamp: new Date(Date.now() - 260000), isMe: false },
-		{ sender: '나', message: '네 좋습니다! 몇 렙이세요?', messageType: 'CHAT', timestamp: new Date(Date.now() - 240000), isMe: true },
-		{ sender: '시스템', message: '플레이어3님이 퇴장했습니다.', messageType: 'QUIT', timestamp: new Date(Date.now() - 220000) },
-		{ sender: '관리자', message: '🚨 [공지사항] 서버 점검 예정 - 오후 2시부터 30분간', messageType: 'ADMIN', timestamp: new Date(Date.now() - 200000) }
-	]);
-	const [input, setInput] = useState<string>('');
-	const [isConnected, setIsConnected] = useState<boolean>(false);
-	const scrollRef = useRef<HTMLDivElement | null>(null);
+	// JWT 토큰에서 username 추출 (서버에서 반환된 메시지의 username과 비교하기 위함)
+	const token = localStorage.getItem('accessToken');
+	const [myUsername, setMyUsername] = useState<string | null>(null);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
 
 	useEffect(() => {
-		scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+		scrollToBottom();
 	}, [messages]);
 
-	// 시뮬레이션을 위한 웹소켓 연결 상태 토글
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setIsConnected(true);
-			const enterMsg: ChatMessage = {
-				sender: '시스템',
-				message: '나님이 입장했습니다.',
-				messageType: 'ENTER',
-				timestamp: new Date()
-			};
-			setMessages(prev => [...prev, enterMsg]);
-		}, 1000);
+		if (!token) {
+			console.error('❌ JWT 토큰 없음');
+			return;
+		}
+		// JWT 디코딩 (Base64 방식)
+		const payloadBase64 = token.split('.')[1];
+		if (payloadBase64) {
+			try {
+				const decoded = JSON.parse(atob(payloadBase64));
+				setMyUsername(decoded.cloverName || decoded.username);
+			} catch (err) {
+				console.error('❌ JWT 디코딩 실패', err);
+			}
+		}
 
-		return () => clearTimeout(timer);
+		connectWebSocket(token);
+		return () => {
+			stompClient.current?.deactivate();
+		};
 	}, []);
 
 	const formatTime = (date: Date) => {
@@ -54,148 +60,167 @@ const ChatInterface = () => {
 		return `${ampm} ${displayHours}:${minutes.toString().padStart(2, '0')}`;
 	};
 
+	const connectWebSocket = (token: string) => {
+		const wsUrl = `http://localhost:8080/ws?token=${token}`;
+		const client = new Client({
+			webSocketFactory: () => new SockJS(wsUrl),
+			reconnectDelay: 3000,
+			onConnect: () => {
+				console.log('✅ WebSocket 연결됨');
+				setIsConnected(true);
+
+				client.subscribe(`/sub/chat/${ROOM_ID}`, (message) => {
+					const chatMessage: ChatMessage = JSON.parse(message.body);
+					setMessages((prev) => [
+						...prev,
+						{
+							...chatMessage,
+							timestamp: formatTime(new Date()),
+							isMe: chatMessage.username === myUsername,
+						},
+					]);
+				});
+			},
+			onStompError: (frame) => {
+				console.error('❌ STOMP 오류:', frame);
+			},
+			onWebSocketClose: () => {
+				console.warn('🔌 WebSocket 연결 종료');
+				setIsConnected(false);
+			},
+			connectHeaders: {
+				Authorization : 'Bearer ${token}',
+				roomId: ROOM_ID,
+
+			},
+		});
+
+		console.log('🔄 WebSocket 연결 시도 중...');
+		client.activate();
+		stompClient.current = client;
+	};
+
 	const sendMessage = () => {
-		if (!input.trim() || !isConnected) return;
-
-		const newMessage: ChatMessage = {
-			sender: '나',
-			message: input,
-			messageType: 'CHAT',
-			timestamp: new Date(),
-			isMe: true
-		};
-
-		setMessages(prev => [...prev, newMessage]);
-		setInput('');
-
-		// 시뮬레이션: 가끔 다른 플레이어 응답
-		if (Math.random() > 0.7) {
-			setTimeout(() => {
-				const responses = [
-					'좋은 아이디어네요!',
-					'ㅋㅋㅋ',
-					'저도 동참할게요',
-					'파티 구해요~',
-					'누구 레이드 같이 하실분?'
-				];
-				const randomResponse: ChatMessage = {
-					sender: `플레이어${Math.floor(Math.random() * 10) + 1}`,
-					message: responses[Math.floor(Math.random() * responses.length)],
-					messageType: 'CHAT',
-					timestamp: new Date(),
-					isMe: false
-				};
-				setMessages(prev => [...prev, randomResponse]);
-			}, 1000 + Math.random() * 2000);
+		if (newMessage.trim() && stompClient.current && isConnected) {
+			stompClient.current.publish({
+				destination: `/pub/chat/${ROOM_ID}`,
+				body: JSON.stringify({
+					message: newMessage,
+				}),
+			});
+			setNewMessage('');
 		}
 	};
 
-	const renderMessage = (msg: ChatMessage, index: number) => {
-		// 시스템 메시지 (입장/퇴장)
-		if (msg.messageType === 'ENTER' || msg.messageType === 'QUIT') {
-			return (
-				<div key={index} className="flex justify-center my-2">
-					<div className="bg-gray-300 text-gray-600 text-xs px-3 py-1 rounded-full">
-						{msg.message}
-					</div>
-				</div>
-			);
+	const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
+			sendMessage();
 		}
-
-		// 관리자 메시지
-		if (msg.messageType === 'ADMIN') {
-			return (
-				<div key={index} className="flex justify-center my-3">
-					<div className="bg-red-100 border border-red-300 text-red-700 text-sm px-4 py-2 rounded-lg max-w-xs text-center">
-						{msg.message}
-					</div>
-				</div>
-			);
-		}
-
-		// 일반 채팅 메시지
-		const isMyMessage = msg.isMe;
-		return (
-			<div key={index} className={`flex ${isMyMessage ? 'justify-end' : 'justify-start'} mb-3`}>
-				<div className={`flex flex-col ${isMyMessage ? 'items-end' : 'items-start'} max-w-xs`}>
-					{!isMyMessage && (
-						<div className="text-xs text-gray-600 mb-1 px-1">
-							{msg.sender}
-						</div>
-					)}
-					<div className="flex items-end space-x-1">
-						{isMyMessage && (
-							<div className="text-xs text-gray-500 mb-1">
-								{formatTime(msg.timestamp)}
-							</div>
-						)}
-						<div className={`px-3 py-2 rounded-2xl ${
-							isMyMessage
-								? 'bg-blue-500 text-white'
-								: 'bg-gray-200 text-gray-800'
-						}`}>
-							<p className="text-sm">{msg.message}</p>
-						</div>
-						{!isMyMessage && (
-							<div className="text-xs text-gray-500 mb-1">
-								{formatTime(msg.timestamp)}
-							</div>
-						)}
-					</div>
-				</div>
-			</div>
-		);
 	};
 
 	return (
-		<div className="bg-gradient-to-b from-blue-100 to-purple-100 min-h-screen flex flex-col items-center p-4">
-			<div className="bg-white shadow-lg rounded-lg w-full max-w-md flex flex-col h-[700px]">
-				{/* 헤더 */}
-				<div className="bg-gradient-to-r from-purple-500 to-blue-500 text-white p-4 rounded-t-lg">
-					<div className="flex items-center justify-between">
-						<div>
-							<h2 className="font-bold text-lg">🎮 전체 채팅</h2>
-							<p className="text-sm opacity-90">RPG 월드 채팅방</p>
-						</div>
-						<div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
-					</div>
-				</div>
+		<div style={{ padding: '1rem', fontFamily: 'sans-serif' }}>
+			<div style={{ height: '70vh', overflowY: 'auto', border: '1px solid #ccc', padding: '1rem' }}>
+				{messages.map((msg, index) => {
+					if (msg.messageType !== 'CHAT') {
+						return (
+							<div
+								key={index}
+								style={{
+									textAlign: 'center',
+									color: msg.messageType === 'ADMIN' ? '#444' : '#888',
+									fontStyle: msg.messageType === 'ADMIN' ? 'italic' : 'normal',
+									margin: '0.5rem 0',
+								}}
+							>
+								{msg.message}
+							</div>
+						);
+					}
 
-				{/* 채팅 영역 */}
-				<div className="flex-1 overflow-y-auto p-4 space-y-1">
-					{messages.map((msg, index) => renderMessage(msg, index))}
-					<div ref={scrollRef} />
-				</div>
-
-				{/* 입력 영역 */}
-				<div className="p-4 border-t bg-gray-50 rounded-b-lg">
-					<div className="flex items-center space-x-2">
-						<input
-							type="text"
-							placeholder={isConnected ? "메시지를 입력하세요..." : "연결 중..."}
-							value={input}
-							onChange={(e) => setInput(e.target.value)}
-							onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-							disabled={!isConnected}
-							className="flex-1 px-4 py-2 border border-gray-300 rounded-full outline-none focus:border-blue-500 disabled:bg-gray-100"
-						/>
-						<button
-							onClick={sendMessage}
-							disabled={!isConnected || !input.trim()}
-							className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white p-2 rounded-full transition-colors"
+					return (
+						<div
+							key={index}
+							style={{
+								display: 'flex',
+								justifyContent: msg.isMe ? 'flex-end' : 'flex-start',
+								marginBottom: '0.75rem',
+							}}
 						>
-							<Send size={18} />
-						</button>
-					</div>
-					{isConnected && (
-						<div className="text-xs text-gray-500 mt-2 text-center">
-							온라인 • 전체 채팅방
+							<div style={{ maxWidth: '70%', textAlign: msg.isMe ? 'right' : 'left' }}>
+								{!msg.isMe && (
+									<div
+										style={{
+											fontSize: '0.8rem',
+											color: '#666',
+											marginBottom: '0.25rem',
+										}}
+									>
+										{msg.username}
+									</div>
+								)}
+								<div
+									style={{
+										display: 'inline-block',
+										backgroundColor: msg.isMe ? '#4f46e5' : '#e5e7eb',
+										color: msg.isMe ? 'white' : 'black',
+										padding: '0.5rem 1rem',
+										borderRadius: '1rem',
+										wordBreak: 'break-word',
+									}}
+								>
+									{msg.message}
+								</div>
+								<div
+									style={{
+										fontSize: '0.7rem',
+										color: '#999',
+										marginTop: '0.2rem',
+									}}
+								>
+									{msg.timestamp}
+								</div>
+							</div>
 						</div>
-					)}
-				</div>
+					);
+				})}
+				<div ref={messagesEndRef} />
+			</div>
+
+			<div style={{ display: 'flex', marginTop: '1rem' }}>
+				<input
+					type="text"
+					placeholder={isConnected ? '메시지를 입력하세요...' : '서버에 연결 중...'}
+					value={newMessage}
+					onChange={(e) => setNewMessage(e.target.value)}
+					onKeyDown={handleKeyPress}
+					disabled={!isConnected}
+					style={{
+						flex: 1,
+						padding: '0.5rem',
+						borderRadius: '0.5rem',
+						border: '1px solid #ccc',
+						backgroundColor: isConnected ? 'white' : '#f3f4f6',
+					}}
+				/>
+				<button
+					onClick={sendMessage}
+					disabled={!isConnected || !newMessage.trim()}
+					style={{
+						marginLeft: '0.5rem',
+						padding: '0.5rem 1rem',
+						borderRadius: '0.5rem',
+						backgroundColor: '#3b82f6',
+						color: 'white',
+						border: 'none',
+					}}
+				>
+					전송
+				</button>
 			</div>
 		</div>
 	);
 };
 
-export default ChatInterface;
+export default ChatMessageInterface;

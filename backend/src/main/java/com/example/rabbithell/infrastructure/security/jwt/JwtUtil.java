@@ -135,5 +135,15 @@ public class JwtUtil {
 			.getBody();
 	}
 
+//todo: 추가
+	public String getUsernameFromToken(String token) {
+		try {
+			Claims claims = parseClaims(token);
+			// 사용자 이름(cloverName)을 기준으로 가져옴
+			return claims.get("cloverName", String.class);
+		} catch (Exception e) {
+			throw new JwtException("토큰에서 사용자명을 추출할 수 없습니다.");
+		}
+	}
 
 }

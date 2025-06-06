@@ -68,3 +68,8 @@ spring:
             refresh:
                 minute: 20160
         secret: ${SECRET_KEY}
+
+    logging: # 로그를 보기 위해서 추가
+        level:
+            root: info
+        com.coen.yamltest: debug

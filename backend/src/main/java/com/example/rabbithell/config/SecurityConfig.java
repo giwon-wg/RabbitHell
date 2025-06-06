@@ -1,6 +1,7 @@
 package com.example.rabbithell.config;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +22,13 @@ import com.example.rabbithell.infrastructure.security.oauth.HttpCookieOAuth2Auth
 import com.example.rabbithell.infrastructure.security.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.rabbithell.infrastructure.security.oauth.service.CustomOAuth2UserService;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+
 
 @Configuration
 @EnableWebSecurity
@@ -55,7 +60,9 @@ public class SecurityConfig {
 					"/auth/**",
 					"/oauth2/authorization/**",
 					"/swagger-ui/**",
-					"/v3/api-docs/**"
+					"/v3/api-docs/**",
+					"/ws/**",         // ✅ 반드시 필요
+					"/ws/**/**"
 				).permitAll()
 				.anyRequest().authenticated()
 			)
@@ -93,4 +100,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
+
+

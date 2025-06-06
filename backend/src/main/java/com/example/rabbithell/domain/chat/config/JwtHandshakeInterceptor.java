@@ -5,13 +5,17 @@ import io.jsonwebtoken.Claims;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Arrays;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class JwtHandshakeInterceptor implements HandshakeInterceptor {
+
 
 	private final JwtUtil jwtUtil;
 
@@ -22,42 +26,26 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
 								   WebSocketHandler wsHandler, Map<String, Object> attributes) {
-		String query = request.getURI().getQuery();
-		System.out.println("Handshake query: " + query);
 
-		if (query == null || !query.contains("token=")) {
-			response.setStatusCode(HttpStatus.UNAUTHORIZED);
-			return false;
+		if (request instanceof ServletServerHttpRequest servletRequest) {
+			HttpServletRequest req = servletRequest.getServletRequest();
+			String token = req.getParameter("token");
+
+			if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+				// 사용자 정보 추출해서 세션에 저장
+				String username = jwtUtil.getUsernameFromToken(token);
+				attributes.put("jwtToken", token);
+				attributes.put("username", username); // 선택 사항
+				return true;
+			}
 		}
 
-		String token = Arrays.stream(query.split("&"))
-			.filter(param -> param.startsWith("token="))
-			.map(param -> param.substring(6))
-			.findFirst()
-			.orElse(null);
-
-		System.out.println("Handshake token: " + token);
-
-		if (!jwtUtil.validateToken(token)) {
-			response.setStatusCode(HttpStatus.UNAUTHORIZED);
-			return false;
-		}
-
-		// ✅ 유저 정보 추출 및 저장
-		Claims claims = jwtUtil.parseClaims(token);
-		String userId = claims.getSubject();
-		String username = claims.get("cloverName", String.class);
-
-		attributes.put("jwtToken", token); // ✅ 반드시 추가
-		attributes.put("userId", userId);
-		attributes.put("username", username);
-
-		return true;
+		response.setStatusCode(HttpStatus.UNAUTHORIZED);
+		return false;
 	}
 
 	@Override
 	public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
 							   WebSocketHandler wsHandler, Exception exception) {
-		// 필요 시 핸드셰이크 이후 처리
 	}
 }
