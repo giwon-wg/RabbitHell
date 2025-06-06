@@ -310,17 +310,17 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(iSlimeBell);
 		inventoryItemRepository.save(iTuxedo);
 
-		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
-		monsterRepository.save(slime);
+//		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
+//		monsterRepository.save(slime);
 
-		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40);
-		monsterRepository.save(goblin);
-
-		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(slimeEncounter);
-
-		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(goblinEncounter);
+//		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40);
+//		monsterRepository.save(goblin);
+//
+//		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);
+//		monsterEncounterRepository.save(slimeEncounter);
+//
+//		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
+//		monsterEncounterRepository.save(goblinEncounter);
 
 	}
 }

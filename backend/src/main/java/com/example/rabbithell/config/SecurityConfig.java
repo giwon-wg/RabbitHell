@@ -20,6 +20,7 @@ import com.example.rabbithell.infrastructure.security.jwt.JwtAuthenticationFilte
 import com.example.rabbithell.infrastructure.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.rabbithell.infrastructure.security.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.rabbithell.infrastructure.security.oauth.service.CustomOAuth2UserService;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;

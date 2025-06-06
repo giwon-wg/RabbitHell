@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+
 
 interface ChatMessage {
 	sender: string;
@@ -7,6 +7,10 @@ interface ChatMessage {
 	messageType: 'CHAT' | 'ENTER' | 'QUIT' | 'ADMIN';
 	timestamp: Date;
 	isMe?: boolean;
+}
+
+function Send(props: { size: number }) {
+	return null;
 }
 
 const ChatInterface = () => {
