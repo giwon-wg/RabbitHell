@@ -1,16 +1,18 @@
 package com.example.rabbithell.domain.chat.service;
 
-import com.example.rabbithell.domain.chat.dto.request.ChatMessageRequestDto;
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
+import com.example.rabbithell.domain.chat.entity.ChatRoom;
 import com.example.rabbithell.domain.chat.exception.ChatMessageException;
 import com.example.rabbithell.domain.chat.exception.ChatMessageExceptionCode;
 import com.example.rabbithell.domain.chat.repository.ChatMessageRepository;
+import com.example.rabbithell.domain.chat.repository.ChatRoomRepository;
 import com.example.rabbithell.domain.chat.util.BadWordFilter;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,32 +22,39 @@ import java.time.LocalDateTime;
 
 import static com.example.rabbithell.domain.chat.common.Constants.Chat.MESSAGE_COOLDOWN_MS;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatMessageServiceImpl implements ChatMessageService {
 
 	private final ChatMessageRepository chatMessageRepository;
+	private final ChatRoomRepository chatRoomRepository;
 	private final UserRepository userRepository;
 
 	private final SimpMessagingTemplate messagingTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
 
 	@Override
-	public void saveMessage(Long userId, String message) {
+	public ChatMessage saveMessage(Long roomId, Long userId, String message) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("사용자 없음"));
 
+		ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+			.orElseThrow(() -> new RuntimeException("채팅방 없음"));
+		log.info("인증된 사용자: ID={}, Username={}", userId,user.getName());
 		// 욕설 필터링 적용
 		String filteredMessage = BadWordFilter.filter(message);
 
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.setUser(user);
+		chatMessage.setChatRoom(chatRoom); // ✅ 반드시 설정
 		chatMessage.setContents(filteredMessage);
 		chatMessage.setCreatedAt(LocalDateTime.now());
 
 		chatMessageRepository.save(chatMessage);
-	}
 
+		return chatMessage;
+	}
 
 	@Override
 	public void deleteMessage(Long roomId, Long chatMessageId) {
@@ -60,6 +69,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 	@Override
 	public void isOnCooldown(Long roomId, Long userId) {
 		String key = "chat:cooldown:" + roomId + ":" + userId;
+
 		String lastTimeStr = redisTemplate.opsForValue().get(key);
 
 		if (lastTimeStr != null) {

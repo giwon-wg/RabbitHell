@@ -3,6 +3,9 @@ package com.example.rabbithell.domain.chat.dto.response;
 import java.time.LocalDateTime;
 
 import com.example.rabbithell.domain.chat.dto.MessageType;
+import com.example.rabbithell.domain.chat.entity.ChatMessage;
+import com.example.rabbithell.domain.community.comment.dto.response.CommentResponse;
+import com.example.rabbithell.domain.community.comment.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,12 +32,13 @@ public record ChatMessageResponseDto(
 		this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
 	}
 
+
 	public static ChatMessageResponseDto createEnterMessage(String username) {
 		return new ChatMessageResponseDto(MessageType.ENTER, username + "님이 입장하셨습니다.", username, LocalDateTime.now());
 	}
 
-	public static ChatMessageResponseDto createChatMessage(String username, String message) {
-		return new ChatMessageResponseDto(MessageType.CHAT, message, username, LocalDateTime.now());
+	public static ChatMessageResponseDto createChatMessage(String username, ChatMessage chatMessage) {
+		return new ChatMessageResponseDto(MessageType.CHAT, chatMessage.getContents(), username, LocalDateTime.now());
 	}
 
 	public static ChatMessageResponseDto createQuitMessage(String username) {

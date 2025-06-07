@@ -30,6 +30,7 @@ public class JwtUtil {
 	public boolean hasCloverInfo(String token) {
 		Claims claims = parseClaims(token);
 
+
 		Object cloverId = claims.get("cloverId");
 		Object cloverName = claims.get("cloverName");
 
@@ -137,13 +138,13 @@ public class JwtUtil {
 
 //todo: 추가
 	public String getUsernameFromToken(String token) {
-		try {
-			Claims claims = parseClaims(token);
-			// 사용자 이름(cloverName)을 기준으로 가져옴
-			return claims.get("cloverName", String.class);
-		} catch (Exception e) {
-			throw new JwtException("토큰에서 사용자명을 추출할 수 없습니다.");
-		}
+		return Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.getSubject();
 	}
+
 
 }

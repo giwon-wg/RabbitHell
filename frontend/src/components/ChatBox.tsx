@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ChatMessageToAll from '../pages/ChatMessagePage/ChatMessageToAll';
 import styled from 'styled-components';
 
 const ChatContainer = styled.div`
@@ -7,6 +8,7 @@ const ChatContainer = styled.div`
 	border-left: 1px solid #ddd;
 	display: flex;
 	flex-direction: column;
+	height: 100%;
 `;
 
 const ChatHeader = styled.div`
@@ -21,25 +23,58 @@ const ChatHeader = styled.div`
 
 const ChatContent = styled.div`
 	flex: 1;
-	padding: 12px;
-	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
 	font-size: 14px;
 	color: #333;
+	overflow: hidden;
+	height: 100%;
+`;
+
+const ChatBodyWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 `;
 
 const ChatBox = () => {
+	const [activeTab, setActiveTab] = useState<'전체' | '채팅' | '로그' | '챗봇'>('전체');
+
 	return (
 		<ChatContainer>
 			<ChatHeader>
-				<span>전체</span>
-				<span>채팅</span>
-				<span>로그</span>
-				<span>챗봇</span>
+				{['전체', '채팅', '로그', '챗봇'].map((tab) => (
+					<span
+						key={tab}
+						style={{
+							cursor: 'pointer',
+							fontWeight: activeTab === tab ? 'bold' : 'normal',
+							color: activeTab === tab ? '#4f46e5' : '#666',
+						}}
+						onClick={() => setActiveTab(tab as any)}
+					>
+            {tab}
+          </span>
+				))}
 			</ChatHeader>
 			<ChatContent>
-				<p>토끼1: 넌 못 지나간다!</p>
-				<p>토끼2: 뭐야 지나가게 해주세요!</p>
-				<p>시스템: 스태미너 475/500</p>
+				{activeTab === '전체' && (
+					<ChatBodyWrapper>
+						<ChatMessageToAll />
+					</ChatBodyWrapper>
+				)}
+				{activeTab === '채팅' && (
+					<ChatBodyWrapper>
+						<ChatMessageToAll />
+					</ChatBodyWrapper>
+				)}
+				{activeTab === '로그' && (
+					<div>행동 로그 준비 중...</div>
+				)}
+				{activeTab === '챗봇' && (
+					<div>챗봇 기능 준비 중...</div>
+				)}
 			</ChatContent>
 		</ChatContainer>
 	);

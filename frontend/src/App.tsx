@@ -24,7 +24,7 @@ import PostWritePage from "./pages/community/PostWritePage";
 import WordMap from "./pages/WorldMap";
 import Bank from "./pages/villagePage/bank/Bank";
 import HospitalPage from './pages/villagePage/hospital/Hospital';
-import ChatMessageInterface from "./pages/ChatMessagePage/ChatMessageInterface";
+import ChatMessageToAll from "./pages/ChatMessagePage/ChatMessageToAll";
 
 type DecodedToken = {
 	exp: number;
@@ -95,7 +95,7 @@ const RoutesWithLayout = () => {
 			<Route path="/" element={<LoginPage />} />
 			<Route path="/oauth/success" element={<OAuthSuccessPage />} />
 			<Route path="/create-clover" element={<CloverCreatePage />} />
-			<Route path="/chat" element={<ChatMessageInterface/>}/>
+			<Route path="/chat" element={<ChatMessageToAll/>}/>
 
 			{/* Layout 적용 대상 경로들 */}
 			<Route element={<LayoutWrapper hide={shouldHideLayout} />}>

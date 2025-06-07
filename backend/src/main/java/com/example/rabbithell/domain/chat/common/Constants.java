@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 public class Constants {
 
 	public static class Chat {
-		public static final Long GLOBAL_ROOM_ID = 0L;
+		public static final String GLOBAL_ROOM_ID = "1";
 		public static final long MESSAGE_COOLDOWN_MS = 3000;
 	}
 
