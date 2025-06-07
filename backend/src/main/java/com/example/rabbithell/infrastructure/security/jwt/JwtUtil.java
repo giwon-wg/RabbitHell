@@ -12,20 +12,22 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+
 import jakarta.annotation.PostConstruct;
+
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private final JwtProperties properties;
-    private Key key;
+	private final JwtProperties properties;
+	private Key key;
 
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
-    }
+	@PostConstruct
+	public void init() {
+		this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
+	}
 
 	public boolean hasCloverInfo(String token) {
 		Claims claims = parseClaims(token);
@@ -54,53 +56,53 @@ public class JwtUtil {
 			.compact();
 	}
 
-    public String generateAccessToken(String userId, String role, Long cloverId, String cloverName) {
-        return Jwts.builder()
-            .setSubject(userId)
-            .claim("role", role)
+	public String generateAccessToken(String userId, String role, Long cloverId, String cloverName) {
+		return Jwts.builder()
+			.setSubject(userId)
+			.claim("role", role)
 			.claim("cloverId", cloverId)
 			.claim("cloverName", cloverName)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpireMillis()))
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
-    }
+			.setIssuedAt(new Date())
+			.setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpireMillis()))
+			.signWith(key, SignatureAlgorithm.HS256)
+			.compact();
+	}
 
-    public String generateRefreshToken(String userId) {
-        return Jwts.builder()
-            .setSubject(userId)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + getRefreshTokenExpireMillis()))
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
-    }
+	public String generateRefreshToken(String userId) {
+		return Jwts.builder()
+			.setSubject(userId)
+			.setIssuedAt(new Date())
+			.setExpiration(new Date(System.currentTimeMillis() + getRefreshTokenExpireMillis()))
+			.signWith(key, SignatureAlgorithm.HS256)
+			.compact();
+	}
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+			return true;
+		} catch (JwtException | IllegalArgumentException e) {
+			return false;
+		}
+	}
 
-    public String extractSubject(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .getSubject();
-    }
+	public String extractSubject(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.getSubject();
+	}
 
-    public String extractRole(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .get("role", String.class);
-    }
+	public String extractRole(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.get("role", String.class);
+	}
 
 	public Long extractCloverId(String token) {
 		return Jwts.parserBuilder()
@@ -120,13 +122,13 @@ public class JwtUtil {
 			.get("cloverName", String.class);
 	}
 
-    private long getAccessTokenExpireMillis() {
-        return 1000 * 60 * properties.getToken().getAccess().getMinute();
-    }
+	private long getAccessTokenExpireMillis() {
+		return 1000 * 60 * properties.getToken().getAccess().getMinute();
+	}
 
-    private long getRefreshTokenExpireMillis() {
-        return 1000 * 60 * properties.getToken().getRefresh().getMinute();
-    }
+	private long getRefreshTokenExpireMillis() {
+		return 1000 * 60 * properties.getToken().getRefresh().getMinute();
+	}
 
 	public Claims parseClaims(String token) {
 		return Jwts.parserBuilder()
@@ -136,7 +138,7 @@ public class JwtUtil {
 			.getBody();
 	}
 
-//todo: 추가
+	//채팅관련
 	public String getUsernameFromToken(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
@@ -144,6 +146,17 @@ public class JwtUtil {
 			.parseClaimsJws(token)
 			.getBody()
 			.getSubject();
+	}
+
+	public Long getUserIdFromToken(String token) {
+		return Long.valueOf(
+			Jwts.parserBuilder()
+				.setSigningKey(key)
+				.build()
+				.parseClaimsJws(token)
+				.getBody()
+				.getSubject()
+		);
 	}
 
 

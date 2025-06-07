@@ -14,14 +14,14 @@ const ChatMessageToAll = () => {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [isConnected, setIsConnected] = useState(false);
-	const [userCount, setUserCount] = useState(0); // null 대신 0으로 초기화
+	const [userCount, setUserCount] = useState(1); // null 대신 0으로 초기화
 	const [myUsername, setMyUsername] = useState<string | null>(null);
 	const [hasEnteredRoom, setHasEnteredRoom] = useState(false);
 
 	const stompClient = useRef<Client | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const ROOM_ID = '1';
+	const ROOM_ID = '2';
 
 
 	// 초기 접속자 수 가져오기 함수
@@ -31,16 +31,16 @@ const ChatMessageToAll = () => {
 			const data = await response.json();
 
 			if (data.success) {
-				const count = data.count || 0; // null/undefined면 0으로 설정
+				const count = data.count || 1; // null/undefined면 0으로 설정
 				setUserCount(count);
 				console.log(`📊 초기 접속자 수: ${count}`);
 			} else {
 				console.warn('접속자 수 조회 실패:', data.error);
-				setUserCount(0); // 실패시 0으로 설정
+				setUserCount(1); // 실패시 0으로 설정
 			}
 		} catch (error) {
 			console.error('접속자 수 조회 중 오류:', error);
-			setUserCount(0); // 오류시 0으로 설정
+			setUserCount(1); // 오류시 0으로 설정
 		}
 	};
 
@@ -169,9 +169,10 @@ const ChatMessageToAll = () => {
 				client.subscribe(`/sub/user-count/${ROOM_ID}`, (message) => {
 					try {
 						const data = JSON.parse(message.body);
-						const count = data.count !== undefined ? data.count : 0; // null/undefined 처리
-						setUserCount(count);
+						const count = data.count !== undefined ? data.count : 1; // null/undefined 처리
+
 						console.log(`📊 실시간 접속자 수 업데이트: ${count}`);
+						setUserCount(count);
 					} catch (error) {
 						console.error('접속자 수 메시지 파싱 오류:', error);
 						setUserCount(0);
@@ -248,7 +249,6 @@ const ChatMessageToAll = () => {
 
 	return (
 		<div style={{ padding: '0.5rem' }}>
-			{/* 🔧 상태 표시 개선 - 사용자 수 오른쪽 정렬 */}
 			<div style={{ marginBottom: '0.5rem' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.6rem',}}>
 					<span style={{
@@ -266,7 +266,7 @@ const ChatMessageToAll = () => {
 				</div>
 			</div>
 
-			<div style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', padding: '1rem' }}>
+			<div style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius:"0.25rem",padding:"0.5rem" }}>
 				{messages.map((msg, index) => {
 					if (msg.messageType === 'ENTER' || msg.messageType === 'QUIT') {
 						return (

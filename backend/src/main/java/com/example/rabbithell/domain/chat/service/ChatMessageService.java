@@ -11,9 +11,11 @@ public interface ChatMessageService {
 
 	ChatMessage saveMessage(Long roomId, Long userId, String message);
 
-	void deleteMessage(Long roomId, Long chatMessageId);
-
 	void isOnCooldown(Long roomId, Long userId);
 
 	void sendAdminMessage(Long roomId, ChatMessageResponseDto dto, User adminUser);
+
+	void sendMessageDeletedNotification(Long roomId, Long messageId, User admin);
+
+
 }

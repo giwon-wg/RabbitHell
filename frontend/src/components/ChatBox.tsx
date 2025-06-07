@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ChatMessageToAll from '../pages/ChatMessagePage/ChatMessageToAll';
+import ChatMessageToall from '../pages/ChatMessagePage/ChatMessageToall';
+import ChatMessageToone from '../pages/ChatMessagePage/ChatMessageToone';
 import styled from 'styled-components';
 
 const ChatContainer = styled.div`
@@ -61,12 +62,12 @@ const ChatBox = () => {
 			<ChatContent>
 				{activeTab === '전체' && (
 					<ChatBodyWrapper>
-						<ChatMessageToAll />
+						<ChatMessageToall />
 					</ChatBodyWrapper>
 				)}
 				{activeTab === '채팅' && (
 					<ChatBodyWrapper>
-						<ChatMessageToAll />
+						<ChatMessageToone />
 					</ChatBodyWrapper>
 				)}
 				{activeTab === '로그' && (

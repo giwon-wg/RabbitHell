@@ -1,5 +1,6 @@
 package com.example.rabbithell.domain.chat.service;
 
+import com.example.rabbithell.domain.chat.dto.request.ChatMessageRequestDto;
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
 import com.example.rabbithell.domain.chat.entity.ChatRoom;
@@ -15,9 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 
 import static com.example.rabbithell.domain.chat.common.Constants.Chat.MESSAGE_COOLDOWN_MS;
@@ -34,6 +37,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 	private final SimpMessagingTemplate messagingTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
 
+	//사용자
 	@Override
 	public ChatMessage saveMessage(Long roomId, Long userId, String message) {
 		User user = userRepository.findById(userId)
@@ -57,16 +61,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 	}
 
 	@Override
-	public void deleteMessage(Long roomId, Long chatMessageId) {
-		ChatMessage message = chatMessageRepository.findById(chatMessageId)
-			.orElseThrow(() -> new RuntimeException("메시지를 찾을 수 없습니다."));
-
-		message.softDelete();
-		chatMessageRepository.save(message); // 삭제 플래그만 갱신
-	}
-
-
-	@Override
 	public void isOnCooldown(Long roomId, Long userId) {
 		String key = "chat:cooldown:" + roomId + ":" + userId;
 
@@ -83,6 +77,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
 	}
 
+	//관리자
 	@Override
 	public void sendAdminMessage(Long roomId, ChatMessageResponseDto dto, User adminUser) {
 		validateAdmin(adminUser);
@@ -95,10 +90,24 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 		messagingTemplate.convertAndSend("/sub/room/" + roomId, adminMessage);
 	}
 
+
+
+	@Override
+	public void sendMessageDeletedNotification(Long roomId, Long messageId, User admin) {
+
+		validateAdmin(admin);
+		ChatMessage message = chatMessageRepository.findById(messageId)
+			.orElseThrow(() -> new RuntimeException("메시지를 찾을 수 없습니다."));
+
+		message.softDelete();
+		chatMessageRepository.save(message); // 삭제 플래그만 갱신
+	}
+
+
 	//관리자 권한 메소드
 	private void validateAdmin(User user) {
 		if (user == null || !user.getRole().equals("ADMIN")) {
-			throw new ChatMessageException(ChatMessageExceptionCode.NO_ADMIN_PRIVILEGES);
+			throw new ChatMessageException(ChatMessageExceptionCode.UNAUTHORIZED_ACCESS);
 		}
 	}
 

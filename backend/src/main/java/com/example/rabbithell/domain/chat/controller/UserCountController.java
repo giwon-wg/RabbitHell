@@ -22,11 +22,7 @@ public class UserCountController {
 
 	private final WebSocketListener webSocketListener;
 
-	/**
-	 * 특정 채팅방의 현재 접속자 수를 조회하는 API
-	 * @param roomId 채팅방 ID
-	 * @return 접속자 수
-	 */
+	// 특정 채팅방의 현재 접속자 수를 조회하는 API
 	@GetMapping("/rooms/{roomId}/user-count")
 	public ResponseEntity<Map<String, Object>> getUserCount(@PathVariable String roomId) {
 		try {
@@ -38,7 +34,7 @@ public class UserCountController {
 				"roomId", roomId
 			);
 
-			log.info("📊 채팅방 {} 접속자 수 API 응답: {}", roomId, count);
+			log.info(" 채팅방 {} 접속자 수 API 응답: {}", roomId, count);
 			return ResponseEntity.ok(response);
 
 		} catch (Exception e) {
@@ -55,10 +51,7 @@ public class UserCountController {
 		}
 	}
 
-	/**
-	 * 기본 채팅방(1번)의 접속자 수 조회
-	 * @return 접속자 수
-	 */
+	//기본 채팅방 접속자 수 조회
 	@GetMapping("/user-count")
 	public ResponseEntity<Map<String, Object>> getDefaultRoomUserCount() {
 		return getUserCount("1");

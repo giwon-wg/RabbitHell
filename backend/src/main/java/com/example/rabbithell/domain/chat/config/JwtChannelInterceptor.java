@@ -36,7 +36,6 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-		// STOMP 메시지가 아니거나 accessor 파싱 실패 시 바로 반환
 		if (accessor == null) {
 			log.warn("{} ⚠️ STOMP 헤더 파싱 실패 - 메시지 무시", LOG_PREFIX);
 			return message;
@@ -66,15 +65,19 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
 			String username = jwtUtil.getUsernameFromToken(token);
 			String role = jwtUtil.extractRole(token);
+			Long userId = Long.valueOf(jwtUtil.getUserIdFromToken(token));
 
 			List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 			Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
 			accessor.setUser(authentication);
+
 			accessor.getSessionAttributes().put("jwtToken", token);
+			accessor.getSessionAttributes().put("userId", userId);
+
 			String roomId = accessor.getFirstNativeHeader("roomId");
 			accessor.getSessionAttributes().put("roomId", roomId);
 
-			log.info("{} ✅ 인증 성공: 사용자 = {}, 역할 = {}", LOG_PREFIX, username, role);
+			log.info("{} ✅ 인증 성공: 사용자 = {}, 역할 = {}, ID = {}", LOG_PREFIX, username, role, userId);
 			return message;
 
 		} catch (Exception e) {
