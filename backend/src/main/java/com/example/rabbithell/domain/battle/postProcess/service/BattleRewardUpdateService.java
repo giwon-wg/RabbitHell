@@ -33,19 +33,19 @@ public class BattleRewardUpdateService {
 		for (BattleRewardCommand command : commands) {
 			if (command instanceof ExpRewardCommand expCmd) {
 				GameCharacter ch = expCmd.getCharacter();
-				ch.updateExp(expCmd.getResultExp());
+				// ch.updateExp(expCmd.getResultExp());
 				updatedCharacters.put(ch.getId(), ch);
 			} else if (command instanceof LevelUpCommand levelUpCmd) {
 				GameCharacter ch = levelUpCmd.getCharacter();
-				ch.updateLevel(levelUpCmd.getResultLevel());
+				// ch.updateLevel(levelUpCmd.getResultLevel());
 				updatedCharacters.put(ch.getId(), ch);
 			} else if (command instanceof SkillPointRewardCommand skillCmd) {
 				GameCharacter ch = skillCmd.getCharacter();
-				ch.updateSkillPoint(skillCmd.getUpdatedSkillPoints());
+				// ch.updateSkillPoint(skillCmd.getUpdatedSkillPoints());
 				updatedCharacters.put(ch.getId(), ch);
 			} else if (command instanceof JobPointRewardCommand jobPointCmd) {
 				GameCharacter ch = jobPointCmd.getCharacter();
-				ch.updateJobPoint(jobPointCmd.getUpdatedJobPoints());
+				// ch.updateJobPoint(jobPointCmd.getUpdatedJobPoints());
 				updatedCharacters.put(ch.getId(), ch);
 			} else if (command instanceof StatRewardCommand statRewardCmd) {
 				GameCharacter ch = statRewardCmd.getCharacter();
