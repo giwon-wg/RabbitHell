@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommandFactory;
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardExecutor;
+import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.JobPointRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.LevelUpCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.SkillPointRewardCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.StatRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.service.BattleRewardUpdateService;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.battle.vo.BattleRewardResultVo;
@@ -39,12 +41,6 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 
 		// 1. 커맨드 생성
 		List<ExpRewardCommand> expCommands = commandFactory.createExpCommands(team, monster.getExp());
-		List<LevelUpCommand> levelCommands = commandFactory.createLevelUpCommands(team, expCommands);
-		List<SkillPointRewardCommand> skillCommands = commandFactory.createSkillPointCommands(team,
-			fieldType.getSkillPoints());
-		List<JobPointRewardCommand> jobCommands = commandFactory.createJobPointCommands(team,
-			fieldType.getSkillPoints());
-		// CashRewardCommand cashCommand = commandFactory.createCashCommand(clover, 1000L);
 
 		// 2. 실행 순서대로 등록
 		expCommands.forEach(cmd -> {
@@ -52,6 +48,13 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			allCommands.add(cmd);
 		});
 		executor.executeAll(); // EXP 먼저 처리
+
+		List<LevelUpCommand> levelCommands = commandFactory.createLevelUpCommands(team, expCommands);
+		List<SkillPointRewardCommand> skillCommands = commandFactory.createSkillPointCommands(team,
+			fieldType.getSkillPoints());
+		List<JobPointRewardCommand> jobCommands = commandFactory.createJobPointCommands(team,
+			fieldType.getSkillPoints());
+		CashRewardCommand cashCommand = commandFactory.createCashCommand(clover, 1000L);
 
 		levelCommands.forEach(cmd -> {
 			executor.addCommand(cmd);
@@ -66,8 +69,8 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			allCommands.add(cmd);
 		});
 
-		// executor.addCommand(cashCommand);
-		// allCommands.add(cashCommand);
+		executor.addCommand(cashCommand);
+		allCommands.add(cashCommand);
 
 		executor.executeAll(); // 나머지 실행
 
@@ -77,6 +80,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		List<Integer> levelUps = new ArrayList<>();
 		List<Integer> updatedSkillPoints = new ArrayList<>();
 		List<Integer> updatedJobSkillPoints = new ArrayList<>();
+		Long updatedCash;
 
 		for (int i = 0; i < team.size(); i++) {
 			updatedExps.add(expCommands.get(i).getResultExp());
@@ -85,21 +89,86 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			updatedSkillPoints.add(skillCommands.get(i).getUpdatedSkillPoints());
 			updatedJobSkillPoints.add(jobCommands.get(i).getUpdatedJobPoints());
 		}
+		updatedCash = cashCommand.getResultCash();
+
+		List<List<Integer>> increasedStats = new ArrayList<>();
+		List<StatRewardCommand> statCommands = new ArrayList<>();
+
+		for (int i = 0; i < team.size(); i++) {
+			if (levelUps.get(i) > 0) {
+				StatRewardCommand statRewardCommand = commandFactory.createStatRewardCommand(team.get(i),
+					levelUps.get(i));
+				executor.addCommand(statRewardCommand);
+				allCommands.add(statRewardCommand);
+				statCommands.add(statRewardCommand);
+			} else {
+				statCommands.add(null); // 나중에 인덱스 맞추기 위해 null로 채움
+			}
+		}
+
+		executor.executeAll();
+
+		for (int i = 0; i < team.size(); i++) {
+			List<Integer> increasedStat = new ArrayList<>();
+			StatRewardCommand cmd = statCommands.get(i);
+
+			if (cmd != null) {
+				increasedStat.add(cmd.getIStrength());
+				increasedStat.add(cmd.getIIntelligence());
+				increasedStat.add(cmd.getIFocus());
+				increasedStat.add(cmd.getIAgility());
+			} else {
+				increasedStat.add(0); // 혹은 null
+				increasedStat.add(0);
+				increasedStat.add(0);
+				increasedStat.add(0);
+			}
+
+			increasedStats.add(increasedStat);
+		}
 
 		// 4. 결과 업데이트
 		updateService.applyCharacterRewards(allCommands);
+		updateService.applyCashReward(cashCommand, clover);
 
 		return new BattleRewardResultVo(
 			monster.getExp(),
 			fieldType.getSkillPoints(),
 			1000L,
-			0L, // cashCommand.getResultCash(),
+			updatedCash,
 			updatedExps,
 			updatedLevels,
 			levelUps,
 			updatedSkillPoints,
-			updatedJobSkillPoints
+			updatedJobSkillPoints,
+			increasedStats
 		);
 	}
+
+	// public void updateExp(int value) {
+	// 	this.exp = value;
+	// }
+	//
+	// public void updateSkillPoint(int value) {
+	// 	this.skillPoint = value;
+	// }
+	//
+	// public void updateJobPoint(int value) {
+	// 	if (this.job.getJobCategory() == JobCategory.WARRIOR) {
+	// 		this.warriorPoint = value;
+	// 	} else if (this.job.getJobCategory() == JobCategory.THIEF) {
+	// 		this.thiefPoint = value;
+	// 	} else if (this.job.getJobCategory() == JobCategory.ARCHER) {
+	// 		this.archerPoint = value;
+	// 	} else if (this.job.getJobCategory() == JobCategory.WIZARD) {
+	// 		this.wizardPoint = value;
+	// 	} else if (this.job.getJobCategory() == JobCategory.INCOMPETENT) {
+	// 		this.incompetentPoint = value;
+	// 	}
+	// }
+	//
+	// public void updateLevel(int resultLevel) {
+	// 	this.level = resultLevel;
+	// }
 
 }

@@ -4,13 +4,12 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 
 import lombok.Getter;
 
+@Getter
 public class LevelUpCommand implements BattleRewardCommand {
 
 	private final GameCharacter character;
 	private final int baseExp;
-	@Getter
 	private int resultLevel;
-	@Getter
 	private int levelUpAmount;
 
 	public LevelUpCommand(GameCharacter character, int baseExp) {

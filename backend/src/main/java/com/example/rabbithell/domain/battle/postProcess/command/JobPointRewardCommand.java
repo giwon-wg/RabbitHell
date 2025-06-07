@@ -5,11 +5,11 @@ import com.example.rabbithell.domain.job.entity.JobCategory;
 
 import lombok.Getter;
 
+@Getter
 public class JobPointRewardCommand implements BattleRewardCommand {
 
 	private final GameCharacter character;
 	private final int earnedSkillPoints;
-	@Getter
 	private int updatedJobPoints;
 
 	public JobPointRewardCommand(GameCharacter character, int earnedSkillPoints) {
