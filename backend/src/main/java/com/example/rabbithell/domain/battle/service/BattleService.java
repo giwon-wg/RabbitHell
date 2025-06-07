@@ -19,6 +19,7 @@ import com.example.rabbithell.domain.battle.vo.BattleRewardResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.service.MonsterService;
 import com.example.rabbithell.domain.util.battleLogic.Battle;
@@ -55,6 +56,8 @@ public class BattleService {
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
 		List<GameCharacter> team = clover.getMembers();
+		List<Long> characterIds = team.stream().map(GameCharacter::getId).toList();
+		List<Job> jobs = team.stream().map(GameCharacter::getJob).toList();
 
 		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
 
@@ -84,16 +87,18 @@ public class BattleService {
 		return BattleResultResponse.builder()
 			.cloverId(clover.getId())
 			.stamina(clover.getStamina())
+			.characterIds(characterIds)
 			.level(reward.levels())
 			.earnedExp(reward.earnedExp())
 			.totalExp(reward.totalExps())
 			.levelUpAmounts(reward.levelUpAmounts())
 			.lostOrEarnedCash(reward.cashDelta())
 			.totalCash(reward.totalCash())
-			.jobs(null)
+			.jobs(jobs)
 			.earnedSkillPoint(reward.earnedSkillPoints())
 			.totalSkillPoints(reward.totalSkillPoints())
 			.jobSkillPoints(reward.jobSkillPoints())
+			.increasedStats(reward.increasedStat())
 			.battleFieldTypes(battleFieldTypes)
 			.weapon(weapon)
 			.armor(armor)

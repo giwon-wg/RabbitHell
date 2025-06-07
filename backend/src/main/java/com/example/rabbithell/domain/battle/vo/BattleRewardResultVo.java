@@ -14,6 +14,7 @@ public record BattleRewardResultVo(
 	List<Integer> levels,
 	List<Integer> levelUpAmounts,
 	List<Integer> totalSkillPoints,
-	List<Integer> jobSkillPoints
+	List<Integer> jobSkillPoints,
+	List<List<Integer>> increasedStat
 ) {
 }

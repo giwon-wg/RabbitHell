@@ -1,21 +1,23 @@
 package com.example.rabbithell.domain.battle.postProcess.command;
 
+import com.example.rabbithell.domain.clover.entity.Clover;
+
 import lombok.Getter;
 
+@Getter
 public class CashRewardCommand implements BattleRewardCommand {
-	private final long currentCash;
+	private final Clover clover;
 	private final long earnedCash;
-	@Getter
 	private long resultCash;
 
-	public CashRewardCommand(long currentCash, long earnedCash) {
-		this.currentCash = currentCash;
+	public CashRewardCommand(Clover clover, long earnedCash) {
+		this.clover = clover;
 		this.earnedCash = earnedCash;
 	}
 
 	@Override
 	public void execute() {
-		resultCash = currentCash + earnedCash;
+		resultCash = clover.getCash() + earnedCash;
 
 	}
 

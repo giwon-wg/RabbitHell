@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.clover.entity.Clover;
 
 @Component
 public class BattleRewardCommandFactory {
@@ -36,7 +37,11 @@ public class BattleRewardCommandFactory {
 			.toList();
 	}
 
-	public CashRewardCommand createCashCommand(long currentCash, long earnedCash) {
-		return new CashRewardCommand(currentCash, earnedCash);
+	public CashRewardCommand createCashCommand(Clover clover, long earnedCash) {
+		return new CashRewardCommand(clover, earnedCash);
+	}
+
+	public StatRewardCommand createStatRewardCommand(GameCharacter character, Integer levelUps) {
+		return new StatRewardCommand(character, levelUps);
 	}
 }

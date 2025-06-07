@@ -27,6 +27,7 @@ public record BattleResultResponse(
 	int earnedSkillPoint,
 	List<Integer> totalSkillPoints,
 	List<Integer> jobSkillPoints,
+	List<List<Integer>> increasedStats,
 
 	Set<BattleFieldType> battleFieldTypes,
 	List<ItemDto> weapon,

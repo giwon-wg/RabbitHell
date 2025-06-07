@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.JobPointRewardCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.LevelUpCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.SkillPointRewardCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.StatRewardCommand;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
@@ -30,15 +33,28 @@ public class BattleRewardUpdateService {
 		for (BattleRewardCommand command : commands) {
 			if (command instanceof ExpRewardCommand expCmd) {
 				GameCharacter ch = expCmd.getCharacter();
-				// ch.updateExp(expCmd.getResultExp());
+				ch.updateExp(expCmd.getResultExp());
 				updatedCharacters.put(ch.getId(), ch);
-
+			} else if (command instanceof LevelUpCommand levelUpCmd) {
+				GameCharacter ch = levelUpCmd.getCharacter();
+				ch.updateLevel(levelUpCmd.getResultLevel());
+				updatedCharacters.put(ch.getId(), ch);
 			} else if (command instanceof SkillPointRewardCommand skillCmd) {
-				// GameCharacter ch = skillCmd.getCharacter();
-				// ch.updateSkillPoint(skillCmd.getResultSkillPoints());
-				// updatedCharacters.put(ch.getId(), ch);
+				GameCharacter ch = skillCmd.getCharacter();
+				ch.updateSkillPoint(skillCmd.getUpdatedSkillPoints());
+				updatedCharacters.put(ch.getId(), ch);
+			} else if (command instanceof JobPointRewardCommand jobPointCmd) {
+				GameCharacter ch = jobPointCmd.getCharacter();
+				ch.updateJobPoint(jobPointCmd.getUpdatedJobPoints());
+				updatedCharacters.put(ch.getId(), ch);
+			} else if (command instanceof StatRewardCommand statRewardCmd) {
+				GameCharacter ch = statRewardCmd.getCharacter();
+				ch.updateStrength(statRewardCmd.getUStrength());
+				ch.updateAgility(statRewardCmd.getUAgility());
+				ch.updateIntelligence(statRewardCmd.getUIntelligence());
+				ch.updateFocus(statRewardCmd.getUFocus());
+				updatedCharacters.put(ch.getId(), ch);
 			}
-			// ... add JobSkillPointRewardCommand, etc.
 		}
 
 		// Batch update
@@ -46,7 +62,7 @@ public class BattleRewardUpdateService {
 	}
 
 	public void applyCashReward(CashRewardCommand cashCommand, Clover clover) {
-		// clover.updateCash(cashCommand.getResultCash());
+		clover.earnCash((int)cashCommand.getEarnedCash());
 		cloverRepository.save(clover);
 	}
 }
