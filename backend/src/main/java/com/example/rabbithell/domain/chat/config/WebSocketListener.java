@@ -11,14 +11,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import static com.example.rabbithell.domain.chat.common.Constants.Chat.GLOBAL_ROOM_ID;
 
 @Slf4j
 @Component
@@ -119,7 +116,7 @@ public class WebSocketListener {
 		Map<String, Object> payload = Map.of("count", count);
 		messagingTemplate.convertAndSend("/sub/user-count/1", payload);
 
-		log.info("📊 현재 채팅방 1번 접속자 수: {}", count);
+		log.info("현재 채팅방 1번 접속자 수: {}", count);
 	}
 
 	// 초기 접속자 수를 가져오는 REST API용 메서드 (Controller에서 호출 가능)
@@ -133,7 +130,7 @@ public class WebSocketListener {
 			.filter(id -> id != null && targetRoomId.equals(id))
 			.count();
 
-		log.info("📊 채팅방 {}번 현재 접속자 수 조회: {}", roomId, count);
+		log.info("채팅방 {}번 현재 접속자 수 조회: {}", roomId, count);
 		return count;
 	}
 }

@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import com.example.rabbithell.domain.chat.dto.MessageType;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
-import com.example.rabbithell.domain.community.comment.dto.response.CommentResponse;
-import com.example.rabbithell.domain.community.comment.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,6 +15,8 @@ public record ChatMessageResponseDto(
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	LocalDateTime createdAt
+
+
 ) {
 
 	@JsonCreator

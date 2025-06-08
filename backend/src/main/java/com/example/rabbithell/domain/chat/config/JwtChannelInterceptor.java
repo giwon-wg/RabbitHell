@@ -14,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -32,14 +30,14 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BEARER = "Bearer ";
-	private static final String LOG_PREFIX = "[🔐 STOMP AUTH]";
+	private static final String LOG_PREFIX = "[STOMP AUTH]";
 
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
 		if (accessor == null) {
-			log.warn("{} ⚠️ STOMP 헤더 파싱 실패 - 메시지 무시", LOG_PREFIX);
+			log.warn("{} STOMP 헤더 파싱 실패 - 메시지 무시", LOG_PREFIX);
 			return message;
 		}
 
@@ -47,7 +45,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 			return message;
 		}
 
-		log.info("{} 🚪 CONNECT 요청 처리 시작", LOG_PREFIX);
+		log.info("{} CONNECT 요청 처리 시작", LOG_PREFIX);
 
 		try {
 			Optional<String> tokenOptional = extractToken(accessor);
@@ -58,7 +56,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 			}
 
 			String token = tokenOptional.get();
-			log.info("{} 📦 JWT 추출 완료: {}...", LOG_PREFIX, token.substring(0, Math.min(token.length(), 20)));
+			log.info("{} JWT 추출 완료: {}...", LOG_PREFIX, token.substring(0, Math.min(token.length(), 20)));
 
 			if (!jwtUtil.validateToken(token)) {
 				log.warn("{} ❌ 유효하지 않은 JWT", LOG_PREFIX);
@@ -83,7 +81,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 			return message;
 
 		} catch (Exception e) {
-			log.error("{} 💥 인증 실패: {}", LOG_PREFIX, e.getMessage(), e);
+			log.error("{} 인증 실패: {}", LOG_PREFIX, e.getMessage(), e);
 			throw e;
 		}
 	}

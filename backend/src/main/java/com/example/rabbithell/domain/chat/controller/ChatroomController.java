@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
-public class UserCountController {
+public class ChatroomController {
 
 	private final WebSocketListener webSocketListener;
 

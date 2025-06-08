@@ -17,9 +17,8 @@ const ChatMessageToall = () => {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [isConnected, setIsConnected] = useState(false);
-	const [userCount, setUserCount] = useState(1);
+	const [userCount, setUserCount] = useState(0);
 	const [myUsername, setMyUsername] = useState<string | null>(null);
-	const [hasEnteredRoom, setHasEnteredRoom] = useState(false);
 
 	const stompClient = useRef<Client | null>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -36,7 +35,7 @@ const ChatMessageToall = () => {
 	useEffect(() => {
 		if (!myUsername) return;
 
-		// ✅ Redis 기반 채팅 기록 로딩
+		// Redis 기반 채팅 기록 로딩
 		const fetchInitialChatHistory = async () => {
 			try {
 				const res = await fetch(`/api/chat/${ROOM_ID}/history`);
@@ -135,9 +134,9 @@ const ChatMessageToall = () => {
 				client.subscribe(`/sub/user-count/${ROOM_ID}`, (message) => {
 					try {
 						const data = JSON.parse(message.body);
-						setUserCount(data.count || 1);
+						setUserCount(data.count || 0);
 					} catch {
-						setUserCount(1);
+						setUserCount(0);
 					}
 				});
 			},

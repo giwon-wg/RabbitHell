@@ -1,7 +1,5 @@
 package com.example.rabbithell.domain.chat.controller;
 
-import java.security.Principal;
-
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -9,6 +7,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import com.example.rabbithell.domain.chat.config.messagebroker.RedisPublisher;
 import com.example.rabbithell.domain.chat.dto.request.ChatMessageDeleteRequestDto;
 import com.example.rabbithell.domain.chat.dto.request.ChatMessageRequestDto;
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
@@ -20,6 +19,7 @@ import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.service.UserService;
 import com.example.rabbithell.infrastructure.security.jwt.JwtTokenExtractor;
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,9 @@ public class ChatMessageController {
 	private final SimpMessagingTemplate messagingTemplate;
 	private final JwtUtil jwtUtil;
 	private final JwtTokenExtractor jwtTokenExtractor;
+	private final RedisPublisher redisPublisher;
+	private final ObjectMapper objectMapper;
+
 
 	@MessageMapping("/chat/{roomId}")
 	public void handleMessage(
@@ -73,7 +76,9 @@ public class ChatMessageController {
 
 			ChatMessageResponseDto responseDto = ChatMessageResponseDto.createChatMessage(username, filteredmessage);
 
-			messagingTemplate.convertAndSend("/sub/chat/" + roomId, responseDto);
+			// ✅ Redis 발행으로 전환
+			String json = objectMapper.writeValueAsString(responseDto);
+			redisPublisher.publish(roomId, responseDto); // 또는 "chat-room." + roomId 도 가능
 
 		} catch (ChatMessageException e) {
 			log.error("채팅 메시지 처리 중 오류 발생: {}", e.getMessage());

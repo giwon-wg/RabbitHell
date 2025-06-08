@@ -23,7 +23,7 @@ public class RedisPublisher {
 			String json = objectMapper.writeValueAsString(messageDto);
 			String topic = "chatroom:" + roomId;
 			redisTemplate.convertAndSend(topic, json);
-			log.info("📤 RedisPublisher: {}에 메시지 발행 완료", topic);
+			log.info(" RedisPublisher: {}에 메시지 발행 완료", topic);
 		} catch (JsonProcessingException e) {
 			log.error("RedisPublisher 직렬화 실패", e);
 		}
