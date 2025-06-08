@@ -3,6 +3,7 @@ package com.example.rabbithell.domain.battle.postProcess.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.rabbithell.domain.monster.enums.Rating;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,11 +50,19 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		});
 		executor.executeAll(); // EXP 먼저 처리
 
+		int earnedSkillPoint = fieldType.getSkillPoints();
+		switch (monster.getRating()) {
+			case RARE -> earnedSkillPoint *= 10;
+			case ELITE -> earnedSkillPoint *= 20;
+			case MINI_BOSS -> earnedSkillPoint *= 30;
+			case BOSS -> earnedSkillPoint *= 100;
+			case SPECIAL -> earnedSkillPoint *= 7;
+		}
 		List<LevelUpCommand> levelCommands = commandFactory.createLevelUpCommands(team, expCommands);
 		List<SkillPointRewardCommand> skillCommands = commandFactory.createSkillPointCommands(team,
-			fieldType.getSkillPoints());
+			earnedSkillPoint);
 		List<JobPointRewardCommand> jobCommands = commandFactory.createJobPointCommands(team,
-			fieldType.getSkillPoints());
+			earnedSkillPoint);
 		CashRewardCommand cashCommand = commandFactory.createCashCommand(clover, 1000L);
 
 		levelCommands.forEach(cmd -> {
