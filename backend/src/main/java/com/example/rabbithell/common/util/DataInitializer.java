@@ -310,17 +310,46 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(iSlimeBell);
 		inventoryItemRepository.save(iTuxedo);
 
-		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
-		monsterRepository.save(slime);
+		// Common Monsters
+		List<Monster> commonMonsters = List.of(
+			createAndSaveMonster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30),
+			createAndSaveMonster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40),
+			createAndSaveMonster(Rating.COMMON, "들쥐", 5000, 130, 20, 300, 20),
+			createAndSaveMonster(Rating.COMMON, "거미", 4642, 43, 20, 200, 30),
+			createAndSaveMonster(Rating.COMMON, "멧돼지", 3000, 40, 40, 40, 40),
+			createAndSaveMonster(Rating.COMMON, "뱀", 3333, 43, 43, 43, 43),
+			createAndSaveMonster(Rating.COMMON, "비틀", 3232, 32, 32, 32, 32),
+			createAndSaveMonster(Rating.COMMON, "늑대", 4242, 42, 42, 42, 42),
+			createAndSaveMonster(Rating.COMMON, "원숭이", 3454, 33, 34, 53, 21),
+			createAndSaveMonster(Rating.COMMON, "회중시계", 3333, 33, 33, 33, 33)
+		);
+		commonMonsters.forEach(monster -> createMonsterEncounter(10, monster, BattleFieldType.PLAIN));
 
-		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40);
-		monsterRepository.save(goblin);
+		// Rare Monsters
+		List<Monster> rareMonsters = List.of(
+			createAndSaveMonster(Rating.RARE, "풀의 정령", 4030, 23, 23, 77, 33),
+			createAndSaveMonster(Rating.RARE, "골렘", 5000, 40, 40, 40, 40),
+			createAndSaveMonster(Rating.RARE, "병사2호", 2222, 22, 22, 22, 22),
+			createAndSaveMonster(Rating.RARE, "병사3호", 3333, 33, 33, 33, 33),
+			createAndSaveMonster(Rating.RARE, "병사4호", 4444, 44, 44, 44, 44)
+		);
+		rareMonsters.forEach(monster -> createMonsterEncounter(3, monster, BattleFieldType.PLAIN));
 
-		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(slimeEncounter);
+		// Special Monster
+		Monster goldenToad = createAndSaveMonster(Rating.SPECIAL, "황금 두꺼비", 777, 7, 7, 7, 77);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.PLAIN);
 
-		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(goblinEncounter);
 
+	}
+
+	private Monster createAndSaveMonster(Rating rating, String name, int hp, int atk, int def, int spd, int exp) {
+		Monster monster = new Monster(rating, name, hp, atk, def, spd, exp);
+		monsterRepository.save(monster);
+		return monster;
+	}
+
+	private void createMonsterEncounter(int rate, Monster monster, BattleFieldType type) {
+		MonsterEncounter encounter = new MonsterEncounter(rate, monster, type);
+		monsterEncounterRepository.save(encounter);
 	}
 }
