@@ -2,6 +2,7 @@ package com.example.rabbithell.domain.battle.postProcess.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Component;
 
@@ -37,11 +38,18 @@ public class BattleRewardCommandFactory {
 			.toList();
 	}
 
+	public List<StatRewardCommand> createStatRewardCommand(List<GameCharacter> team, List<Integer> levelUps) {
+		return IntStream.range(0, team.size())
+			.mapToObj(i -> new StatRewardCommand(team.get(i), levelUps.get(i)))
+			.toList();
+	}
+
 	public CashRewardCommand createCashCommand(Clover clover, long earnedCash) {
 		return new CashRewardCommand(clover, earnedCash);
 	}
 
-	public StatRewardCommand createStatRewardCommand(GameCharacter character, Integer levelUps) {
-		return new StatRewardCommand(character, levelUps);
-	}
+
+
+
+
 }

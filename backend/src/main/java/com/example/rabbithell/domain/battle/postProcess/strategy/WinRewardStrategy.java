@@ -103,17 +103,14 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		List<List<Integer>> increasedStats = new ArrayList<>();
 		List<StatRewardCommand> statCommands = new ArrayList<>();
 
-		for (int i = 0; i < team.size(); i++) {
-			if (levelUps.get(i) > 0) {
-				StatRewardCommand statRewardCommand = commandFactory.createStatRewardCommand(team.get(i),
-					levelUps.get(i));
-				executor.addCommand(statRewardCommand);
-				allCommands.add(statRewardCommand);
-				statCommands.add(statRewardCommand);
-			} else {
-				statCommands.add(null); // 나중에 인덱스 맞추기 위해 null로 채움
-			}
-		}
+
+		List<StatRewardCommand> statRewardCommands = commandFactory.createStatRewardCommand(team, levelUps);
+		statRewardCommands.forEach(cmd -> {
+			executor.addCommand(cmd);
+			allCommands.add(cmd);
+			statCommands.add(cmd);
+		});
+
 
 		executor.executeAll();
 
