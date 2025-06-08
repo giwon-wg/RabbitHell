@@ -3,19 +3,11 @@ package com.example.rabbithell.domain.battle.postProcess.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.rabbithell.domain.battle.postProcess.command.*;
 import com.example.rabbithell.domain.monster.enums.Rating;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommandFactory;
-import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardExecutor;
-import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.JobPointRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.LevelUpCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.SkillPointRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.StatRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.service.BattleRewardUpdateService;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.battle.vo.BattleRewardResultVo;
@@ -39,6 +31,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 
 		BattleRewardExecutor executor = new BattleRewardExecutor();
 		List<BattleRewardCommand> allCommands = new ArrayList<>();
+		List<BattleRewardCommand> cloverCommands = new ArrayList<>();
 
 		// 1. 커맨드 생성
 		List<ExpRewardCommand> expCommands = commandFactory.createExpCommands(team, monster.getExp());
@@ -64,6 +57,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		List<JobPointRewardCommand> jobCommands = commandFactory.createJobPointCommands(team,
 			earnedSkillPoint);
 		CashRewardCommand cashCommand = commandFactory.createCashCommand(clover, 1000L);
+		RareMapCommand rareMapCommand = commandFactory.createRareMapCommand(clover, fieldType);
 
 		levelCommands.forEach(cmd -> {
 			executor.addCommand(cmd);
@@ -79,7 +73,9 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		});
 
 		executor.addCommand(cashCommand);
-		allCommands.add(cashCommand);
+		executor.addCommand(rareMapCommand);
+		cloverCommands.add(cashCommand);
+		cloverCommands.add(rareMapCommand);
 
 		executor.executeAll(); // 나머지 실행
 
@@ -89,6 +85,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		List<Integer> levelUps = new ArrayList<>();
 		List<Integer> updatedSkillPoints = new ArrayList<>();
 		List<Integer> updatedJobSkillPoints = new ArrayList<>();
+		List<BattleFieldType> rareMaps = new ArrayList<>();
 		Long updatedCash;
 
 		for (int i = 0; i < team.size(); i++) {
@@ -99,6 +96,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			updatedJobSkillPoints.add(jobCommands.get(i).getUpdatedJobPoints());
 		}
 		updatedCash = cashCommand.getResultCash();
+		rareMaps =  rareMapCommand.getRareMaps();
 
 		List<List<Integer>> increasedStats = new ArrayList<>();
 		List<StatRewardCommand> statCommands = new ArrayList<>();
@@ -135,7 +133,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 
 		// 4. 결과 업데이트
 		updateService.applyCharacterRewards(allCommands);
-		updateService.applyCashReward(cashCommand, clover);
+		updateService.applyCloverReward(clover, cloverCommands);
 
 		return new BattleRewardResultVo(
 			monster.getExp(),
@@ -147,7 +145,8 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			levelUps,
 			updatedSkillPoints,
 			updatedJobSkillPoints,
-			increasedStats
+			increasedStats,
+			rareMaps
 		);
 	}
 

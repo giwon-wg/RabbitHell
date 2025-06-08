@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import org.springframework.stereotype.Component;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
@@ -46,6 +47,10 @@ public class BattleRewardCommandFactory {
 
 	public CashRewardCommand createCashCommand(Clover clover, long earnedCash) {
 		return new CashRewardCommand(clover, earnedCash);
+	}
+
+	public RareMapCommand createRareMapCommand(Clover clover, BattleFieldType battleFieldType){
+		return new RareMapCommand(clover, battleFieldType);
 	}
 
 

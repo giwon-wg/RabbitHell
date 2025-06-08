@@ -4,15 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.rabbithell.domain.battle.postProcess.command.*;
+import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import org.springframework.stereotype.Service;
 
-import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.JobPointRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.LevelUpCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.SkillPointRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.StatRewardCommand;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
@@ -61,8 +56,22 @@ public class BattleRewardUpdateService {
 		characterRepository.saveAll(updatedCharacters.values());
 	}
 
-	public void applyCashReward(CashRewardCommand cashCommand, Clover clover) {
-		clover.earnCash((int)cashCommand.getEarnedCash());
-		cloverRepository.save(clover);
+	public void applyCloverReward(Clover clover,List<BattleRewardCommand> commands) {
+
+		Clover updatedClover = clover;
+
+		for (BattleRewardCommand command : commands) {
+			if (command instanceof CashRewardCommand cashRewardCmd){
+				updatedClover.earnCash((int)cashRewardCmd.getEarnedCash());
+			}else if (command instanceof RareMapCommand rareMapCmd){
+				List<BattleFieldType> rareMaps = rareMapCmd.getRareMaps();
+				updatedClover.clearUnlockedRareMaps();
+				for (BattleFieldType rareMap : rareMaps){
+					updatedClover.unlockRareMap(rareMap);
+				}
+			}
+		}
+
+		cloverRepository.save(updatedClover);
 	}
 }
