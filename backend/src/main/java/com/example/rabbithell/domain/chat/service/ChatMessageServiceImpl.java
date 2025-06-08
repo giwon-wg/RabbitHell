@@ -1,6 +1,10 @@
 package com.example.rabbithell.domain.chat.service;
 
-import com.example.rabbithell.domain.chat.dto.request.ChatMessageRequestDto;
+import java.time.LocalDateTime;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
 import com.example.rabbithell.domain.chat.entity.ChatRoom;
@@ -11,18 +15,10 @@ import com.example.rabbithell.domain.chat.repository.ChatRoomRepository;
 import com.example.rabbithell.domain.chat.util.BadWordFilter;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
+import com.example.rabbithell.domain.chat.redis.ChatRedisWriter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-
-import java.security.Principal;
-import java.time.LocalDateTime;
-
 import static com.example.rabbithell.domain.chat.common.Constants.Chat.MESSAGE_COOLDOWN_MS;
 
 @Slf4j
@@ -37,25 +33,34 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 	private final SimpMessagingTemplate messagingTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
 
+	private final ChatRedisWriter chatRedisWriter;
+
+
 	//사용자
 	@Override
 	public ChatMessage saveMessage(Long roomId, Long userId, String message) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("사용자 없음"));
-
 		ChatRoom chatRoom = chatRoomRepository.findById(roomId)
 			.orElseThrow(() -> new RuntimeException("채팅방 없음"));
-		log.info("인증된 사용자: ID={}, Username={}", userId,user.getName());
-		// 욕설 필터링 적용
-		String filteredMessage = BadWordFilter.filter(message);
 
+		log.info("인증된 사용자: ID={}, Username={}", userId, user.getName());
+
+		// 욕설 필터링
+		String filtered = BadWordFilter.filter(message);
+
+		// 메시지 생성 및 저장
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.setUser(user);
-		chatMessage.setChatRoom(chatRoom); // ✅ 반드시 설정
-		chatMessage.setContents(filteredMessage);
+		chatMessage.setChatRoom(chatRoom);
+		chatMessage.setContents(filtered);
 		chatMessage.setCreatedAt(LocalDateTime.now());
 
 		chatMessageRepository.save(chatMessage);
+
+		// 🔽 Redis 저장 위임 (DTO로 변환 후)
+		ChatMessageResponseDto responseDto = ChatMessageResponseDto.createChatMessage(user.getName(), chatMessage);
+		chatRedisWriter.saveChatMessage(roomId.toString(), responseDto);
 
 		return chatMessage;
 	}

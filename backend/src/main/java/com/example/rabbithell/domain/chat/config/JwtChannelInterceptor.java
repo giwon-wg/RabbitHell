@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
 
+	//WebSocket + STOMP 환경에서 JWT 인증 처리
+
 	private final JwtUtil jwtUtil;
 
 	private static final String AUTHORIZATION = "Authorization";

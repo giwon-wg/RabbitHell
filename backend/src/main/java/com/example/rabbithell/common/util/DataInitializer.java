@@ -327,9 +327,11 @@ public class DataInitializer implements CommandLineRunner {
 //		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
 //		monsterEncounterRepository.save(goblinEncounter);
 
-		ChatRoom chatRoom = new ChatRoom();
+		ChatRoom chatRoom = new ChatRoom("chatAll");
+		ChatRoom chatRoom2 = new ChatRoom("chatOne");
 
 		chatRoomRepository.save(chatRoom);
+		chatRoomRepository.save(chatRoom2);
 
 	}
 }

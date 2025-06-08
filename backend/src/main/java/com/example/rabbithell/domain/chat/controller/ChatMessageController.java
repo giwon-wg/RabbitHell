@@ -18,6 +18,7 @@ import com.example.rabbithell.domain.chat.exception.ChatMessageExceptionCode;
 import com.example.rabbithell.domain.chat.service.ChatMessageService;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.service.UserService;
+import com.example.rabbithell.infrastructure.security.jwt.JwtTokenExtractor;
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
 
 import io.jsonwebtoken.Claims;
@@ -33,6 +34,7 @@ public class ChatMessageController {
 	private final UserService userService;
 	private final SimpMessagingTemplate messagingTemplate;
 	private final JwtUtil jwtUtil;
+	private final JwtTokenExtractor jwtTokenExtractor;
 
 	@MessageMapping("/chat/{roomId}")
 	public void handleMessage(
@@ -44,7 +46,7 @@ public class ChatMessageController {
 			log.info("💬 {}님의 메시지: {}", dto.sender(), dto.message());
 			log.info("📌 roomId = {}", roomId);
 			// JWT 토큰 추출 - 여러 방법 시도
-			String token = extractToken(accessor);
+			String token = jwtTokenExtractor.extractToken(accessor);
 
 			if (!StringUtils.hasText(token)) {
 				log.warn("JWT 토큰이 없습니다. 세션 속성: {}", accessor.getSessionAttributes());
@@ -81,40 +83,6 @@ public class ChatMessageController {
 			throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
 		}
 
-	}
-
-	//JWT 토큰을 여러 방법으로 추출 시도
-	private String extractToken(SimpMessageHeaderAccessor accessor) {
-		// 1. 세션 속성에서 토큰 추출
-		String token = (String) accessor.getSessionAttributes().get("jwtToken");
-		if (StringUtils.hasText(token)) {
-			return token;
-		}
-
-		// 2. 헤더에서 Authorization 토큰 추출
-		token = (String) accessor.getSessionAttributes().get("Authorization");
-		if (StringUtils.hasText(token)) {
-			return token.startsWith("Bearer ") ? token.substring(7) : token;
-		}
-
-		// 3. native headers에서 추출
-		Object authHeader = accessor.getNativeHeader("Authorization");
-		if (authHeader instanceof java.util.List) {
-			@SuppressWarnings("unchecked")
-			java.util.List<String> authHeaders = (java.util.List<String>) authHeader;
-			if (!authHeaders.isEmpty()) {
-				String headerValue = authHeaders.get(0);
-				return headerValue.startsWith("Bearer ") ? headerValue.substring(7) : headerValue;
-			}
-		}
-
-		// 4. 쿼리 파라미터에서 토큰 추출 (fallback)
-		token = (String) accessor.getSessionAttributes().get("token");
-		if (StringUtils.hasText(token)) {
-			return token;
-		}
-
-		return null;
 	}
 
 	@MessageMapping("/chat/{roomId}/admin/notice")

@@ -10,7 +10,7 @@ interface ChatMessage {
 	isMe?: boolean;
 }
 
-const ChatMessageToAll = () => {
+const ChatMessageToOne = () => {
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [newMessage, setNewMessage] = useState('');
 	const [isConnected, setIsConnected] = useState(false);
@@ -340,4 +340,4 @@ const ChatMessageToAll = () => {
 	);
 };
 
-export default ChatMessageToAll;
+export default ChatMessageToOne;
