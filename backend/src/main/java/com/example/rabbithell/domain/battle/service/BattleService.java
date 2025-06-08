@@ -43,8 +43,8 @@ public class BattleService {
 
 		maps.add(BattleFieldType.PLAIN);
 		maps.add(BattleFieldType.MOUNTAIN);
-		maps.add(BattleFieldType.FOREST);
-		maps.add(BattleFieldType.DESERT);
+		maps.add(BattleFieldType.CAVE);
+		maps.add(BattleFieldType.RIFT);
 
 		return new GetBattleFieldsResponse(maps);
 	}
@@ -61,11 +61,6 @@ public class BattleService {
 
 		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
 
-		Set<BattleFieldType> battleFieldTypes = new HashSet<>();
-		battleFieldTypes.add(BattleFieldType.PLAIN);
-		battleFieldTypes.add(BattleFieldType.MOUNTAIN);
-		battleFieldTypes.add(BattleFieldType.FOREST);
-		battleFieldTypes.add(BattleFieldType.DESERT);
 
 		BattleRewardStrategy strategy = battleRewardStrategyFactory.getStrategy(battleResultVo.getBattleResult());
 		BattleRewardResultVo reward = strategy.applyReward(clover, team, monster, battleFieldType);
@@ -99,7 +94,7 @@ public class BattleService {
 			.totalSkillPoints(reward.totalSkillPoints())
 			.jobSkillPoints(reward.jobSkillPoints())
 			.increasedStats(reward.increasedStat())
-			.battleFieldTypes(battleFieldTypes)
+			.battleFieldTypes(reward.unlockedRareMaps())
 			.weapon(weapon)
 			.armor(armor)
 			.accessory(accessory)

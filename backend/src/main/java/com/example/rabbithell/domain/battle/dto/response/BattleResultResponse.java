@@ -29,7 +29,7 @@ public record BattleResultResponse(
 	List<Integer> jobSkillPoints,
 	List<List<Integer>> increasedStats,
 
-	Set<BattleFieldType> battleFieldTypes,
+	List<BattleFieldType> battleFieldTypes,
 	List<ItemDto> weapon,
 	List<ItemDto> armor,
 	List<ItemDto> accessory,
