@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum BattleFieldType {
-	FIELD(false, 1),
+	PLAIN(false, 1),
 	MOUNTAIN(false, 2),
 	CAVE(false, 3),
 	RIFT(false, 4),
