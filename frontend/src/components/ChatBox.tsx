@@ -66,9 +66,7 @@ const ChatBox = () => {
 					</ChatBodyWrapper>
 				)}
 				{activeTab === '채팅' && (
-					<ChatBodyWrapper>
-						<ChatMessageToone />
-					</ChatBodyWrapper>
+					<div>개인 채팅 준비 중...</div>
 				)}
 				{activeTab === '로그' && (
 					<div>행동 로그 준비 중...</div>
