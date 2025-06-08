@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import com.example.rabbithell.domain.monster.entity.DropRate;
 import org.springframework.stereotype.Component;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
@@ -54,7 +55,7 @@ public class BattleRewardCommandFactory {
 	}
 
 
-
-
-
+	public ItemDropCommand createItemDropCommand(List<DropRate> dropRates, BattleFieldType battleFieldType) {
+		return new ItemDropCommand(dropRates, battleFieldType);
+	}
 }

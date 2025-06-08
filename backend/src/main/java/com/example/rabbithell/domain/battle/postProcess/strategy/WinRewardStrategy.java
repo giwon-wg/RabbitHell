@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.rabbithell.domain.battle.postProcess.command.*;
+import com.example.rabbithell.domain.monster.entity.DropRate;
 import com.example.rabbithell.domain.monster.enums.Rating;
+import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 
 	private final BattleRewardCommandFactory commandFactory;
 	private final BattleRewardUpdateService updateService;
+	private final DropRateRepository dropRateRepository;
 
 	@Override
 	@Transactional
@@ -58,6 +61,10 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			earnedSkillPoint);
 		CashRewardCommand cashCommand = commandFactory.createCashCommand(clover, 1000L);
 		RareMapCommand rareMapCommand = commandFactory.createRareMapCommand(clover, fieldType);
+
+		List<DropRate> dropRates = dropRateRepository.findByMonster(monster);
+		ItemDropCommand itemDropCommand = commandFactory.createItemDropCommand(dropRates, fieldType);
+
 
 		levelCommands.forEach(cmd -> {
 			executor.addCommand(cmd);
