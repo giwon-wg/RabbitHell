@@ -15,6 +15,11 @@ import com.example.rabbithell.domain.auth.exception.AuthException;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.exception.CloverException;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.deck.entity.EffectDetail;
+import com.example.rabbithell.domain.deck.entity.PawCardEffect;
+import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
+import com.example.rabbithell.domain.deck.repository.EffectDetailRepository;
+import com.example.rabbithell.domain.deck.repository.PawCardEffectRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.user.model.User;
@@ -30,101 +35,118 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
-    private final UserRepository userRepository;
-    private final InventoryRepository inventoryRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+	private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
+	private final UserRepository userRepository;
+	private final InventoryRepository inventoryRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final JwtUtil jwtUtil;
 	private final CloverRepository cloverRepository;
+	private final PawCardEffectRepository pawCardEffectRepository;
+	private final EffectDetailRepository effectDetailRepository;
 
 	@Transactional
-    public void signup(SignupRequest request) {
+	public void signup(SignupRequest request) {
 
-        if (userRepository.findByEmailAndIsDeletedFalse(request.email()).isPresent()) {
-            throw new AuthException(DUPLICATED_EMAIL);
-        }
+		if (userRepository.findByEmailAndIsDeletedFalse(request.email()).isPresent()) {
+			throw new AuthException(DUPLICATED_EMAIL);
+		}
 
 		if (cloverRepository.existsByName(request.name())) {
 			throw new CloverException(DUPLICATED_CLOVER_NAME);
 		}
 
-        User user = User.builder()
-            .email(request.email())
-            .name(request.name())
-            .password(passwordEncoder.encode(request.password()))
-            .role(User.Role.valueOf(request.role().toUpperCase()))
-            .isDeleted(false)
-            .build();
-        User savedUser = userRepository.save(user);
+		User user = User.builder()
+			.email(request.email())
+			.name(request.name())
+			.password(passwordEncoder.encode(request.password()))
+			.role(User.Role.valueOf(request.role().toUpperCase()))
+			.isDeleted(false)
+			.build();
+		User savedUser = userRepository.save(user);
 
 		Clover clover = new Clover(request.cloverName(), savedUser);
 		Clover savedClover = cloverRepository.save(clover);
 
 		Inventory inventory = Inventory.builder()
-            .clover(savedClover)
-            .capacity(100)
-            .build();
+			.clover(savedClover)
+			.capacity(100)
+			.build();
 
-        inventoryRepository.save(inventory);
-    }
+		inventoryRepository.save(inventory);
+
+		PawCardEffect pawCardEffect = PawCardEffect.builder().clover(clover).build();
+		EffectDetail effectDetail1 = EffectDetail.builder()
+			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_1)
+			.build();
+		EffectDetail effectDetail2 = EffectDetail.builder()
+			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_2)
+			.build();
+
+		pawCardEffect.addEffectDetail(effectDetail1);
+		pawCardEffect.addEffectDetail(effectDetail2);
+
+		pawCardEffectRepository.save(pawCardEffect);
+	}
 
 	@Transactional
-    public LoginResponse login(String email, String rawPassword) {
+	public LoginResponse login(String email, String rawPassword) {
 
 		User user = userRepository.findByEmailOrElseThrow(email);
 
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new AuthException(INVALID_PASSWORD);
-        }
+		if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+			throw new AuthException(INVALID_PASSWORD);
+		}
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(user.getId());
 
-        String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name(), clover.getId(), clover.getName());
-        String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
+		String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name(), clover.getId(),
+			clover.getName());
+		String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
 
-        redisRefreshTokenAdapter.save(user.getId(), refreshToken);
+		redisRefreshTokenAdapter.save(user.getId(), refreshToken);
 
-        return new LoginResponse(accessToken, refreshToken);
-    }
+		return new LoginResponse(accessToken, refreshToken);
+	}
 
 	@Transactional
-    public TokenResponse reissue(TokenRefresRequest tokenRefresRequest) {
+	public TokenResponse reissue(TokenRefresRequest tokenRefresRequest) {
 
 		String refreshToken = tokenRefresRequest.refreshToken();
 
 		log.info("리프레쉬 토큰 값: " + refreshToken);
 
-        if (!jwtUtil.validateToken(refreshToken)) {
-            throw new AuthException(INVALID_REFRESH_TOKEN);
-        }
+		if (!jwtUtil.validateToken(refreshToken)) {
+			throw new AuthException(INVALID_REFRESH_TOKEN);
+		}
 
-        Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
+		Long userId = Long.parseLong(jwtUtil.extractSubject(refreshToken));
 
 		userRepository.findByIdOrElseThrow(userId);
 
-        String saved = redisRefreshTokenAdapter.getByUserId(userId)
-            .orElseThrow(() -> new AuthException(REFRESH_TOKEN_NOT_FOUND));
+		String saved = redisRefreshTokenAdapter.getByUserId(userId)
+			.orElseThrow(() -> new AuthException(REFRESH_TOKEN_NOT_FOUND));
 
-        if (!refreshToken.equals(saved)) {
-            throw new AuthException(REFRESH_TOKEN_MISMATCH);
-        }
+		if (!refreshToken.equals(saved)) {
+			throw new AuthException(REFRESH_TOKEN_MISMATCH);
+		}
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(userId);
 
-        String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken), clover.getId(), clover.getName());
-        String newRefreshToken = jwtUtil.generateRefreshToken(userId.toString());
+		String newAccessToken = jwtUtil.generateAccessToken(userId.toString(), jwtUtil.extractRole(refreshToken),
+			clover.getId(), clover.getName());
+		String newRefreshToken = jwtUtil.generateRefreshToken(userId.toString());
 
-        redisRefreshTokenAdapter.save(userId, newRefreshToken);
+		redisRefreshTokenAdapter.save(userId, newRefreshToken);
 
-        return new TokenResponse(newAccessToken, newRefreshToken);
-    }
+		return new TokenResponse(newAccessToken, newRefreshToken);
+	}
 
 	@Transactional
-    public void logout(Long userId) {
+	public void logout(Long userId) {
 
 		userRepository.findByIdOrElseThrow(userId);
 
-        redisRefreshTokenAdapter.delete(userId);
-    }
+		redisRefreshTokenAdapter.delete(userId);
+	}
 
 }
