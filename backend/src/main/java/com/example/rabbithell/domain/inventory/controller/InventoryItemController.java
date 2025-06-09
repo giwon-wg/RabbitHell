@@ -151,4 +151,18 @@ public class InventoryItemController {
 		));
 	}
 
+	// 아이템 감정
+	@PostMapping("/{inventoryItemId}/appraise")
+	public ResponseEntity<CommonResponse<InventoryItemResponse>> appraiseItem(
+		@AuthenticationPrincipal AuthUser authUser,
+		@PathVariable Long inventoryItemId
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"인벤토리 아이템 감정 성공",
+			inventoryItemService.appraiseItem(authUser.getUserId(), inventoryItemId)
+		));
+	}
+
 }

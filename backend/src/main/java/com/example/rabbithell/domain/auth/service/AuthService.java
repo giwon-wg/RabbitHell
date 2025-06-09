@@ -73,7 +73,9 @@ public class AuthService {
             throw new AuthException(INVALID_PASSWORD);
         }
 
+
 		String accessToken = jwtUtil.createMiniToken(user.getId().toString(), user.getRole().name());
+
 		String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
 
         redisRefreshTokenAdapter.save(user.getId(), refreshToken);
