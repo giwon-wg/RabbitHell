@@ -1,0 +1,23 @@
+{
+  "name": "rabbithell",
+  "version": "1.0.0",
+  "description": "```bash\r git clone https://github.com/giwon-wg/RabbitHell.git\r cd RabbitHell\r ```",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giwon-wg/RabbitHell.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/giwon-wg/RabbitHell/issues"
+  },
+  "homepage": "https://github.com/giwon-wg/RabbitHell#readme",
+  "dependencies": {
+    "jwt-decode": "^4.0.0"
+  }
+}
