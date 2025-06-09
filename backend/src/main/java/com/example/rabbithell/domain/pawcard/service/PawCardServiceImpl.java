@@ -30,7 +30,7 @@ public class PawCardServiceImpl implements PawCardService {
 	public PawCardResponse createPawCard(CreatePawCardRequest request) {
 		StatType statType = request.statType();
 		PawCard pawCard = PawCard.builder()
-			.ratio(request.ratio())
+			.ratioPercent(request.ratioPercent())
 			.description(request.description())
 			.cardNumber(request.cardNumber())
 			.cardEmblem(request.cardEmblem())
@@ -73,8 +73,8 @@ public class PawCardServiceImpl implements PawCardService {
 
 		PawCard pawCard = stigmaRepository.findByIdOrElseThrow(stigmaId);
 		StatType statType = request.statType();
-		if (request.ratio() != null) {
-			pawCard.changeRatio(request.ratio());
+		if (request.ratioPercent() != null) {
+			pawCard.changeRatio(request.ratioPercent());
 		}
 		if (request.description() != null) {
 			pawCard.changeDescription(request.description());
