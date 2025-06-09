@@ -33,7 +33,6 @@ public class AuthService {
 
     private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
     private final UserRepository userRepository;
-    private final InventoryRepository inventoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 	private final CloverRepository cloverRepository;
