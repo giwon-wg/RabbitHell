@@ -141,8 +141,16 @@ public class GameCharacter extends BaseEntity {
 		this.skillPoint = skillPoint;
 	}
 
+	public void updateExp(int value) {
+		this.exp = value;
+	}
+
 	public int totalSkillPoint() {
 		return (warriorPoint + thiefPoint + wizardPoint + archerPoint);
+	}
+
+	public void updateSkillPoint(int value) {
+		this.skillPoint = value;
 	}
 
 	// 스킬 포인트 증가
@@ -183,8 +191,22 @@ public class GameCharacter extends BaseEntity {
 		this.job = newJob;
 	}
 
+	public void updateJobPoint(int value) {
+		if (this.job.getJobCategory() == JobCategory.WARRIOR) {
+			this.warriorPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.THIEF) {
+			this.thiefPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.ARCHER) {
+			this.archerPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.WIZARD) {
+			this.wizardPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.INCOMPETENT) {
+			this.incompetentPoint += value;
+		}
+	}
 	public void updateStrength(int value) {
 		this.strength = value;
+		this.maxHp += value * 10;
 	}
 
 	public void updateAgility(int value) {
@@ -193,10 +215,15 @@ public class GameCharacter extends BaseEntity {
 
 	public void updateIntelligence(int value) {
 		this.intelligence = value;
+		this.maxMp += value * 10;
 	}
 
 	public void updateFocus(int value) {
 		this.focus = value;
+	}
+
+	public void updateLevel(int resultLevel) {
+		this.level = resultLevel;
 	}
 
 	// 전직시 저장
