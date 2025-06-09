@@ -7,18 +7,28 @@ import lombok.Getter;
 @Getter
 public class ExpRewardCommand implements BattleRewardCommand {
 
-	private final GameCharacter character;
 	private final int earnedExp;
-	private int resultExp;
+	private int updatedExp;
 
-	public ExpRewardCommand(GameCharacter character, int earnedExp) {
-		this.character = character;
+	private int updatedLevel;
+	private int levelUpAmount;
+
+	public ExpRewardCommand(int earnedExp) {
 		this.earnedExp = earnedExp;
 	}
 
 	@Override
-	public void execute() {
-		resultExp = Math.min(character.getExp() + earnedExp, 9900);
+	public void execute(GameCharacter ch) {
+		int curExp = ch.getExp();
+		int curLevel = ch.getLevel();
+
+		updatedExp = Math.min(curExp + earnedExp, 9900);
+		updatedLevel = updatedExp / 100 + 1;
+
+		ch.updateExp(Math.min(ch.getExp() + earnedExp, 9900));
+		ch.updateLevel(updatedLevel);
+
+		this.levelUpAmount = updatedLevel - curLevel;
 	}
 
 }

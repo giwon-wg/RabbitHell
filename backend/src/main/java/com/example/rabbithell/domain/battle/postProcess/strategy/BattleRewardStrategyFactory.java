@@ -13,11 +13,11 @@ public class BattleRewardStrategyFactory {
 	private final Map<BattleResult, BattleRewardStrategy> strategyMap;
 
 	public BattleRewardStrategyFactory(WinRewardStrategy winStrategy
-		/*, LoseRewardStrategy loseStrategy, DrawRewardStrategy drawStrategy */) {
+		, LoseRewardStrategy loseStrategy, DrawRewardStrategy drawStrategy) {
 
 		this.strategyMap = new HashMap<>();
 		strategyMap.put(BattleResult.WIN, winStrategy);
-		// strategyMap.put(BattleResult.LOSE, loseStrategy);
+		strategyMap.put(BattleResult.LOSE, loseStrategy);
 		// strategyMap.put(BattleResult.DRAW, drawStrategy);
 	}
 

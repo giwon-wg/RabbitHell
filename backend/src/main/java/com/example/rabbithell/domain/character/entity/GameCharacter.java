@@ -2,20 +2,16 @@ package com.example.rabbithell.domain.character.entity;
 
 import static com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode.*;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.characterSkill.entity.CharacterSkill;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.skill.exception.SkillException;
 import com.example.rabbithell.domain.user.model.User;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -29,7 +25,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyEnumerated;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
