@@ -26,19 +26,25 @@ import lombok.NoArgsConstructor;
 @Table(name = "drop_rate")
 public class DropRate {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "monster_id", nullable = false)
-    private Monster monster;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "monster_id", nullable = false)
+	private Monster monster;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "item_id", nullable = false)
+	private Item item;
 
-    @Column(name = "rate", nullable = false, precision = 5, scale = 4)
-    private BigDecimal rate; // 드랍율 (예: 0.1234 = 12.34%)
+	@Column(name = "rate", nullable = false, precision = 5, scale = 4)
+	private BigDecimal rate; // 드랍율 (예: 0.1234 = 12.34%)
 
+	@Builder
+	public DropRate(Monster monster, Item item, BigDecimal rate) {
+		this.monster = monster;
+		this.item = item;
+		this.rate = rate;
+	}
 }

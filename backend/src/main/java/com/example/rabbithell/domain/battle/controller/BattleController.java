@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.dto.request.DoBattleRequest;
-import com.example.rabbithell.domain.battle.dto.request.GetBattleFieldsRequest;
 import com.example.rabbithell.domain.battle.dto.response.BattleResultResponse;
 import com.example.rabbithell.domain.battle.dto.response.GetBattleFieldsResponse;
 import com.example.rabbithell.domain.battle.service.BattleService;
@@ -29,14 +28,13 @@ public class BattleController {
 
 	@GetMapping
 	public ResponseEntity<CommonResponse<GetBattleFieldsResponse>> getAvailableMaps(
-		@AuthenticationPrincipal AuthUser authUser,
-		@Valid @RequestBody GetBattleFieldsRequest request
+		@AuthenticationPrincipal AuthUser authUser
 	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
 			"전투 필드 조회 완료",
-			battleService.getBattleFields(authUser, request.characterId())
+			battleService.getBattleFields(authUser)
 		));
 	}
 
