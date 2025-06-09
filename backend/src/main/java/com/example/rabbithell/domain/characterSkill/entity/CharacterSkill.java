@@ -41,10 +41,12 @@ public class CharacterSkill {
 		this.skillTier = skill.getTier();
 	}
 
-	public CharacterSkill(GameCharacter character, Skill skill, boolean equipped, int skillTier) {
-		this.character = character;
-		this.skill = skill;
-		this.equipped = equipped;
-		this.skillTier = skill.getTier();
+	public void equip() {
+		this.equipped = true;
 	}
+
+	public void unequip() {
+		this.equipped = false;
+	}
+
 }
