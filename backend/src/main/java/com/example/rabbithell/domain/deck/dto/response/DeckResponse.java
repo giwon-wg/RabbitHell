@@ -1,6 +1,5 @@
 package com.example.rabbithell.domain.deck.dto.response;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.rabbithell.domain.deck.entity.Deck;
@@ -13,9 +12,9 @@ public record DeckResponse(
 	Long pawCardId,
 	Integer cardNumber,
 	CardEmblem cardEmblem,
-	BigDecimal ratio,
+	Integer ratioPercent,
 	String description,
-	PawCardSlot slot,
+	PawCardSlot pawCardSlot,
 	LocalDateTime createdAt,
 	LocalDateTime modifiedAt
 ) {
@@ -26,7 +25,7 @@ public record DeckResponse(
 			deck.getPawCard().getId(),
 			deck.getPawCard().getCardNumber(),
 			deck.getPawCard().getCardEmblem(),
-			deck.getPawCard().getRatio(),
+			deck.getPawCard().getRatioPercent(),
 			deck.getPawCard().getDescription(),
 			deck.getPawCardSlot(),
 			deck.getCreatedAt(),
