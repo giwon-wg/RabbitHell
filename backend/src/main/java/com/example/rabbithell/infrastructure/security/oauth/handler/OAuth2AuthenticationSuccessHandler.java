@@ -33,7 +33,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
 			log.info("userId={}, role={}", userId, role);
 
-			String miniToken = jwtUtil.createMiniToken(Long.parseLong(userId), role);
+			String miniToken = jwtUtil.createMiniToken(userId, role);
 			String redirectUrl = "http://localhost:3000/oauth/success?miniToken=" + miniToken;
 
 			response.sendRedirect(redirectUrl);
