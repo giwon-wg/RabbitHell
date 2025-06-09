@@ -13,6 +13,7 @@ import com.example.rabbithell.domain.deck.dto.request.DeckCond;
 import com.example.rabbithell.domain.deck.entity.Deck;
 import com.example.rabbithell.domain.deck.entity.QDeck;
 import com.example.rabbithell.domain.deck.enums.DeckSortBy;
+import com.example.rabbithell.domain.deck.enums.PawCardSlot;
 import com.example.rabbithell.domain.deck.enums.RabbitHellSortDirection;
 import com.example.rabbithell.domain.deck.exception.DeckException;
 import com.example.rabbithell.domain.pawcard.entity.QPawCard;
@@ -20,6 +21,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -70,6 +72,42 @@ public class DeckQueryRepositoryImpl implements DeckQueryRepository {
 				)
 				.fetchOne())
 			.orElseThrow(() -> new DeckException(DECK_NOT_FOUND));
+	}
+
+	public List<Deck> findLockedByCloverIdAndSlots(Long cloverId, List<PawCardSlot> slots) {
+		return queryFactory
+			.selectFrom(deck)
+			.where(
+				deck.clover.id.eq(cloverId),
+				deck.pawCardSlot.in(slots)
+			)
+			.setLockMode(LockModeType.PESSIMISTIC_WRITE) // 비관적 락
+			.fetch();
+	}
+
+	public List<Deck> lockDecksByCloverIdAndIds(Long cloverId, List<Long> ids) {
+		return queryFactory
+			.selectFrom(deck)
+			.where(
+				deck.clover.id.eq(cloverId),
+				deck.id.in(ids)
+			)
+			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
+			.fetch();
+	}
+
+	@Override
+	public List<Deck> findEquippedByCloverIdWithLock(Long cloverId) {
+		return queryFactory
+			.selectFrom(deck)
+			.join(deck.pawCard, pawCard).fetchJoin()
+			.where(
+				deck.clover.id.eq(cloverId),
+				deck.pawCardSlot.isNotNull()
+			)
+			.orderBy(deck.pawCardSlot.asc())
+			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
+			.fetch();
 	}
 
 	private BooleanExpression buildSlotCond(Boolean equippedOnly) {
