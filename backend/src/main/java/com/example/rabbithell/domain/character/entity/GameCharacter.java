@@ -198,16 +198,33 @@ public class GameCharacter extends BaseEntity {
 
 	public void updateJobPoint(int value) {
 		if (this.job.getJobCategory() == JobCategory.WARRIOR) {
-			this.warriorPoint = value;
+			this.warriorPoint += value;
 		} else if (this.job.getJobCategory() == JobCategory.THIEF) {
-			this.thiefPoint = value;
+			this.thiefPoint += value;
 		} else if (this.job.getJobCategory() == JobCategory.ARCHER) {
-			this.archerPoint = value;
+			this.archerPoint += value;
 		} else if (this.job.getJobCategory() == JobCategory.WIZARD) {
-			this.wizardPoint = value;
+			this.wizardPoint += value;
 		} else if (this.job.getJobCategory() == JobCategory.INCOMPETENT) {
-			this.incompetentPoint = value;
+			this.incompetentPoint += value;
 		}
+	}
+	public void updateStrength(int value) {
+		this.strength = value;
+		this.maxHp += value * 10;
+	}
+
+	public void updateAgility(int value) {
+		this.agility = value;
+	}
+
+	public void updateIntelligence(int value) {
+		this.intelligence = value;
+		this.maxMp += value * 10;
+	}
+
+	public void updateFocus(int value) {
+		this.focus = value;
 	}
 
 	public void updateLevel(int resultLevel) {
