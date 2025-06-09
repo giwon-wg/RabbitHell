@@ -39,7 +39,7 @@ public class JwtUtil {
 		return cloverId instanceof Number && cloverName instanceof String;
 	}
 
-	public String createMiniToken(Long userId, String role) {
+	public String createMiniToken(String userId, String role) {
 		Date now = new Date();
 		long duration = role.equals("ADMIN")
 			? Duration.ofHours(12).toMillis() //어드민의 경우 12시간 사용
@@ -48,7 +48,7 @@ public class JwtUtil {
 		Date expiry = new Date(now.getTime() + duration);
 
 		return Jwts.builder()
-			.setSubject(String.valueOf(userId))
+			.setSubject(userId)
 			.claim("role", role)
 			.setIssuedAt(now)
 			.setExpiration(expiry)
