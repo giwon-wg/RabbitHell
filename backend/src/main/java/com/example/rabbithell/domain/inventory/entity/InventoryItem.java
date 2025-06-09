@@ -43,7 +43,7 @@ public class InventoryItem extends BaseEntity {
 
 	private Long power; // Item 엔티티의 maxPower와 minPower 사이
 
-	private Integer maxDurability;
+	private Integer maxDurability; // 초기값은 Item 엔티티의 maxDurability -> 수리 실패 시 점점 줄어듦
 
 	private Integer durability;
 
@@ -52,9 +52,11 @@ public class InventoryItem extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
 
+	private Boolean isHidden;
+
 	@Builder
 	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Long power, Integer maxDurability,
-		Integer durability, Long weight, Slot slot) {
+		Integer durability, Long weight, Slot slot, Boolean isHidden) {
 		this.inventory = inventory;
 		this.item = item;
 		this.character = character;
@@ -63,6 +65,7 @@ public class InventoryItem extends BaseEntity {
 		this.durability = durability;
 		this.weight = weight;
 		this.slot = slot;
+		this.isHidden = isHidden;
 	}
 
 	public InventoryItem(Inventory inventory, Item item) {
@@ -76,7 +79,7 @@ public class InventoryItem extends BaseEntity {
 
 	public void equip(GameCharacter character) {
 		this.character = character;
-		this.slot = Slot.getSlotByItemType(this.getItem().getItemType());
+		this.slot = Slot.getSlotByItemType(item.getItemType());
 	}
 
 	public void unequip() {
@@ -87,6 +90,12 @@ public class InventoryItem extends BaseEntity {
 	// TODO: 나중에 기능 수정 필요: 내구도 닳는 양 필요
 	public void use(int amount) {
 		this.durability -= amount;
+	}
+
+	public void appraise(Long power, Long weight) {
+		this.power = power;
+		this.weight = weight;
+		this.isHidden = false;
 	}
 
 }
