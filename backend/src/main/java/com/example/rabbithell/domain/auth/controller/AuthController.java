@@ -49,9 +49,10 @@ public class AuthController {
 	) {
 		TokenResponse tokenResponse = tokenService.createFullToken(
 			authUser.getUserId(),
-			request.nickname(),
 			request.cloverName()
 		);
+
+		log.info("authUser = {}", authUser);
 
 		return ResponseEntity.ok(
 			CommonResponse.of(true, HttpStatus.OK.value(), "Full JWT 발급 성공", tokenResponse)

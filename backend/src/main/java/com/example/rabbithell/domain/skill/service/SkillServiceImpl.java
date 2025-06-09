@@ -2,6 +2,8 @@ package com.example.rabbithell.domain.skill.service;
 
 import static com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode.*;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,8 @@ public class SkillServiceImpl implements SkillService {
 			.coolTime(request.coolTime())
 			.dmg(request.dmg())
 			.job(request.job())
+			.skillType(request.skillType())
+			.skillTarget(request.skillTarget())
 			.build();
 
 		skillRepository.save(skill);
@@ -74,7 +78,9 @@ public class SkillServiceImpl implements SkillService {
 			request.mpCost(),
 			request.coolTime(),
 			request.dmg(),
-			request.job()
+			request.job(),
+			request.skillType(),
+			request.skillTarget()
 		);
 
 		skillRepository.save(skill);
@@ -85,37 +91,5 @@ public class SkillServiceImpl implements SkillService {
 	public void deleteSkill(Long skillId) {
 		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
 		skillRepository.delete(skill);
-	}
-
-
-	@Transactional
-	@Override
-	public void learnSkill(Long characterId, Long skillId) {
-
-		GameCharacter character = characterRepository.findByIdOrElseThrow(characterId);
-		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
-
-		if (characterSkillRepository.existsByCharacterAndSkill(character, skill)) {
-			throw new SkillException(ALREADY_LEARNED);
-		}
-
-		// 직업체크
-		if (character.getJob().getJobCategory() != skill.getJob().getJobCategory()) {
-			throw new SkillException(INVALID_JOB_FOR_SKILL);
-		}
-
-		// 직업티어체크
-		if (!character.getJob().getTier().isSameOrHigherThan(skill.getJob().getTier())) {
-			throw new SkillException(INSUFFICIENT_TIER_FOR_SKILL);
-		}
-		// 스킬 포인트 체크 및 차감
-		character.learnSkillBySkillPoint(skill.getRequiredSkillPoint());
-
-		// 캐릭터 저장(변경 반영)
-		characterRepository.save(character);
-
-		CharacterSkill characterSkill = new CharacterSkill(character, skill);
-		characterSkillRepository.save(characterSkill);
-
 	}
 }
