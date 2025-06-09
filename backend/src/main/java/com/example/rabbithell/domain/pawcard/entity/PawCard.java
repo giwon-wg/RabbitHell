@@ -1,7 +1,5 @@
 package com.example.rabbithell.domain.pawcard.entity;
 
-import java.math.BigDecimal;
-
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.example.rabbithell.common.audit.BaseEntity;
@@ -12,6 +10,7 @@ import com.example.rabbithell.domain.pawcard.enums.CardEmblem;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,8 +31,8 @@ public class PawCard extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(precision = 5, scale = 4, nullable = false)
-	private BigDecimal ratio;
+	@Column(nullable = false)
+	private Integer ratioPercent;
 
 	@Column(nullable = false)
 	private String description;
@@ -44,25 +43,25 @@ public class PawCard extends BaseEntity {
 	@Column(name = "card_number", nullable = false)
 	private Integer cardNumber;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	@Column(name = "card_emblem", nullable = false)
 	private CardEmblem cardEmblem;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	@Column(name = "Stat_type", nullable = false)
 	private StatType statType;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	@Column(name = "stat_category", nullable = false)
 	private StatCategory statCategory;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	@Column(name = "domain_type", nullable = false)
 	private DomainType domainType;
 
 	@Builder
 	public PawCard(
-		BigDecimal ratio,
+		Integer ratioPercent,
 		String description,
 		Integer cardNumber,
 		CardEmblem cardEmblem,
@@ -72,7 +71,7 @@ public class PawCard extends BaseEntity {
 		Boolean isDelete
 
 	) {
-		this.ratio = ratio;
+		this.ratioPercent = ratioPercent;
 		this.description = description;
 		this.cardNumber = cardNumber;
 		this.cardEmblem = cardEmblem;
@@ -86,8 +85,8 @@ public class PawCard extends BaseEntity {
 		this.isDeleted = true;
 	}
 
-	public void changeRatio(BigDecimal ratio) {
-		this.ratio = ratio;
+	public void changeRatio(Integer ratioPercent) {
+		this.ratioPercent = ratioPercent;
 	}
 
 	public void changeDescription(String description) {
