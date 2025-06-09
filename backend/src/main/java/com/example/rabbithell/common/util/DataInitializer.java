@@ -12,6 +12,10 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.deck.entity.EffectDetail;
+import com.example.rabbithell.domain.deck.entity.PawCardEffect;
+import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
+import com.example.rabbithell.domain.deck.repository.PawCardEffectRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.enums.Slot;
@@ -81,6 +85,9 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private KingdomRepository kingdomRepository;
+
+	@Autowired
+	private PawCardEffectRepository pawCardEffectRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -157,7 +164,7 @@ public class DataInitializer implements CommandLineRunner {
 
 		User user = new User("name", "email", encodedPassword, User.Role.USER, false);
 		User user2 = new User("name", "email2", encodedPassword, User.Role.USER, false);
-		User user3 = new User("name", "email3", encodedPassword, User.Role.USER, false);
+		User user3 = new User("name", "email3", encodedPassword, User.Role.ADMIN, false);
 
 		userRepository.save(user);
 		userRepository.save(user2);
@@ -218,6 +225,22 @@ public class DataInitializer implements CommandLineRunner {
 
 		Inventory inventory = new Inventory(clover, 100);
 		inventoryRepository.save(inventory);
+
+		PawCardEffect pawCardEffect = PawCardEffect.builder().clover(clover).build();
+		EffectDetail effectDetail1 = EffectDetail.builder()
+			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_1)
+			.pawCardEffect(pawCardEffect)
+			.build();
+		EffectDetail effectDetail2 = EffectDetail.builder()
+			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_2)
+			.pawCardEffect(pawCardEffect)
+			.build();
+
+		pawCardEffect.addEffectDetail(effectDetail1);
+		pawCardEffect.addEffectDetail(effectDetail2);
+
+		pawCardEffectRepository.save(pawCardEffect);
+
 
 		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
 			false);
