@@ -28,12 +28,10 @@ import lombok.AllArgsConstructor;
 public class Battle {
 
 	private final InventoryItemService inventoryItemService;
-	private final ItemRepository itemRepository;
 
 	@Autowired
 	public Battle(InventoryItemService inventoryItemService, ItemRepository itemRepository) {
 		this.inventoryItemService = inventoryItemService;
-		this.itemRepository = itemRepository;
 	}
 
 	@Transactional
@@ -75,7 +73,7 @@ public class Battle {
 					armors.add(armor);
 				} else if (item.getItemType() == ItemType.ACCESSORY) {//ACCESSORY
 					accessory = inventoryItem;
-					accessories.add(armor);
+					accessories.add(accessory);
 				}
 			}
 
@@ -92,10 +90,10 @@ public class Battle {
 			playerDefense.add(
 				(int)(100 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() :
 					0)));
-			playerSpeed.add((int)(rabbit.getAgility() - 1
-				// (weapon != null ? weapon.getWeight() : 0) -
-				// (armor != null ? armor.getWeight() : 0) -
-				// (accessory != null ? accessory.getWeight() : 0)
+			playerSpeed.add((int)(rabbit.getAgility() -
+				(weapon != null ? weapon.getWeight() : 0) -
+				(armor != null ? armor.getWeight() : 0) -
+				(accessory != null ? accessory.getWeight() : 0)
 			));
 			criticalChances.add(20 + rabbit.getFocus() / 10);
 
