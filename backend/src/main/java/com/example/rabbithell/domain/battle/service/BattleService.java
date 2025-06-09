@@ -12,6 +12,8 @@ import com.example.rabbithell.domain.battle.dto.response.BattleResultResponse;
 import com.example.rabbithell.domain.battle.dto.response.EarnedItemDto;
 import com.example.rabbithell.domain.battle.dto.response.GetBattleFieldsResponse;
 import com.example.rabbithell.domain.battle.dto.response.ItemDto;
+import com.example.rabbithell.domain.battle.exception.BattleException;
+import com.example.rabbithell.domain.battle.exception.code.BattleExceptionCode;
 import com.example.rabbithell.domain.battle.postProcess.strategy.BattleRewardStrategy;
 import com.example.rabbithell.domain.battle.postProcess.strategy.BattleRewardStrategyFactory;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
@@ -37,7 +39,7 @@ public class BattleService {
 	private final BattleRewardStrategyFactory battleRewardStrategyFactory;
 
 	@Transactional
-	public GetBattleFieldsResponse getBattleFields(AuthUser authUser, Long characterId) {
+	public GetBattleFieldsResponse getBattleFields(AuthUser authUser) {
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
@@ -56,6 +58,8 @@ public class BattleService {
 		Monster monster = monsterService.getRandomMonster(battleFieldType);
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
+
+		verifyField(battleFieldType, clover.getUnlockedRareMaps());
 
 		List<GameCharacter> team = clover.getMembers();
 		List<Long> characterIds = team.stream().map(GameCharacter::getId).toList();
@@ -113,6 +117,17 @@ public class BattleService {
 			.usedPotionHp(usedHpPotion)
 			.usedPotionMp(usedMpPotion)
 			.build();
+	}
+
+	private void verifyField(BattleFieldType battleFieldType, Set<BattleFieldType> unlockedRareMaps) {
+		if (battleFieldType.isRare()) {
+			for (BattleFieldType map : unlockedRareMaps) {
+				if (map.equals(battleFieldType)) {
+					return;
+				}
+			}
+			throw new BattleException(BattleExceptionCode.UNACCESSIBLE_FIELD);
+		}
 	}
 
 	private int measurePotion(List<Integer> playerStat, List<GameCharacter> team) {
