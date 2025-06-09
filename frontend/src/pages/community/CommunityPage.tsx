@@ -43,7 +43,7 @@ const CommunityPage = () => {
 
 	return (
 		<div>
-			<h1>📢 커뮤니티 게시판</h1>
+			<h1>커뮤니티 게시판</h1>
 			<div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
 				<button onClick={() => navigate("/community/write")}>글 작성하기</button>
 			</div>

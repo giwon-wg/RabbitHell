@@ -281,35 +281,31 @@ public class DataInitializer implements CommandLineRunner {
 		itemRepository.save(slimeBell);
 		itemRepository.save(tuxedo);
 
-		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND);
-		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY);
-		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, 100, 3L,
-			Slot.HEAD);
+		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND, false);
+		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY, false);
+		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, 100, 3L, Slot.HEAD, false);
 
-		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, 100, 3L, Slot.HAND);
-		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, 100, 3L, Slot.BODY);
-		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, 100, 3L,
-			Slot.HEAD);
+		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, 100, 3L, Slot.HAND, false);
+		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, 100, 3L, Slot.BODY, false);
+		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, 100, 3L, Slot.HEAD, false);
 
-		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, 100, 3L, Slot.HAND);
-		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, 100, 3L, Slot.BODY);
-		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, 100, 3L,
-			Slot.HEAD);
+		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, 100, 3L, Slot.HAND, false);
+		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, 100, 3L, Slot.BODY, false);
+		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, 100, 3L, Slot.HEAD, false);
 
-		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, 100, 3L, Slot.HAND);
-		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, 100, 3L, Slot.BODY);
-		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, 100, 3L,
-			Slot.HEAD);
+		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, 100, 3L, Slot.HAND, false);
+		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, 100, 3L, Slot.BODY, false);
+		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, 100, 3L, Slot.HEAD, false);
 
-		InventoryItem iHpPotion = new InventoryItem(inventory, hpPotion, null, 0L, 10000, 10000, 0L, null);
-		InventoryItem iMpPotion = new InventoryItem(inventory, mpPotion, null, 0L, 10000, 10000, 0L, null);
-		InventoryItem iFeverRemedy = new InventoryItem(inventory, feverRemedy, null, 0L, 10000, 10000, 0L, null);
-		InventoryItem iSomiGun = new InventoryItem(inventory, somiGun, null, 80L, 10000, 10000, 8L, null);
-		InventoryItem iFourCard = new InventoryItem(inventory, fourCard, null, 80L, 10000, 10000, 10L, null);
-		InventoryItem iAirplaneTicket = new InventoryItem(inventory, airplaneTicket, null, 0L, 10000, 10000, 0L, null);
-		InventoryItem iWakeUp = new InventoryItem(inventory, wakeUp, null, 0L, 10000, 10000, 0L, null);
-		InventoryItem iSlimeBell = new InventoryItem(inventory, slimeBell, null, 0L, 10000, 10000, 0L, null);
-		InventoryItem iTuxedo = new InventoryItem(inventory, tuxedo, null, 10L, 10000, 10000, 3L, null);
+		InventoryItem iHpPotion = new InventoryItem(inventory, hpPotion, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iMpPotion = new InventoryItem(inventory, mpPotion, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iFeverRemedy = new InventoryItem(inventory, feverRemedy, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iSomiGun = new InventoryItem(inventory, somiGun, null, 80L, 10000, 10000, 8L, null, false);
+		InventoryItem iFourCard = new InventoryItem(inventory, fourCard, null, 80L, 10000, 10000, 10L, null, false);
+		InventoryItem iAirplaneTicket = new InventoryItem(inventory, airplaneTicket, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iWakeUp = new InventoryItem(inventory, wakeUp, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iSlimeBell = new InventoryItem(inventory, slimeBell, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iTuxedo = new InventoryItem(inventory, tuxedo, null, 10L, 10000, 10000, 3L, null, false);
 
 		inventoryItemRepository.save(inventoryWeapon1);
 		inventoryItemRepository.save(inventoryArmor1);
