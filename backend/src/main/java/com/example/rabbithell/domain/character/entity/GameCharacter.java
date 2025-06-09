@@ -217,31 +217,5 @@ public class GameCharacter extends BaseEntity {
 		this.luck = value;
 	}
 
-	public void updateExp(int value) {
-		this.exp = value;
-	}
-
-	public void updateSkillPoint(int value) {
-		this.skillPoint = value;
-	}
-
-	public void updateJobPoint(int value) {
-		if (this.job.getJobCategory() == JobCategory.WARRIOR) {
-			this.warriorPoint += value;
-		} else if (this.job.getJobCategory() == JobCategory.THIEF) {
-			this.thiefPoint += value;
-		} else if (this.job.getJobCategory() == JobCategory.ARCHER) {
-			this.archerPoint += value;
-		} else if (this.job.getJobCategory() == JobCategory.WIZARD) {
-			this.wizardPoint += value;
-		} else if (this.job.getJobCategory() == JobCategory.INCOMPETENT) {
-			this.incompetentPoint += value;
-		}
-	}
-
-	public void updateLevel(int resultLevel) {
-		this.level = resultLevel;
-	}
-
 }
 
