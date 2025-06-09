@@ -2,6 +2,7 @@ package com.example.rabbithell.infrastructure.security.oauth.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -32,10 +33,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		String email = (String) kakaoAccount.get("email");
 
+		String tempName = "TEMP_" + UUID.randomUUID().toString().substring(0, 8);
+
 		User user = userRepository.findByEmailAndIsDeletedFalse(email)
 			.orElseGet(() -> userRepository.saveAndFlush(
 				User.builder()
-				.name("TEMP")
+				.name(tempName)
 				.email(email)
 				.password("KAKAO")
 				.role(User.Role.USER)

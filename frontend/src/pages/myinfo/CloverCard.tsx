@@ -14,8 +14,8 @@ const CloverCard = ({ clover }: Props) => {
 				<Text>이름: {clover.name}</Text>
 				<Text>왕국: {clover.kingdomName}</Text>
 				<Text>종족: {clover.specieName}</Text>
-				<Text>체력: {clover.stamina}</Text>
-				<Text>캐시: {clover.cash}</Text>
+				<Text>스테미너: {clover.stamina}</Text>
+				<Text>골드: {clover.cash}</Text>
 				<Text>저축: {clover.saving}</Text>
 			</Card>
 		</>
