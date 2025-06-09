@@ -1,7 +1,21 @@
 package com.example.rabbithell.domain.deck.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum CardRanking {
-	HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_OF_A_KIND,
-	FOUR_OF_A_KIND, STRAIGHT, FLUSH,
-	STRAIGHT_FLUSH, ROYAL_STRAIGHT_FLUSH;
+	ONE_PAIR(1),
+	TWO_PAIR(1),
+	THREE_OF_A_KIND(2),
+	FOUR_OF_A_KIND(3),
+	STRAIGHT(10),
+	FLUSH(10),
+	STRAIGHT_FLUSH(20),
+	ROYAL_STRAIGHT_FLUSH(40);
+
+	private final Integer rankingRatio;
+
+	CardRanking(Integer rankingRatio) {
+		this.rankingRatio = rankingRatio;
+	}
 }
