@@ -11,7 +11,7 @@ import LoginPage from './pages/LoginPage';
 import OAuthSuccessPage from './pages/OAuthSuccessPage';
 import CloverCreatePage from './pages/CloverCreatePage';
 import MyInfoPage from './pages/myinfo/MyInfoPage';
-import CharacterDetailPage from './pages/myinfo/CharacterDetailPage';
+import CharacterDetailPage from './pages/myinfo/characterDetail/CharacterDetailPage';
 import MainPage from './pages/main/MainPage';
 import BattleMainPage from "./pages/battlePage/BattlePage";
 import VillageMainPage from "./pages/villagePage/VillagePage";
