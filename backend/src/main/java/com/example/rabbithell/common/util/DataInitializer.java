@@ -160,9 +160,9 @@ public class DataInitializer implements CommandLineRunner {
 
 		String encodedPassword = passwordEncoder.encode("1111");
 
-		User user = new User("name", "email", encodedPassword, User.Role.USER, false);
-		User user2 = new User("name", "email2", encodedPassword, User.Role.USER, false);
-		User user3 = new User("name", "email3", encodedPassword, User.Role.USER, false);
+		User user = new User("name", "rabbithelldev1@gmail.com", "KAKAO", User.Role.USER, false);
+		User user2 = new User("name", "rabbithelldev2@gmail.com", "KAKAO", User.Role.USER, false);
+		User user3 = new User("name", "rabbithelldev3@gmail.com", "KAKAO", User.Role.USER, false);
 
 		userRepository.save(user);
 		userRepository.save(user2);
