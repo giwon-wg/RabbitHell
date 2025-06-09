@@ -34,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (!StringUtils.hasText(token)) {
 			filterChain.doFilter(request, response);
+			log.warn("튕김: {}", token);
 			return;
 		}
 
@@ -77,5 +78,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		String path = request.getRequestURI();
+		return path.startsWith("/ws");
+	}
+
 
 }
