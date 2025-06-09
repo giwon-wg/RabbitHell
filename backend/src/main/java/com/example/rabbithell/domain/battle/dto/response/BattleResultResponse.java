@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
-import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.job.entity.Job;
 
 import lombok.Builder;
@@ -40,7 +39,7 @@ public record BattleResultResponse(
 	int monsterSpeed,
 	BattleResult battleResult,
 	String battleLog,
-	Item earnedItem,
+	List<EarnedItemDto> earnedItems,
 	int usedPotionHp,
 	int usedPotionMp
 ) {

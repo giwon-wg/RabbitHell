@@ -1,5 +1,6 @@
 package com.example.rabbithell.common.util;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,11 @@ import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.kingdom.repository.KingdomRepository;
+import com.example.rabbithell.domain.monster.entity.DropRate;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.entity.MonsterEncounter;
 import com.example.rabbithell.domain.monster.enums.Rating;
+import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterEncounterRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterRepository;
 import com.example.rabbithell.domain.specie.entity.Specie;
@@ -81,6 +84,8 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private KingdomRepository kingdomRepository;
+	@Autowired
+	private DropRateRepository dropRateRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -339,6 +344,8 @@ public class DataInitializer implements CommandLineRunner {
 		Monster goldenToad = createAndSaveMonster(Rating.SPECIAL, "황금 두꺼비", 777, 7, 7, 7, 77);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.PLAIN);
 
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
+
 		createMonsterEncounter(3, goldenToad, BattleFieldType.GOLDEN_FIELD);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.MAGIC_VALLEY);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.CRYSTAL_CAVE);
@@ -352,6 +359,12 @@ public class DataInitializer implements CommandLineRunner {
 		createMonsterEncounter(3, goldenToad, BattleFieldType.TWILIGHT_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.ETHER_CRACK);
 
+		DropRate slimeBellDrop = new DropRate(commonMonsters.get(0), slimeBell, BigDecimal.valueOf(0.5));
+		dropRateRepository.save(slimeBellDrop);
+
+		DropRate slimeBellDrop2 = new DropRate(goldenToad, slimeBell, BigDecimal.valueOf(0.5));
+		dropRateRepository.save(slimeBellDrop2);
+
 	}
 
 	private Monster createAndSaveMonster(Rating rating, String name, int hp, int atk, int def, int spd, int exp) {
@@ -364,4 +377,5 @@ public class DataInitializer implements CommandLineRunner {
 		MonsterEncounter encounter = new MonsterEncounter(rate, monster, type);
 		monsterEncounterRepository.save(encounter);
 	}
+
 }

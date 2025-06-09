@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.dto.response.BattleResultResponse;
+import com.example.rabbithell.domain.battle.dto.response.EarnedItemDto;
 import com.example.rabbithell.domain.battle.dto.response.GetBattleFieldsResponse;
 import com.example.rabbithell.domain.battle.dto.response.ItemDto;
 import com.example.rabbithell.domain.battle.postProcess.strategy.BattleRewardStrategy;
@@ -77,7 +78,10 @@ public class BattleService {
 			armor.add(ItemDto.from(battleResultVo.getArmor().get(i)));
 			accessory.add(ItemDto.from(battleResultVo.getAccessory().get(i)));
 		}
-		// DB 업데이트예정?
+
+		List<EarnedItemDto> earnedItemDtos = reward.items().stream()
+			.map(EarnedItemDto::from)
+			.toList();
 
 		return BattleResultResponse.builder()
 			.cloverId(clover.getId())
@@ -105,7 +109,7 @@ public class BattleService {
 			.monsterSpeed(battleResultVo.getMonsterSpeed())
 			.battleResult(battleResultVo.getBattleResult())
 			.battleLog(battleResultVo.getLog())
-			.earnedItem(null)
+			.earnedItems(earnedItemDtos)
 			.usedPotionHp(usedHpPotion)
 			.usedPotionMp(usedMpPotion)
 			.build();

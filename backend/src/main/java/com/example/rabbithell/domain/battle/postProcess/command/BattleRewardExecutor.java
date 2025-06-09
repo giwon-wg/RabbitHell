@@ -24,4 +24,5 @@ public class BattleRewardExecutor {
 			command.execute(clover);
 		}
 	}
+
 }

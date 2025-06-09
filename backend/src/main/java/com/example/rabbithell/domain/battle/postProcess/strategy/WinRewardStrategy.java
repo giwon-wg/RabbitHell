@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardExecutor;
 import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.ItemDropCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.JobPointRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.RareMapCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.SkillPointRewardCommand;
@@ -19,6 +20,12 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
+import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
+import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.monster.entity.DropRate;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 
@@ -31,6 +38,8 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 	private final CloverRepository cloverRepository;
 	private final DropRateRepository dropRateRepository;
 	private final CharacterRepository characterRepository;
+	private final InventoryRepository inventoryRepository;
+	private final InventoryItemRepository inventoryItemRepository;
 
 	@Override
 	@Transactional
@@ -103,7 +112,21 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		RareMapCommand rareMapCommand = new RareMapCommand(fieldType);
 		cloverExecutor.addCommand(rareMapCommand);
 
+		List<DropRate> dropRates = dropRateRepository.findByMonster(monster);
+		ItemDropCommand itemDropCommand = new ItemDropCommand(dropRates);
+		cloverExecutor.addCommand(itemDropCommand);
+
 		cloverExecutor.cloverExecuteAll(updatedClover);
+
+		List<Item> items = itemDropCommand.getItems();
+
+		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
+		if (items != null) {
+			for (Item item : items) {
+				InventoryItem inventoryItem = new InventoryItem(inventory, item);
+				inventoryItemRepository.save(inventoryItem);
+			}
+		}
 
 		characterRepository.saveAll(updatedTeam);
 		cloverRepository.save(updatedClover);
@@ -118,6 +141,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			levelUpAmounts,
 			totalSkillPoints,
 			increasedStats,
+			items,
 			updatedClover.getUnlockedRareMaps()
 		);
 	}
