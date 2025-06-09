@@ -18,7 +18,6 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.deck.entity.EffectDetail;
 import com.example.rabbithell.domain.deck.entity.PawCardEffect;
 import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
-import com.example.rabbithell.domain.deck.repository.EffectDetailRepository;
 import com.example.rabbithell.domain.deck.repository.PawCardEffectRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
@@ -42,7 +41,6 @@ public class AuthService {
 	private final JwtUtil jwtUtil;
 	private final CloverRepository cloverRepository;
 	private final PawCardEffectRepository pawCardEffectRepository;
-	private final EffectDetailRepository effectDetailRepository;
 
 	@Transactional
 	public void signup(SignupRequest request) {
@@ -77,9 +75,11 @@ public class AuthService {
 		PawCardEffect pawCardEffect = PawCardEffect.builder().clover(clover).build();
 		EffectDetail effectDetail1 = EffectDetail.builder()
 			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_1)
+			.pawCardEffect(pawCardEffect)
 			.build();
 		EffectDetail effectDetail2 = EffectDetail.builder()
 			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_2)
+			.pawCardEffect(pawCardEffect)
 			.build();
 
 		pawCardEffect.addEffectDetail(effectDetail1);
