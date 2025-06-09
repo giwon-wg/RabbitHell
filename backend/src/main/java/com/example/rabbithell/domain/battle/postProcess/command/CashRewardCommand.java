@@ -6,19 +6,16 @@ import lombok.Getter;
 
 @Getter
 public class CashRewardCommand implements BattleRewardCommand {
-	private final Clover clover;
 	private final long earnedCash;
 	private long resultCash;
 
-	public CashRewardCommand(Clover clover, long earnedCash) {
-		this.clover = clover;
+	public CashRewardCommand(long earnedCash) {
 		this.earnedCash = earnedCash;
 	}
 
 	@Override
-	public void execute() {
-		resultCash = clover.getCash() + earnedCash;
-
+	public void execute(Clover clover) {
+		resultCash = earnedCash + clover.getCash();
+		clover.earnCash((int)earnedCash);
 	}
-
 }

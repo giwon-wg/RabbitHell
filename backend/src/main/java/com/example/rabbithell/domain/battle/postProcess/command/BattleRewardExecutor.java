@@ -3,6 +3,9 @@ package com.example.rabbithell.domain.battle.postProcess.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.clover.entity.Clover;
+
 public class BattleRewardExecutor {
 	private final List<BattleRewardCommand> commands = new ArrayList<>();
 
@@ -10,9 +13,15 @@ public class BattleRewardExecutor {
 		commands.add(command);
 	}
 
-	public void executeAll() {
+	public void characterExecuteAll(GameCharacter ch) {
 		for (BattleRewardCommand command : commands) {
-			command.execute();
+			command.execute(ch);
+		}
+	}
+
+	public void cloverExecuteAll(Clover clover) {
+		for (BattleRewardCommand command : commands) {
+			command.execute(clover);
 		}
 	}
 }

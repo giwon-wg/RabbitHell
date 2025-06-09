@@ -339,6 +339,18 @@ public class DataInitializer implements CommandLineRunner {
 		Monster goldenToad = createAndSaveMonster(Rating.SPECIAL, "황금 두꺼비", 777, 7, 7, 7, 77);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.PLAIN);
 
+		createMonsterEncounter(3, goldenToad, BattleFieldType.GOLDEN_FIELD);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.MAGIC_VALLEY);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CRYSTAL_CAVE);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DRAGON_NEST);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.TRIAL_FIELD);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.SAGE_FOREST);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.SPIRIT_TEMPLE);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.VOID_ARENA);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.LOOT_MEADOW);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DIM_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.TWILIGHT_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.ETHER_CRACK);
 
 	}
 

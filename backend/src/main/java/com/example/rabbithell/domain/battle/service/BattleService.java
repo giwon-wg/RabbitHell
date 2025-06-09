@@ -1,11 +1,11 @@
 package com.example.rabbithell.domain.battle.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.dto.response.BattleResultResponse;
@@ -35,6 +35,7 @@ public class BattleService {
 	private final Battle battle;
 	private final BattleRewardStrategyFactory battleRewardStrategyFactory;
 
+	@Transactional
 	public GetBattleFieldsResponse getBattleFields(AuthUser authUser, Long characterId) {
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
@@ -60,7 +61,6 @@ public class BattleService {
 		List<Job> jobs = team.stream().map(GameCharacter::getJob).toList();
 
 		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
-
 
 		BattleRewardStrategy strategy = battleRewardStrategyFactory.getStrategy(battleResultVo.getBattleResult());
 		BattleRewardResultVo reward = strategy.applyReward(clover, team, monster, battleFieldType);
@@ -92,7 +92,6 @@ public class BattleService {
 			.jobs(jobs)
 			.earnedSkillPoint(reward.earnedSkillPoints())
 			.totalSkillPoints(reward.totalSkillPoints())
-			.jobSkillPoints(reward.jobSkillPoints())
 			.increasedStats(reward.increasedStat())
 			.battleFieldTypes(reward.unlockedRareMaps())
 			.weapon(weapon)

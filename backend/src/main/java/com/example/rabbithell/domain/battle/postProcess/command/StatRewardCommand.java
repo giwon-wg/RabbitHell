@@ -8,41 +8,39 @@ import lombok.Getter;
 
 @Getter
 public class StatRewardCommand implements BattleRewardCommand {
-	private final GameCharacter character;
-	private final int levelUps;
-	private final int pStrength, pIntelligence, pFocus, pAgility;    // 레벨 업 이전
-	private int uStrength, uIntelligence, uFocus, uAgility;            // 레벨 업 후
-	private int iStrength, iIntelligence, iFocus, iAgility;            // 증가된 스텟
 
-	public StatRewardCommand(GameCharacter character, int levelUps) {
-		this.character = character;
-		this.pStrength = character.getStrength();
-		this.pIntelligence = character.getIntelligence();
-		this.pFocus = character.getFocus();
-		this.pAgility = character.getAgility();
-		this.levelUps = levelUps;
-		this.iStrength = 0;
-		this.iIntelligence = 0;
-		this.iFocus = 0;
-		this.iAgility = 0;
+	private final int levelUpAmount;
+	private int uStrength, uIntelligence, uFocus, uAgility;            // 레벨 업 후
+	private int iStrength = 0, iIntelligence = 0, iFocus = 0, iAgility = 0;            // 증가된 스텟
+
+	public StatRewardCommand(int levelUpAmount) {
+		this.levelUpAmount = levelUpAmount;
 	}
 
 	@Override
-	public void execute() {
-		uStrength = pStrength;
-		uIntelligence = pIntelligence;
-		uFocus = pFocus;
-		uAgility = pAgility;
-		for (int i = 0; i < levelUps; i++) {
-			uStrength += getRandomValue();
-			uIntelligence += getRandomValue();
-			uFocus += getRandomValue();
-			uAgility += getRandomValue();
+	public void execute(GameCharacter ch) {
+		if (levelUpAmount == 0)
+			return;
+		int strength = ch.getStrength();
+		int intelligence = ch.getIntelligence();
+		int focus = ch.getFocus();
+		int agility = ch.getAgility();
+
+		for (int i = 0; i < levelUpAmount; i++) {
+			uStrength = strength + getRandomValue();
+			uIntelligence = intelligence + getRandomValue();
+			uFocus = focus + getRandomValue();
+			uAgility = agility + getRandomValue();
 		}
-		iStrength = uStrength - pStrength;
-		iIntelligence = uIntelligence - pIntelligence;
-		iFocus = uFocus - pFocus;
-		iAgility = uAgility - pAgility;
+		iStrength = uStrength - strength;
+		iIntelligence = uIntelligence - intelligence;
+		iFocus = uFocus - focus;
+		iAgility = uAgility - agility;
+
+		ch.updateStrength(uStrength);
+		ch.updateIntelligence(uIntelligence);
+		ch.updateFocus(uFocus);
+		ch.updateAgility(uAgility);
 	}
 
 	public int getRandomValue() {

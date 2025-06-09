@@ -26,10 +26,9 @@ public record BattleResultResponse(
 	List<Job> jobs,
 	int earnedSkillPoint,
 	List<Integer> totalSkillPoints,
-	List<Integer> jobSkillPoints,
 	List<List<Integer>> increasedStats,
 
-	List<BattleFieldType> battleFieldTypes,
+	Set<BattleFieldType> battleFieldTypes,
 	List<ItemDto> weapon,
 	List<ItemDto> armor,
 	List<ItemDto> accessory,

@@ -7,18 +7,17 @@ import lombok.Getter;
 @Getter
 public class SkillPointRewardCommand implements BattleRewardCommand {
 
-	private final GameCharacter character;
 	private final int earnedSkillPoints;
 	private int updatedSkillPoints;
 
-	public SkillPointRewardCommand(GameCharacter character, int earnedSkillPoints) {
-		this.character = character;
+	public SkillPointRewardCommand(int earnedSkillPoints) {
 		this.earnedSkillPoints = earnedSkillPoints;
 	}
 
 	@Override
-	public void execute() {
-		this.updatedSkillPoints = character.getSkillPoint() + earnedSkillPoints;
+	public void execute(GameCharacter ch) {
+		updatedSkillPoints = ch.getSkillPoint() + earnedSkillPoints;
+		ch.updateSkillPoint(updatedSkillPoints);
 	}
 
 }
