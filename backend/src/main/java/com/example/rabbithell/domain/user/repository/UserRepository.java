@@ -2,6 +2,7 @@ package com.example.rabbithell.domain.user.repository;
 
 import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			.orElseThrow(() -> new AuthException(USER_NOT_FOUND));
 	}
 
+	List<User> id(Long id);
 }

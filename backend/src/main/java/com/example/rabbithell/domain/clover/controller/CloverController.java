@@ -29,20 +29,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CloverController {
 
-	private final CloverRepository cloverRepository;
 	private final CloverService cloverService;
 
 	@GetMapping("/oauth2/clover/me")
 	public ResponseEntity<CommonResponse<Map<String, Object>>> checkCloverExistence(
 		@AuthenticationPrincipal MiniAuthUser authUser) {
 
-		log.info("미니 인증 유저: {}", authUser);
-
-		Long userId = authUser.getUserId();
-		boolean hasClover = cloverRepository.existsByUserId(userId);
-
-		Map<String, Object> result = new HashMap<>();
-		result.put("hasClover", hasClover);
+		Map<String, Object> result = cloverService.getCloverInfoForMiniToken(authUser.getUserId());
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
