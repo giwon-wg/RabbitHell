@@ -33,8 +33,3 @@ websocket:
     endpoint: /ws
     allowed-origins: "*"
 
-# 공통 로그 레벨 설정
-logging:
-    level:
-        org.hibernate.SQL: off
-        org.hibernate.type.descriptor.sql.BasicBinder: off

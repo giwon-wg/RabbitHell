@@ -1,6 +1,8 @@
 package com.example.rabbithell.config;
 
 import java.util.Arrays;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import jakarta.servlet.http.HttpServletResponse;
-
 import com.example.rabbithell.infrastructure.security.jwt.JwtAuthenticationFilter;
 import com.example.rabbithell.infrastructure.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.rabbithell.infrastructure.security.oauth.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.rabbithell.infrastructure.security.oauth.service.CustomOAuth2UserService;
 
-import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,13 +30,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
 			.cors(Customizer.withDefaults())
@@ -54,7 +54,9 @@ public class SecurityConfig {
 					"/auth/**",
 					"/oauth2/authorization/**",
 					"/swagger-ui/**",
-					"/v3/api-docs/**"
+					"/v3/api-docs/**",
+					"/ws/**",         // ✅ 반드시 필요
+					"/ws/**/**"
 				).permitAll()
 				.anyRequest().authenticated()
 			)
@@ -86,10 +88,13 @@ public class SecurityConfig {
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
-    }
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
 }
+
+
