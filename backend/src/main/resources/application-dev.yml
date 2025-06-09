@@ -68,4 +68,3 @@ spring:
             refresh:
                 minute: 20160
         secret: ${SECRET_KEY}
-

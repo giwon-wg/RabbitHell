@@ -3,6 +3,7 @@ package com.example.rabbithell.domain.auth.service;
 import static com.example.rabbithell.domain.auth.exception.code.AuthExceptionCode.*;
 import static com.example.rabbithell.domain.clover.exception.code.CloverExceptionCode.DUPLICATED_CLOVER_NAME;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,9 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 	private final CloverRepository cloverRepository;
 
+	@Value("${ADMIN_KEY}")
+	private String adminKey;
+
 	@Transactional
     public void signup(SignupRequest request) {
 
@@ -48,24 +52,17 @@ public class AuthService {
 			throw new CloverException(DUPLICATED_CLOVER_NAME);
 		}
 
+		validateAdminKey(request.key(), adminKey);
+
         User user = User.builder()
             .email(request.email())
             .name(request.name())
             .password(passwordEncoder.encode(request.password()))
-            .role(User.Role.valueOf(request.role().toUpperCase()))
+            .role(User.Role.valueOf("ADMIN"))
             .isDeleted(false)
             .build();
-        User savedUser = userRepository.save(user);
+        userRepository.save(user);
 
-		Clover clover = new Clover(request.cloverName(), savedUser);
-		Clover savedClover = cloverRepository.save(clover);
-
-		Inventory inventory = Inventory.builder()
-            .clover(savedClover)
-            .capacity(100)
-            .build();
-
-        inventoryRepository.save(inventory);
     }
 
 	@Transactional
@@ -77,10 +74,8 @@ public class AuthService {
             throw new AuthException(INVALID_PASSWORD);
         }
 
-		Clover clover = cloverRepository.findByUserIdOrElseThrow(user.getId());
-
-        String accessToken = jwtUtil.generateAccessToken(user.getId().toString(), user.getRole().name(), clover.getId(), clover.getName());
-        String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
+		String accessToken = jwtUtil.createMiniToken(user.getId(), user.getRole().name());
+		String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
 
         redisRefreshTokenAdapter.save(user.getId(), refreshToken);
 
@@ -91,8 +86,6 @@ public class AuthService {
     public TokenResponse reissue(TokenRefresRequest tokenRefresRequest) {
 
 		String refreshToken = tokenRefresRequest.refreshToken();
-
-		log.info("리프레쉬 토큰 값: " + refreshToken);
 
         if (!jwtUtil.validateToken(refreshToken)) {
             throw new AuthException(INVALID_REFRESH_TOKEN);
@@ -127,4 +120,9 @@ public class AuthService {
         redisRefreshTokenAdapter.delete(userId);
     }
 
+	public static void validateAdminKey(String inputKey, String actualKey) {
+		if (!actualKey.equals(inputKey)) {
+			throw new AuthException(ADMIN_KEY_MISMATCH);
+		}
+	}
 }

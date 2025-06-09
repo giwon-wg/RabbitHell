@@ -4,7 +4,6 @@ public record SignupRequest(
 	String email,
 	String name,
 	String password,
-	String role,
-	String cloverName
+	String key
 ) {
 }

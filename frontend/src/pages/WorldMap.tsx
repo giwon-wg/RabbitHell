@@ -25,6 +25,14 @@ const villages = [
 		route: '/village/dwarf',
 		villageId: 3
 	},
+	{
+		name: '중립 마을',
+		img: '/assets/Neutral.png',
+		xRatio: 0.30,
+		yRatio: 0.60,
+		route: '/village/dwarf',
+		villageId: 4
+	},
 ];
 
 const moveVillage = async (targetVillageId: number) => {
