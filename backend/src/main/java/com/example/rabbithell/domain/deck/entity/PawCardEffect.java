@@ -38,7 +38,7 @@ public class PawCardEffect {
 	@JoinColumn(name = "clover_id", nullable = false)
 	Clover clover;
 
-	@OneToMany(mappedBy = "pawCardEffect", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "pawCardEffect", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<EffectDetail> details = new ArrayList<>();
 
 	@Builder
