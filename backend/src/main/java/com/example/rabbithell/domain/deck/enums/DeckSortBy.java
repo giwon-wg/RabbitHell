@@ -9,7 +9,7 @@ public enum DeckSortBy {
 	CREATED_AT(QDeck.deck.createdAt),
 	CARD_NUMBER(QPawCard.pawCard.cardNumber),
 	CARD_EMBLEM(QPawCard.pawCard.cardEmblem),
-	RATIO(QPawCard.pawCard.ratio);
+	RATIO(QPawCard.pawCard.ratioPercent);
 
 	private final ComparableExpressionBase<?> expression;
 
