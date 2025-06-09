@@ -33,7 +33,6 @@ public class AuthService {
 
     private final RedisRefreshTokenAdapter redisRefreshTokenAdapter;
     private final UserRepository userRepository;
-    private final InventoryRepository inventoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 	private final CloverRepository cloverRepository;
@@ -74,7 +73,7 @@ public class AuthService {
             throw new AuthException(INVALID_PASSWORD);
         }
 
-		String accessToken = jwtUtil.createMiniToken(user.getId(), user.getRole().name());
+		String accessToken = jwtUtil.createMiniToken(user.getId().toString(), user.getRole().name());
 		String refreshToken = jwtUtil.generateRefreshToken(user.getId().toString());
 
         redisRefreshTokenAdapter.save(user.getId(), refreshToken);
