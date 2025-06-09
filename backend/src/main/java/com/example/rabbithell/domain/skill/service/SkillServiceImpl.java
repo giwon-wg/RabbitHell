@@ -42,6 +42,8 @@ public class SkillServiceImpl implements SkillService {
 			.coolTime(request.coolTime())
 			.dmg(request.dmg())
 			.job(request.job())
+			.skillType(request.skillType())
+			.skillTarget(request.skillTarget())
 			.build();
 
 		skillRepository.save(skill);
@@ -76,7 +78,9 @@ public class SkillServiceImpl implements SkillService {
 			request.mpCost(),
 			request.coolTime(),
 			request.dmg(),
-			request.job()
+			request.job(),
+			request.skillType(),
+			request.skillTarget()
 		);
 
 		skillRepository.save(skill);
