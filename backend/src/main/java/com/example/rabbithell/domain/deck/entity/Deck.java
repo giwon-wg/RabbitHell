@@ -7,6 +7,8 @@ import com.example.rabbithell.domain.pawcard.entity.PawCard;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -48,6 +50,7 @@ public class Deck extends BaseEntity {
 	@JoinColumn(name = "clover_id", nullable = false)
 	private Clover clover;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "paw_card_slot", nullable = true)
 	private PawCardSlot pawCardSlot;
 
@@ -58,5 +61,9 @@ public class Deck extends BaseEntity {
 	) {
 		this.clover = clover;
 		this.pawCard = pawCard;
+	}
+
+	public void equipDeck(PawCardSlot pawCardSlot) {
+		this.pawCardSlot = pawCardSlot;
 	}
 }
