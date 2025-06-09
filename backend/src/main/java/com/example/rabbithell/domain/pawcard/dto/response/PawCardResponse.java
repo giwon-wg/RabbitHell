@@ -1,6 +1,5 @@
 package com.example.rabbithell.domain.pawcard.dto.response;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.rabbithell.common.effect.enums.DomainType;
@@ -11,7 +10,7 @@ import com.example.rabbithell.domain.pawcard.enums.CardEmblem;
 
 public record PawCardResponse(
 	Long pawCardId,
-	BigDecimal ratio,
+	Integer ratioPercent,
 	String description,
 	Integer cardNumber,
 	CardEmblem cardEmblem,
@@ -25,7 +24,7 @@ public record PawCardResponse(
 	public static PawCardResponse fromEntity(PawCard pawCard) {
 		return new PawCardResponse(
 			pawCard.getId(),
-			pawCard.getRatio(),
+			pawCard.getRatioPercent(),
 			pawCard.getDescription(),
 			pawCard.getCardNumber(),
 			pawCard.getCardEmblem(),
