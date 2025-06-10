@@ -63,7 +63,6 @@ public class CharacterSkillServiceImpl implements CharacterSkillService {
 	@Transactional
 	public void equipSkill(Long characterId, Long skillId, SkillEquipType slotType) {
 
-
 		if (slotType == SkillEquipType.NONE) {
 			throw new CharacterSkillException(INVALID_EQUIP_TYPE);
 		}
@@ -72,6 +71,14 @@ public class CharacterSkillServiceImpl implements CharacterSkillService {
 		Skill skill = skillRepository.findByIdOrElseThrow(skillId);
 
 		CharacterSkill characterSkill = characterSkillRepository.findByCharacterAndSkillOrElseThrow(character, skill);
+
+		if (character.getJob().getJobCategory() != skill.getJob().getJobCategory()) {
+			throw new SkillException(INVALID_JOB_FOR_SKILL);
+		}
+
+		if (!character.getJob().getTier().isSameOrHigherThan(skill.getJob().getTier())) {
+			throw new SkillException(INSUFFICIENT_TIER_FOR_SKILL);
+		}
 
 		// 스킬 액티브/패시브 확인
 		if (skill.getSkillType().equals(SkillType.ACTIVE)) {
