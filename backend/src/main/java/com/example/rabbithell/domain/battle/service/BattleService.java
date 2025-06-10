@@ -79,6 +79,7 @@ public class BattleService {
 
 		List<GameCharacter> team = clover.getMembers();
 		List<Long> characterIds = team.stream().map(GameCharacter::getId).toList();
+		List<String> characterNames = team.stream().map(GameCharacter::getName).toList();
 		List<Job> jobs = team.stream().map(GameCharacter::getJob).toList();
 
 		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
@@ -118,12 +119,14 @@ public class BattleService {
 			.totalSkillPoints(reward.totalSkillPoints())
 			.increasedStats(reward.increasedStat())
 			.battleFieldTypes(reward.unlockedRareMaps())
+			.characterNames(characterNames)
 			.weapon(weapon)
 			.armor(armor)
 			.accessory(accessory)
 			.playerAttack(battleResultVo.getPlayerAttack())
 			.playerDefense(battleResultVo.getPlayerDefense())
 			.playerSpeed(battleResultVo.getPlayerSpeed())
+			.monsterName(monster.getMonsterName())
 			.monsterAttack(battleResultVo.getMonsterAttack())
 			.monsterDefense(battleResultVo.getMonsterDefense())
 			.monsterSpeed(battleResultVo.getMonsterSpeed())

@@ -1,0 +1,144 @@
+.container {
+	padding: 24px;
+}
+
+.fields {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 16px;
+}
+
+.button {
+	padding: 8px 16px;
+	background-color: #3498db;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.button:hover {
+	background-color: #2980b9; /* 호버 시 */
+}
+
+.button.rare {
+	background-color: #e74c3c; /* 특수 필드 색상 */
+}
+
+.button.rare:hover {
+	background-color: #c0392b;
+}
+
+.result {
+	margin-top: 16px;
+	padding: 16px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+}
+
+.characters-container {
+	display: flex;
+	gap: 16px; /* 아이템 간격 */
+	flex-wrap: wrap; /* 화면이 좁아지면 다음 줄로 넘어감 */
+	margin-bottom: 24px; /* 아래 여백 */
+}
+
+.character {
+	background-color: #f0f8ff; /* 연한 하늘색 배경 */
+	border: 1px solid #cce4ff; /* 연한 파랑 테두리 */
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin-bottom: 16px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	width: 200px; /* 고정 너비 */
+}
+
+.character h4 {
+	margin: 0 0 8px 0;
+	color: #00509e; /* 진한 파랑 */
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
+.character p {
+	margin: 4px 0;
+	font-size: 0.95rem;
+	color: #333;
+}
+
+.levelUpBox {
+	margin-top: 8px;
+	padding: 10px 12px;
+	background-color: #e6f9f0; /* 연한 초록 */
+	border: 1px solid #81d4ac; /* 중간 초록 테두리 */
+	border-radius: 6px;
+}
+
+.levelUpTitle {
+	color: #2e8b57; /* 진한 초록 */
+	font-weight: 600;
+	margin-bottom: 6px;
+	font-size: 0.95rem;
+}
+
+.statsGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 4px 8px;
+	font-size: 0.9rem;
+	color: #2c3e50;
+}
+
+.monster-info {
+	background-color: #fff0f0; /* 연한 빨강색 배경 */
+	border: 1px solid #ffcccc; /* 연한 빨강 테두리 */
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin-top: 24px;
+	width: 200px;
+}
+
+.monster-info p {
+	margin: 6px 0;
+	font-size: 1rem;
+	color: #b30000; /* 진한 빨강 */
+	font-weight: 600;
+}
+
+.battleLog {
+	background-color: #eee;
+	padding: 8px;
+	border-radius: 4px;
+	white-space: pre-wrap;
+}
+
+.battleResult {
+	font-size: 24px;
+	font-weight: bold;
+	padding: 12px;
+	border-radius: 8px;
+	text-align: center;
+	width: 120px;
+	margin: 16px 0;
+}
+
+.win {
+	color: #27ae60;
+	background-color: #d4efdf;
+	border: 2px solid #27ae60;
+}
+
+.lose {
+	color: #c0392b;
+	background-color: #f9d6d5;
+	border: 2px solid #c0392b;
+}
+
+.draw {
+	color: #7f8c8d;
+	background-color: #ecf0f1;
+	border: 2px solid #7f8c8d;
+}

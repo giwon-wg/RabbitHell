@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import styles from './BattlePage.module.css';
+
 
 type BattleField = {
 	code: string;
@@ -36,12 +38,14 @@ type BattleResultResponse = {
 	totalSkillPoints: number[];
 	increasedStats: number[][];
 	battleFieldTypes: string[];
+	characterNames: string[];
 	weapon: ItemDto[];
 	armor: ItemDto[];
 	accessory: ItemDto[];
 	playerAttack: number[];
 	playerDefense: number[];
 	playerSpeed: number[];
+	monsterName: string;
 	monsterAttack: number;
 	monsterDefense: number;
 	monsterSpeed: number;
@@ -86,9 +90,7 @@ const BattlePage = () => {
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify({
-				battleFieldType: fieldCode,
-			}),
+			body: JSON.stringify({battleFieldType: fieldCode}),
 		})
 			.then(res => res.json())
 			.then(data => {
@@ -101,50 +103,90 @@ const BattlePage = () => {
 	};
 
 	return (
-		<div style={{padding: '24px'}}>
+		<div className={styles.container}>
 			<h1>전투 페이지</h1>
 			{loading ? (
 				<p>로딩 중...</p>
 			) : (
 				<>
 					<p>전투 가능한 필드 목록:</p>
-					<div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
+					<div className={styles.fields}>
 						{battleFields.map((field) => (
-							<button key={field.code} onClick={() => startBattle(field.code)}>
+							<button
+								key={field.code}
+								onClick={() => startBattle(field.code)}
+								className={`${styles.button} ${field.isRare ? styles.rare : ''}`}>
 								{field.name}
 							</button>
 						))}
 					</div>
-					<div>
-						{battleResult && (
-							<div style={{
-								marginTop: '16px',
-								padding: '12px',
-								border: '1px solid #ccc',
-								borderRadius: '8px'
-							}}>
-								<h3>전투 결과</h3>
-								<p>클로버 ID: {battleResult.cloverId}</p>
-								<p>스태미너: {battleResult.stamina}</p>
-								<p>전투 결과: {battleResult.battleResult}</p>
-								<p>전투 로그:</p>
-								<pre style={{background: '#eee', padding: '8px'}}>{battleResult.battleLog}</pre>
 
-								<p>얻은 경험치: {battleResult.earnedExp}</p>
-								<p>획득한 현금: {battleResult.lostOrEarnedCash}</p>
-								<p>현재 총 현금: {battleResult.totalCash}</p>
+					{battleResult && (
+						<div className={styles.result}>
+							<h3
+								className={`${styles.battleResult} ${
+									battleResult.battleResult === 'WIN'
+										? styles.win
+										: battleResult.battleResult === 'LOSE'
+											? styles.lose
+											: styles.draw
+								}`}
+							>
+								{battleResult.battleResult}
+							</h3>
+							<div className={styles["characters-container"]}>
+								{battleResult.characterNames.map((name, index) => (
+									<div key={index} className={styles.character}>
+										<h4>{name}</h4>
+										<p>레벨: {battleResult.level[index]} </p>
+										<p>무기: {battleResult.weapon[index]?.name || '없음'}</p>
+										<p>방어구: {battleResult.armor[index]?.name || '없음'}</p>
+										<p>장신구: {battleResult.accessory[index]?.name || '없음'}</p>
+										<p>공격력: {battleResult.playerAttack[index]}</p>
+										<p>방어력: {battleResult.playerDefense[index]}</p>
+										<p>속도: {battleResult.playerSpeed[index]}</p>
 
-								<p>획득 아이템:</p>
-								<ul>
-									{battleResult.earnedItems.map(item => (
-										<li key={item.id}>{item.name} </li>
-									))}
-								</ul>
+										{battleResult.levelUpAmounts[index] !== 0 && (
+											<div className={styles.levelUpBox}>
+												<p className={styles.levelUpTitle}>🎉
+													Level {battleResult.levelUpAmounts[index]} UP!</p>
+												<div className={styles.statsGrid}>
+													<p>힘: {battleResult.increasedStats[index][0]}</p>
+													<p>지력: {battleResult.increasedStats[index][1]}</p>
+													<p>집중력: {battleResult.increasedStats[index][2]}</p>
+													<p>민첩: {battleResult.increasedStats[index][3]}</p>
+												</div>
+											</div>
+										)}
+									</div>
+								))}
 
-								{/* 필요한 다른 필드도 원하는 형태로 추가 가능 */}
 							</div>
-						)}
-					</div>
+
+							<div className={styles["monster-info"]}>
+								<p>몬스터: {battleResult.monsterName}</p>
+								<p>공격력: {battleResult.monsterAttack}</p>
+								<p>방어력: {battleResult.monsterDefense}</p>
+								<p>속도: {battleResult.monsterSpeed}</p>
+							</div>
+
+							<p>레벨업: {battleResult.levelUpAmounts}</p>
+							<p>스탯 증가량: {battleResult.increasedStats}</p>
+							<p>전투 로그:</p>
+							<pre className={styles.battleLog}>{battleResult.battleLog}</pre>
+
+							<p>얻은 경험치: {battleResult.earnedExp}</p>
+							<p>획득한 현금: {battleResult.lostOrEarnedCash}</p>
+							<p>현재 총 현금: {battleResult.totalCash}</p>
+
+							<p>획득 아이템:</p>
+							<ul>
+								{battleResult.earnedItems.map(item => (
+									<li key={item.id}>{item.name}</li>
+								))}
+							</ul>
+						</div>
+					)}
 				</>
 			)}
 		</div>
