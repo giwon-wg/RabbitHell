@@ -59,7 +59,7 @@ public class CharacterServiceImpl implements CharacterService {
 			.agility(100)
 			.intelligence(100)
 			.focus(100)
-			.luck(8)
+			.luck(100)
 			.incompetentPoint(0)
 			.warriorPoint(0)
 			.thiefPoint(0)
