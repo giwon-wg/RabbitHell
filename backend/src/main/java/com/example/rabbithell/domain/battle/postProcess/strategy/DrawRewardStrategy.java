@@ -1,5 +1,6 @@
 package com.example.rabbithell.domain.battle.postProcess.strategy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class DrawRewardStrategy implements BattleRewardStrategy {
 			levels,
 			zero,
 			zeros,
-			null,
+			new ArrayList<>(),
 			updatedClover.getUnlockedRareMaps()
 		);
 	}

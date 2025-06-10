@@ -1,5 +1,6 @@
 package com.example.rabbithell.domain.battle.postProcess.strategy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class LoseRewardStrategy implements BattleRewardStrategy {
 
 		Long lostCash = clover.getCash() * (-1);
 
-		updatedClover.spendCash(Math.toIntExact(lostCash));
+		updatedClover.spendCash((int)clover.getCash());
 
 		cloverRepository.save(updatedClover);
 
@@ -49,7 +50,7 @@ public class LoseRewardStrategy implements BattleRewardStrategy {
 			levels,
 			zero,
 			zeros,
-			null,
+			new ArrayList<>(),
 			updatedClover.getUnlockedRareMaps()
 		);
 	}
