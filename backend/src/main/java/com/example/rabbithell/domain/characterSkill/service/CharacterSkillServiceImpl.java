@@ -72,6 +72,28 @@ public class CharacterSkillServiceImpl implements CharacterSkillService {
 
 		CharacterSkill characterSkill = characterSkillRepository.findByCharacterAndSkillOrElseThrow(character, skill);
 
+		// 액티브 슬롯은 2개
+		if (skill.getSkillType() == SkillType.ACTIVE) {
+			long activeEquippedCount = characterSkillRepository.findByCharacter(character).stream()
+				.filter(cs -> cs.isEquipped())
+				.filter(cs -> cs.getEquipType() == SkillEquipType.ACTIVE_SLOT_1 || cs.getEquipType() == SkillEquipType.ACTIVE_SLOT_2)
+				.count();
+
+			if (activeEquippedCount >= 2 && characterSkill.getEquipType() == SkillEquipType.NONE) {
+				throw new CharacterSkillException(MAX_ACTIVE_SLOTS_REACHED);
+			}
+		}
+
+		// 패시브 슬롯은 1개
+		if (skill.getSkillType() == SkillType.PASSIVE) {
+			boolean passiveEquipped = characterSkillRepository.findByCharacter(character).stream()
+				.anyMatch(cs -> cs.isEquipped() && cs.getEquipType() == SkillEquipType.PASSIVE_SLOT);
+
+			if (passiveEquipped && characterSkill.getEquipType() == SkillEquipType.NONE) {
+				throw new CharacterSkillException(MAX_PASSIVE_SLOTS_REACHED);
+			}
+		}
+
 		if (character.getJob().getJobCategory() != skill.getJob().getJobCategory()) {
 			throw new SkillException(INVALID_JOB_FOR_SKILL);
 		}
