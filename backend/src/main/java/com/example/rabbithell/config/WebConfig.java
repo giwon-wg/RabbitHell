@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addMapping("/**")
 			.allowedOriginPatterns("http://localhost:3000") // ✅ 명시적으로 작성
 			.allowCredentials(true)
-			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 			.allowedHeaders("*");
 	}
 
@@ -33,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ origin 명시
 		configuration.setAllowCredentials(true);
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

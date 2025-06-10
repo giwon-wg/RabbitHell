@@ -10,47 +10,40 @@ const BattlePage = () => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const token = localStorage.getItem("accessToken");
-
-		fetch('http://localhost:8080/battles', {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				setBattleFields(data.result.unlockedRareMaps);
-				setLoading(false);
-			})
-			.catch(() => {
-				alert("전투 필드를 불러오는 데 실패했습니다.");
-				setLoading(false);
-			});
+		loadBattleFields();
 	}, []);
 
-	const startBattle = (fieldCode: string) => {
-		const token = localStorage.getItem("accessToken");
-
-		fetch('http://localhost:8080/battles/start', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${token}`,
-			},
-			body: JSON.stringify({
-				battleFieldType: fieldCode,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) throw new Error("전투 시작 실패");
-				return res.json();
-			})
-			.then((data) => {
-				alert(`전투 완료: ${data.message}`);
-			})
-			.catch((err) => {
-				alert(err.message);
+	const loadBattleFields = async () => {
+		try {
+			const token = localStorage.getItem("accessToken");
+			const res = await fetch('http://localhost:8080/battles', {
+				headers: {Authorization: `Bearer ${token}`},
 			});
+			const data = await res.json();
+			setBattleFields(data.result.unlockedRareMaps);
+		} catch {
+			alert("전투 필드를 불러오는 데 실패했습니다.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const startBattle = async (fieldCode: string) => {
+		try {
+			const token = localStorage.getItem("accessToken");
+			const res = await fetch('http://localhost:8080/battles', {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({battleFieldType: fieldCode}),
+			});
+			const data = await res.json();
+			alert(`전투 시작: ${data.message}`);
+		} catch (err: any) {
+			alert(err.message);
+		}
 	};
 
 	return (
