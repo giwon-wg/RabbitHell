@@ -1,5 +1,6 @@
 package com.example.rabbithell.common.util;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,10 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.deck.entity.EffectDetail;
+import com.example.rabbithell.domain.deck.entity.PawCardEffect;
+import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
+import com.example.rabbithell.domain.deck.repository.PawCardEffectRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.enums.Slot;
@@ -24,9 +29,11 @@ import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.kingdom.repository.KingdomRepository;
+import com.example.rabbithell.domain.monster.entity.DropRate;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.entity.MonsterEncounter;
 import com.example.rabbithell.domain.monster.enums.Rating;
+import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterEncounterRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterRepository;
 import com.example.rabbithell.domain.specie.entity.Specie;
@@ -81,6 +88,11 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private KingdomRepository kingdomRepository;
+	@Autowired
+	private DropRateRepository dropRateRepository;
+
+	@Autowired
+	private PawCardEffectRepository pawCardEffectRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -155,9 +167,9 @@ public class DataInitializer implements CommandLineRunner {
 
 		String encodedPassword = passwordEncoder.encode("1111");
 
-		User user = new User("name", "email", encodedPassword, User.Role.USER, false);
-		User user2 = new User("name", "email2", encodedPassword, User.Role.USER, false);
-		User user3 = new User("name", "email3", encodedPassword, User.Role.USER, false);
+		User user = new User("name", "rabbithelldev1@gmail.com", "KAKAO", User.Role.USER, false);
+		User user2 = new User("name", "rabbithelldev2@gmail.com", "KAKAO", User.Role.USER, false);
+		User user3 = new User("name", "rabbithelldev3@gmail.com", "KAKAO", User.Role.USER, false);
 
 		userRepository.save(user);
 		userRepository.save(user2);
@@ -218,6 +230,22 @@ public class DataInitializer implements CommandLineRunner {
 
 		Inventory inventory = new Inventory(clover, 100);
 		inventoryRepository.save(inventory);
+
+		PawCardEffect pawCardEffect = PawCardEffect.builder().clover(clover).build();
+		EffectDetail effectDetail1 = EffectDetail.builder()
+			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_1)
+			.pawCardEffect(pawCardEffect)
+			.build();
+		EffectDetail effectDetail2 = EffectDetail.builder()
+			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_2)
+			.pawCardEffect(pawCardEffect)
+			.build();
+
+		pawCardEffect.addEffectDetail(effectDetail1);
+		pawCardEffect.addEffectDetail(effectDetail2);
+
+		pawCardEffectRepository.save(pawCardEffect);
+
 
 		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
 			false);
@@ -306,17 +334,67 @@ public class DataInitializer implements CommandLineRunner {
 		inventoryItemRepository.save(iSlimeBell);
 		inventoryItemRepository.save(iTuxedo);
 
-		Monster slime = new Monster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30);
-		monsterRepository.save(slime);
+		// Common Monsters
+		List<Monster> commonMonsters = List.of(
+			createAndSaveMonster(Rating.COMMON, "슬라임", 5000, 150, 10, 200, 30),
+			createAndSaveMonster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40),
+			createAndSaveMonster(Rating.COMMON, "들쥐", 5000, 130, 20, 300, 20),
+			createAndSaveMonster(Rating.COMMON, "거미", 4642, 43, 20, 200, 30),
+			createAndSaveMonster(Rating.COMMON, "멧돼지", 3000, 40, 40, 40, 40),
+			createAndSaveMonster(Rating.COMMON, "뱀", 3333, 43, 43, 43, 43),
+			createAndSaveMonster(Rating.COMMON, "비틀", 3232, 32, 32, 32, 32),
+			createAndSaveMonster(Rating.COMMON, "늑대", 4242, 42, 42, 42, 42),
+			createAndSaveMonster(Rating.COMMON, "원숭이", 3454, 33, 34, 53, 21),
+			createAndSaveMonster(Rating.COMMON, "회중시계", 3333, 33, 33, 33, 33)
+		);
+		commonMonsters.forEach(monster -> createMonsterEncounter(10, monster, BattleFieldType.PLAIN));
 
-		Monster goblin = new Monster(Rating.COMMON, "고블린", 5000, 200, 80, 400, 40);
-		monsterRepository.save(goblin);
+		// Rare Monsters
+		List<Monster> rareMonsters = List.of(
+			createAndSaveMonster(Rating.RARE, "풀의 정령", 4030, 23, 23, 77, 33),
+			createAndSaveMonster(Rating.RARE, "골렘", 5000, 40, 40, 40, 40),
+			createAndSaveMonster(Rating.RARE, "병사2호", 2222, 22, 22, 22, 22),
+			createAndSaveMonster(Rating.RARE, "병사3호", 3333, 33, 33, 33, 33),
+			createAndSaveMonster(Rating.RARE, "병사4호", 4444, 44, 44, 44, 44)
+		);
+		rareMonsters.forEach(monster -> createMonsterEncounter(3, monster, BattleFieldType.PLAIN));
 
-		MonsterEncounter slimeEncounter = new MonsterEncounter(10, slime, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(slimeEncounter);
+		// Special Monster
+		Monster goldenToad = createAndSaveMonster(Rating.SPECIAL, "황금 두꺼비", 777, 7, 7, 7, 77);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.PLAIN);
 
-		MonsterEncounter goblinEncounter = new MonsterEncounter(10, goblin, BattleFieldType.PLAIN);
-		monsterEncounterRepository.save(goblinEncounter);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
+
+		createMonsterEncounter(3, goldenToad, BattleFieldType.GOLDEN_FIELD);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.MAGIC_VALLEY);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CRYSTAL_CAVE);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DRAGON_NEST);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.TRIAL_FIELD);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.SAGE_FOREST);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.SPIRIT_TEMPLE);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.VOID_ARENA);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.LOOT_MEADOW);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DIM_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.TWILIGHT_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.ETHER_CRACK);
+
+		DropRate slimeBellDrop = new DropRate(commonMonsters.get(0), slimeBell, BigDecimal.valueOf(0.5));
+		dropRateRepository.save(slimeBellDrop);
+
+		DropRate slimeBellDrop2 = new DropRate(goldenToad, slimeBell, BigDecimal.valueOf(0.5));
+		dropRateRepository.save(slimeBellDrop2);
 
 	}
+
+	private Monster createAndSaveMonster(Rating rating, String name, int hp, int atk, int def, int spd, int exp) {
+		Monster monster = new Monster(rating, name, hp, atk, def, spd, exp);
+		monsterRepository.save(monster);
+		return monster;
+	}
+
+	private void createMonsterEncounter(int rate, Monster monster, BattleFieldType type) {
+		MonsterEncounter encounter = new MonsterEncounter(rate, monster, type);
+		monsterEncounterRepository.save(encounter);
+	}
+
 }
