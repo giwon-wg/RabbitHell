@@ -27,18 +27,15 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 
-		log.info("OAuth2 로그인 성공: {}", authentication.getName());
-
 		try {
 			String userId = authentication.getName();
 			String role = authentication.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
 
 			log.info("userId={}, role={}", userId, role);
 
-			String miniToken = jwtUtil.createMiniToken(Long.parseLong(userId), role);
+			String miniToken = jwtUtil.createMiniToken(userId, role);
 			String redirectUrl = "http://localhost:3000/oauth/success?miniToken=" + miniToken;
 
-			log.info("리다이렉트 URL: {}", redirectUrl);
 			response.sendRedirect(redirectUrl);
 		} catch (Exception e) {
 			log.error("OAuth2 Success 핸들러 중 오류 발생", e);

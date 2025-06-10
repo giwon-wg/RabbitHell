@@ -15,8 +15,8 @@ public interface CloverRepository extends JpaRepository<Clover, Long> {
 
 	boolean existsByUserId(Long id);
 
-	@Query("SELECT c FROM Clover c LEFT JOIN FETCH c.members WHERE c.id = :id")
-	Optional<Clover> findByUserId(@Param("id") Long userId);
+	@Query("SELECT c FROM Clover c LEFT JOIN FETCH c.members WHERE c.user.id = :userId")
+	Optional<Clover> findByUserId(@Param("userId") Long userId);
 
 	boolean existsByName(String name);
 

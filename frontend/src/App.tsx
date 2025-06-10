@@ -11,7 +11,7 @@ import LoginPage from './pages/LoginPage';
 import OAuthSuccessPage from './pages/OAuthSuccessPage';
 import CloverCreatePage from './pages/CloverCreatePage';
 import MyInfoPage from './pages/myinfo/MyInfoPage';
-import CharacterDetailPage from './pages/myinfo/CharacterDetailPage';
+import CharacterDetailPage from './pages/myinfo/characterDetail/CharacterDetailPage';
 import MainPage from './pages/main/MainPage';
 import BattleMainPage from "./pages/battlePage/BattlePage";
 import VillageMainPage from "./pages/villagePage/VillagePage";
@@ -24,6 +24,8 @@ import PostWritePage from "./pages/community/PostWritePage";
 import WordMap from "./pages/WorldMap";
 import Bank from "./pages/villagePage/bank/Bank";
 import HospitalPage from './pages/villagePage/hospital/Hospital';
+import ChatMessageToall from "./pages/ChatMessagePage/ChatMessageToall";
+import CharacterCreatePage from './pages/CharacterCreatePage';
 
 type DecodedToken = {
 	exp: number;
@@ -94,6 +96,8 @@ const RoutesWithLayout = () => {
 			<Route path="/" element={<LoginPage />} />
 			<Route path="/oauth/success" element={<OAuthSuccessPage />} />
 			<Route path="/create-clover" element={<CloverCreatePage />} />
+			<Route path="/chat" element={<ChatMessageToall/>}/>
+			<Route path="/character/create" element={<CharacterCreatePage />} />
 
 			{/* Layout 적용 대상 경로들 */}
 			<Route element={<LayoutWrapper hide={shouldHideLayout} />}>

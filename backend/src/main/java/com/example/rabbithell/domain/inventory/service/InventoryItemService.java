@@ -37,4 +37,6 @@ public interface InventoryItemService {
 
 	void discardItem(Long userId, Long inventoryItemId);
 
+	InventoryItemResponse appraiseItem(Long userId, Long inventoryItemId);
+
 }
