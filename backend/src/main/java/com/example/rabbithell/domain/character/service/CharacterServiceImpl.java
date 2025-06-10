@@ -21,6 +21,7 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.exception.CharacterException;
 import com.example.rabbithell.domain.character.exception.code.CharacterExceptionCode;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
+import com.example.rabbithell.domain.characterSkill.service.CharacterSkillService;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.job.entity.Job;
@@ -41,6 +42,7 @@ public class CharacterServiceImpl implements CharacterService {
 	private final CloverRepository cloverRepository;
 
 	private static final Random random = new Random();
+	private final CharacterSkillService characterSkillService;
 
 	@Override
 	public Long createCharacter(AuthUser authUser, CreateCharacterRequest request) {
@@ -223,6 +225,8 @@ public class CharacterServiceImpl implements CharacterService {
 		gameCharacter.updateLevel(1);
 
 		characterRepository.save(gameCharacter);
+
+		characterSkillService.unequipSkillsNotMatchingCurrentJob(gameCharacter);
 
 		return CharacterPersonalInfoResponse.from(gameCharacter);
 
