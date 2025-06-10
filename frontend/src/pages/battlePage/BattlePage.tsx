@@ -93,6 +93,7 @@ const BattlePage = () => {
 			.then(res => res.json())
 			.then(data => {
 				setBattleResult(data.result);
+				loadBattleFields();
 			})
 			.catch(err => {
 				alert(err.message);

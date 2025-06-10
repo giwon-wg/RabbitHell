@@ -51,15 +51,14 @@ public class Battle {
 		List<InventoryItem> armors = new ArrayList<>();
 		List<InventoryItem> accessories = new ArrayList<>();
 
-		InventoryItem weapon = null, armor = null, accessory = null;
-
 		List<List<Skill>> skills = new ArrayList<>();
 
 		for (GameCharacter rabbit : clover) {
 
 			jobs.add(rabbit.getJob());
 
-			// skills.add(rabbit.getSkill());
+			// 캐릭터마다 새로운 인벤토리 아이템 선언
+			InventoryItem weapon = null, armor = null, accessory = null;
 
 			List<InventoryItem> items = inventoryItemService.getEquippedInventoryItemsByCharacter(rabbit.getId());
 			for (InventoryItem inventoryItem : items) {
@@ -67,19 +66,25 @@ public class Battle {
 				if (item.getItemType() == ItemType.BOW || item.getItemType() == ItemType.DAGGER
 					|| item.getItemType() == ItemType.SWORD || item.getItemType() == ItemType.WAND) {
 					weapon = inventoryItem;
-					weapons.add(weapon);
 				} else if (item.getItemType() == ItemType.ARMOR) {
 					armor = inventoryItem;
-					armors.add(armor);
-				} else if (item.getItemType() == ItemType.ACCESSORY) {//ACCESSORY
+				} else if (item.getItemType() == ItemType.ACCESSORY) {
 					accessory = inventoryItem;
-					accessories.add(accessory);
 				}
 			}
 
+			// 장착 장비가 null이 아닌 경우에만 추가
+			if (weapon != null)
+				weapons.add(weapon);
+			if (armor != null)
+				armors.add(armor);
+			if (accessory != null)
+				accessories.add(accessory);
+
+			// 나머지 계산
 			playerHp.add(rabbit.getHp());
 			playerMp.add(rabbit.getMp());
-			if (weapon != null && weapon.getItem().getItemType() == ItemType.WAND) {//WAND
+			if (weapon != null && weapon.getItem().getItemType() == ItemType.WAND) {
 				playerAttack.add(rabbit.getStrength());
 				playerMagic.add((int)(rabbit.getIntelligence() + weapon.getPower()));
 			} else {
@@ -88,15 +93,16 @@ public class Battle {
 			}
 
 			playerDefense.add(
-				(int)(100 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() :
-					0)));
-			playerSpeed.add((int)(rabbit.getAgility() -
-				(weapon != null ? weapon.getWeight() : 0) -
-				(armor != null ? armor.getWeight() : 0) -
-				(accessory != null ? accessory.getWeight() : 0)
+				(int)(100 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() : 0)));
+			playerSpeed.add((int)(rabbit.getAgility()
+				- (weapon != null ? weapon.getWeight() : 0)
+				- (armor != null ? armor.getWeight() : 0)
+				- (accessory != null ? accessory.getWeight() : 0)
 			));
 			criticalChances.add(20 + rabbit.getFocus() / 10);
-
+			weapons.add(weapon);
+			armors.add(armor);
+			accessories.add(accessory);
 		}
 
 		List<ActionEntity> turnQueue = buildTurnQueue(clover, monster, playerHp, playerMp, playerAttack, playerMagic,

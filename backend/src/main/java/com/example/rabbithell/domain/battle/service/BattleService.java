@@ -68,6 +68,7 @@ public class BattleService {
 			.toList();
 	}
 
+	@Transactional
 	public BattleResultResponse doBattle(AuthUser authUser, BattleFieldType battleFieldType) {
 
 		Monster monster = monsterService.getRandomMonster(battleFieldType);
