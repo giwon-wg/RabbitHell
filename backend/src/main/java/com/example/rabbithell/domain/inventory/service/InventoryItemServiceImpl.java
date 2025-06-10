@@ -5,6 +5,7 @@ import static com.example.rabbithell.domain.inventory.exception.code.InventoryIt
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -97,6 +98,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 		return inventoryItemRepository.findEquipmentStatusByCharacter(characterId);
 	}
 
+	@Cacheable(key = "#characterId", value = "equippedItems")
 	@Transactional(readOnly = true)
 	@Override
 	public List<Item> getEquippedItemsByCharacter(Long characterId) {
@@ -107,6 +109,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 			.toList();
 	}
 
+	@Cacheable(key = "#characterId", value = "equippedInventoryItems")
 	@Transactional(readOnly = true)
 	@Override
 	public List<InventoryItem> getEquippedInventoryItemsByCharacter(Long characterId) {
@@ -203,11 +206,11 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 		double random = ThreadLocalRandom.current().nextDouble(); // 0.0 ~ 1.0 사이
 		double skewedToMin = Math.pow(random, 2); // 낮은 값이 나올 확률이 높게 조정
-		Long power = minPower + (long) ((maxPower - minPower + 1) * skewedToMin);
+		Long power = minPower + (long)((maxPower - minPower + 1) * skewedToMin);
 
 		random = ThreadLocalRandom.current().nextDouble();
 		double skewedToMax = Math.pow(random, 0.5); // 높은 값이 나올 확률이 높게 조정
-		Long weight = minWeight + (long) ((maxWeight - minWeight + 1) * skewedToMax);
+		Long weight = minWeight + (long)((maxWeight - minWeight + 1) * skewedToMax);
 
 		// 아이템 스탯 확정
 		inventoryItem.appraise(power, weight);
