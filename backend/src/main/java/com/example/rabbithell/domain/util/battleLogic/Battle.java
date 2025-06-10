@@ -74,12 +74,9 @@ public class Battle {
 			}
 
 			// 장착 장비가 null이 아닌 경우에만 추가
-			if (weapon != null)
-				weapons.add(weapon);
-			if (armor != null)
-				armors.add(armor);
-			if (accessory != null)
-				accessories.add(accessory);
+			weapons.add(weapon);
+			armors.add(armor);
+			accessories.add(accessory);
 
 			// 나머지 계산
 			playerHp.add(rabbit.getHp());
@@ -100,9 +97,6 @@ public class Battle {
 				- (accessory != null ? accessory.getWeight() : 0)
 			));
 			criticalChances.add(20 + rabbit.getFocus() / 10);
-			weapons.add(weapon);
-			armors.add(armor);
-			accessories.add(accessory);
 		}
 
 		List<ActionEntity> turnQueue = buildTurnQueue(clover, monster, playerHp, playerMp, playerAttack, playerMagic,
