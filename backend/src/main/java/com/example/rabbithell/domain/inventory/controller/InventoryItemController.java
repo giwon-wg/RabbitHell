@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.inventory.dto.request.AddInventoryItemRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
@@ -35,6 +37,19 @@ import lombok.RequiredArgsConstructor;
 public class InventoryItemController {
 
 	private final InventoryItemService inventoryItemService;
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping
+	public ResponseEntity<CommonResponse<InventoryItemResponse>> addInventoryItem(
+		@RequestBody AddInventoryItemRequest request
+	) {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"인벤토리 아이템 추가 성공",
+			inventoryItemService.addInventoryItem(request)
+		));
+	}
 
 	@GetMapping("/{inventoryItemId}")
 	public ResponseEntity<CommonResponse<InventoryItemResponse>> getInventoryItem(

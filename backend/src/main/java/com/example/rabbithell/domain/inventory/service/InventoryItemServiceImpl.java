@@ -15,6 +15,7 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.inventory.dto.request.AddInventoryItemRequest;
 import com.example.rabbithell.domain.inventory.dto.request.UseRequest;
 import com.example.rabbithell.domain.inventory.dto.response.EquipResponse;
 import com.example.rabbithell.domain.inventory.dto.response.EquipableItemResponse;
@@ -29,6 +30,7 @@ import com.example.rabbithell.domain.inventory.repository.InventoryItemRepositor
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.ItemType;
+import com.example.rabbithell.domain.item.repository.ItemRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,10 +38,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InventoryItemServiceImpl implements InventoryItemService {
 
+	private final ItemRepository itemRepository;
 	private final InventoryItemRepository inventoryItemRepository;
 	private final CharacterRepository characterRepository;
 	private final InventoryRepository inventoryRepository;
 	private final CloverRepository cloverRepository;
+
+	@Override
+	public InventoryItemResponse addInventoryItem(AddInventoryItemRequest request) {
+		Clover clover = cloverRepository.findByIdOrElseThrow(request.cloverId());
+		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
+		Item item = itemRepository.findByIdOrElseThrow(request.itemId());
+		InventoryItem inventoryItem = new InventoryItem(inventory, item);
+
+		InventoryItem savedInventoryItem = inventoryItemRepository.save(inventoryItem);
+		return InventoryItemResponse.fromEntity(savedInventoryItem);
+	}
 
 	@Transactional(readOnly = true)
 	@Override

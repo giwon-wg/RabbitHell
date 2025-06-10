@@ -34,6 +34,10 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "effect_id")
+	private Effect effect;
+
 	@Column(nullable = false, length = 20)
 	private String name;
 
