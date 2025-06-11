@@ -26,6 +26,7 @@ import Bank from "./pages/villagePage/bank/Bank";
 import HospitalPage from './pages/villagePage/hospital/Hospital';
 import ChatMessageToall from "./pages/ChatMessagePage/ChatMessageToall";
 import CharacterCreatePage from './pages/CharacterCreatePage';
+import InventoryPage from "./pages/myinfo/inventory/InventoryPage";
 
 type DecodedToken = {
 	exp: number;
@@ -102,6 +103,7 @@ const RoutesWithLayout = () => {
 			{/* Layout 적용 대상 경로들 */}
 			<Route element={<LayoutWrapper hide={shouldHideLayout} />}>
 				<Route path="/me" element={<MyInfoPage />} />
+				<Route path="/me/inventory" element={<InventoryPage />} />
 				<Route path="/me/:characterName" element={<CharacterDetailPage />} />
 				<Route path="/main" element={<MainPage />} />
 				<Route path="/battle" element={<BattleMainPage />} />
