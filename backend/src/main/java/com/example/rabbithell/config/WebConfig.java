@@ -17,9 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOriginPatterns("http://localhost:3000") // ✅ 명시적으로 작성
+			.allowedOriginPatterns("http://localhost:3000") // 명시적으로 작성
 			.allowCredentials(true)
-			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
 			.allowedHeaders("*");
 	}
 
@@ -31,9 +31,9 @@ public class WebConfig implements WebMvcConfigurer {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOriginPatterns(List.of("http://localhost:3000")); // ✅ origin 명시
+		configuration.setAllowedOriginPatterns(List.of("http://localhost:3000")); // origin 명시
 		configuration.setAllowCredentials(true);
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(List.of("*"));
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

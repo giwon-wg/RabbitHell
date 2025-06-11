@@ -12,33 +12,38 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Kingdom {
 
+	// 왕국 아이디
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	// 왕국 이름
     @Column(nullable = false)
     private String kingdomName;
 
+	// 왕국 설명
     @Column(nullable = false)
     private String kingdomDetail;
 
-    @Builder.Default
-    @OneToMany
+
+	@OneToMany
     @JoinColumn(name = "kingdom_id")
     private List<Village> villages = new ArrayList<>();
 
+
+	@Builder
+	public Kingdom(String kingdomName, String kingdomDetail, List<Village> villages) {
+	    this.kingdomName = kingdomName;
+	    this.kingdomDetail = kingdomDetail;
+	    this.villages = villages != null ? villages : new ArrayList<>();
+	}
 }

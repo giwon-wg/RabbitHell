@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.characterSkill.dto.response.EquippedSkillResponse;
 import com.example.rabbithell.domain.characterSkill.dto.response.LearnedSkillResponse;
+import com.example.rabbithell.domain.characterSkill.enums.SkillEquipType;
 import com.example.rabbithell.domain.characterSkill.service.CharacterSkillService;
 
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,9 @@ public class CharacterSkillController {
 	@PostMapping("/{skillId}/equip")
 	public ResponseEntity<CommonResponse<Void>> equipSkill(
 		@PathVariable Long characterId,
-		@PathVariable Long skillId) {
-		characterSkillService.equipSkill(characterId, skillId);
+		@PathVariable Long skillId,
+		@RequestParam SkillEquipType slotType) {
+		characterSkillService.equipSkill(characterId, skillId, slotType);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,

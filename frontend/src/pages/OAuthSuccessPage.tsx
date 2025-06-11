@@ -29,7 +29,7 @@ const OAuthSuccessPage = () => {
 				if (data.result?.hasClover) {
 					console.log("실행됨");
 
-					const fullTokenRes = await miniFetch("http://localhost:8080/auth/token/full", {
+					const fullTokenRes = await miniFetch("http://localhost:8080/auth/full-token", {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",

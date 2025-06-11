@@ -204,9 +204,10 @@ public class GameCharacter extends BaseEntity {
 			this.incompetentPoint += value;
 		}
 	}
+
 	public void updateStrength(int value) {
 		this.strength = value;
-		this.maxHp += value * 10;
+		this.maxHp = value * 10;
 	}
 
 	public void updateAgility(int value) {
@@ -215,7 +216,7 @@ public class GameCharacter extends BaseEntity {
 
 	public void updateIntelligence(int value) {
 		this.intelligence = value;
-		this.maxMp += value * 10;
+		this.maxMp = value * 10;
 	}
 
 	public void updateFocus(int value) {
@@ -232,11 +233,6 @@ public class GameCharacter extends BaseEntity {
 		if (tier > currentTier) {
 			jobHistory.put(category, tier);
 		}
-	}
-
-	// 직업군 별로 전직했는지 확인
-	public boolean hasExperienced(JobCategory category, int atLeastTier) {
-		return jobHistory.getOrDefault(category, 0) >= atLeastTier;
 	}
 
 	// 행운
