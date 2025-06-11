@@ -58,4 +58,8 @@ public class PawCardEffect {
 	public void markCardRanking(CardRanking cardRanking) {
 		this.cardRanking = cardRanking;
 	}
+
+	public void assignClover(Clover clover) {
+		this.clover = clover;
+	}
 }
