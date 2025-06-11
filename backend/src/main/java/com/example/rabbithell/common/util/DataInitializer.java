@@ -378,6 +378,9 @@ public class DataInitializer implements CommandLineRunner {
 		Monster dragon = createAndSaveMonster(Rating.BOSS, "드래곤", 9999, 999, 999, 999, 999);
 		createMonsterEncounter(10, dragon, BattleFieldType.RIFT);
 
+		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 211);
+		createMonsterEncounter(3, queen, BattleFieldType.MOUNTAIN);
+
 		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
 
 		createMonsterEncounter(3, goldenToad, BattleFieldType.GOLDEN_FIELD);

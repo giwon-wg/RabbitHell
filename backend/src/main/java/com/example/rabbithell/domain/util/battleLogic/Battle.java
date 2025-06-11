@@ -45,6 +45,7 @@ public class Battle {
 		List<Integer> playerSpeed = new ArrayList<>();
 		List<Integer> criticalChances = new ArrayList<>();
 		List<Job> jobs = new ArrayList<>();
+		int monsterMaxHp = monster.getHp();
 
 		// 아이템 추가부분 포카드
 		List<InventoryItem> weapons = new ArrayList<>();
@@ -90,7 +91,7 @@ public class Battle {
 			}
 
 			playerDefense.add(
-				(int)(100 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() : 0)));
+				(int)(30 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() : 0)));
 			playerSpeed.add((int)(rabbit.getAgility()
 				- (weapon != null ? weapon.getWeight() : 0)
 				- (armor != null ? armor.getWeight() : 0)
@@ -138,7 +139,7 @@ public class Battle {
 					for (int i = 0; i < attackCount; i++) {
 						int damage = calculateDamage(actor.attack, monster.getDefense(), actor.criticalChance, random,
 							log, actor.name);
-						monsterHp -= damage;
+						monsterHp = Math.max(monsterHp - damage, 0);
 
 						// 스킬 구현 예정
 					}
@@ -156,7 +157,7 @@ public class Battle {
 
 						log.append("\n")
 							.append(monster.getMonsterName())
-							.append("이 ")
+							.append("이(가) ")
 							.append(clover.get(targetIndex).getName())
 							.append("을(를) ")
 							.append(attackCount)
@@ -173,14 +174,18 @@ public class Battle {
 						}
 					}
 				}
-
-				for (int i = 0; i < clover.size(); i++) {
-					log.append("\n").append(clover.get(i).getName()).append(" ")
-						.append("\n 현재 HP: ").append(playerHp.get(i)).append("/").append(clover.get(i).getMaxHp())
-						.append(" 현재 MP: ").append(clover.get(i).getMp()).append("/").append(clover.get(i).getMaxMp());
-				}
-				log.append("\n").append(monster.getMonsterName()).append("HP: ").append(monsterHp);
 			}
+			for (int i = 0; i < clover.size(); i++) {
+				log.append("\n").append(clover.get(i).getName()).append(" ")
+					.append(" HP: ").append(playerHp.get(i)).append("/").append(clover.get(i).getMaxHp())
+					.append(" MP: ").append(clover.get(i).getMp()).append("/").append(clover.get(i).getMaxMp());
+			}
+			log.append("\n")
+				.append(monster.getMonsterName())
+				.append(" HP: ")
+				.append(monsterHp)
+				.append("/")
+				.append(monsterMaxHp);
 		}
 
 		BattleResult battleResult = (!playerHpCheck(playerHp) && monsterHp <= 0) ? BattleResult.WIN
