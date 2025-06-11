@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.clover.entity.Clover;
-import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.clover.service.CloverServiceImpl;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;

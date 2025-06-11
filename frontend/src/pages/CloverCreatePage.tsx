@@ -42,7 +42,7 @@ const CloverCreatePage = () => {
 			return;
 		}
 
-		const response = await fetch("http://localhost:8080/auth/token/full", {
+		const response = await fetch("http://localhost:8080/auth/full-token", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
