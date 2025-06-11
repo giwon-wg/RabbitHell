@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.battle.type;
 
+import com.example.rabbithell.domain.monster.enums.Rating;
+
 import lombok.Getter;
 
 @Getter
@@ -36,6 +38,7 @@ public enum BattleFieldType {
 	NEXUS_CRACK("공허의 균열", true, 1000, 0, 0.4),
 	DREAM_CRACK("꿈의 균열", true, 5000, 0, 0.2),
 	CENTER_CRACK("균열의 중심", true, 50000, 0, 0.01);
+
 	private final String name;
 	private final boolean isRare;
 	private final int skillPoints;
@@ -48,6 +51,11 @@ public enum BattleFieldType {
 		this.skillPoints = skillPoints;
 		this.level = level;
 		this.appearanceRate = appearanceRate;
+	}
+
+	public int calculateSkillPointBy(Rating rating) {
+		return this.skillPoints * rating.getSkillPointMultiplier();
+
 	}
 
 }
