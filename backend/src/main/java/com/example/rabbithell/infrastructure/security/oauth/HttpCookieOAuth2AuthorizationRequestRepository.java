@@ -19,14 +19,16 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
 
 	@Override
 	public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-		try {
-			return CookieUtils.getCookie(request, COOKIE_NAME)
-				.map(cookie -> CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class))
-				.orElse(null);
-		} catch (Exception e) {
-			log.warn("쿠키 역직렬화 실패: {}", e.getMessage());
-			return null;
-		}
+		return CookieUtils.getCookie(request, COOKIE_NAME)
+			.map(cookie -> {
+				try {
+					return CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class);
+				} catch (IllegalArgumentException | IllegalStateException e) {
+					log.warn("쿠키 역직렬화 실패: {}", e.getMessage());
+					return null;
+				}
+			})
+			.orElse(null);
 	}
 
 	@Override
