@@ -40,4 +40,5 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 		+ "FROM InventoryItem i GROUP BY i.item.id")
 	List<ItemCountResponse> countInventoryItemsByItem_Id();
 
+	Page<InventoryItem> findByInventory(Inventory inventory, Pageable pageable);
 }
