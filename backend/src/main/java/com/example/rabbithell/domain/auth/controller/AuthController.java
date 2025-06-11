@@ -88,7 +88,9 @@ public class AuthController {
 	//회원 탈퇴
 
 
+
 	//강제 탈퇴
+
 
 
 }
