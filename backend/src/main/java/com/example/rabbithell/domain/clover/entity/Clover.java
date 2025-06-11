@@ -104,7 +104,7 @@ public class Clover extends BaseEntity {
 	// PawCard 추가
 	public void addPawCardEffect(PawCardEffect pawCardEffect) {
 		this.pawCardEffects.add(pawCardEffect);
-		// pawCardEffect.assignClover(this);
+		pawCardEffect.assignClover(this);
 	}
 
 	// 레어맵 컬럼에 추가
