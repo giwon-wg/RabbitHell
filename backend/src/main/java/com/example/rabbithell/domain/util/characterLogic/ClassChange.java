@@ -1,9 +1,27 @@
 package com.example.rabbithell.domain.util.characterLogic;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
+import com.example.rabbithell.domain.job.entity.JobCategory;
 
 public class ClassChange {
+
 	private static final Random rand = new Random();
+
+	// 스탯 목록
+	private static final List<String> STATS = List.of("strength", "agility", "intelligence", "focus", "luck");
+
+	// 직업별 주요 스탯 정의
+	private static final Map<JobCategory, List<String>> JOB_MAJOR_STATS = Map.of(
+		JobCategory.WARRIOR, List.of("strength"),
+		JobCategory.WIZARD, List.of("intelligence"),
+		JobCategory.ARCHER, List.of("agility"),
+		JobCategory.THIEF, List.of("focus")
+	);
 
 	// 전직 구간: min ~ max 스탯
 	private static final int[][] STAT_RANGES = {
@@ -25,6 +43,12 @@ public class ClassChange {
 
 	// TODO 수정 필요
 	public static int generateStat(int tier, int currentJobPoint) {
+
+		// tier 범위 체크
+		if (tier < 0 || tier >= STAT_RANGES.length) {
+			throw new IllegalArgumentException("Invalid tier: " + tier);
+		}
+
 		int[] range = STAT_RANGES[tier];
 		int min = range[0];
 		int max = range[1] - 20;
@@ -53,4 +77,21 @@ public class ClassChange {
 		return stat;
 
 	}
+
+	public static int[] generateStatsByJobs(int tier, int currentJobPoint, List<JobCategory> jobs) {
+		Set<JobCategory> majorStats = new HashSet<>(jobs);
+
+		int strength = majorStats.contains(JobCategory.WARRIOR) ? generateStat(tier, currentJobPoint) : generateStat(0, currentJobPoint);
+		int agility = majorStats.contains(JobCategory.ARCHER) ? generateStat(tier, currentJobPoint) : generateStat(0, currentJobPoint);
+		int intelligence = majorStats.contains(JobCategory.WIZARD) ? generateStat(tier, currentJobPoint) : generateStat(0, currentJobPoint);
+		int focus = majorStats.contains(JobCategory.THIEF) ? generateStat(tier, currentJobPoint) : generateStat(0, currentJobPoint);
+		int luck = generateStatForLuck();
+
+		return new int[] {strength, agility, intelligence, focus, luck};
+	}
+
+	public static int generateStatForLuck() {
+		return rand.nextInt(100) + 1; // 1~100 사이
+	}
 }
+

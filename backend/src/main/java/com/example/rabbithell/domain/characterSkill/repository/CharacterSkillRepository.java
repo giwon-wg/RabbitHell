@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.characterSkill.entity.CharacterSkill;
+import com.example.rabbithell.domain.characterSkill.enums.SkillEquipType;
 import com.example.rabbithell.domain.characterSkill.exception.CharacterSkillException;
 import com.example.rabbithell.domain.skill.entity.Skill;
 
@@ -27,7 +28,10 @@ public interface CharacterSkillRepository extends JpaRepository<CharacterSkill,L
 
 	Page<CharacterSkill> findByCharacter(GameCharacter character, Pageable pageable);
 
+	List<CharacterSkill> findByCharacter(GameCharacter character);
+
 	List<Long> findSkillIdsByCharacter(GameCharacter character);
 
-	List<CharacterSkill> findByCharacterAndEquippedTrue(GameCharacter character);
+	Optional<CharacterSkill> findByCharacterAndEquipType(GameCharacter character, SkillEquipType slotType);
+
 }

@@ -22,9 +22,12 @@ import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.enums.Slot;
 import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
 import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
+import com.example.rabbithell.domain.item.entity.Effect;
 import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.item.enums.EffectType;
 import com.example.rabbithell.domain.item.enums.ItemType;
 import com.example.rabbithell.domain.item.enums.Rarity;
+import com.example.rabbithell.domain.item.repository.EffectRepository;
 import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
@@ -65,10 +68,10 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private ItemRepository itemRepository;
-
 	@Autowired
 	private InventoryRepository inventoryRepository;
-
+	@Autowired
+	private EffectRepository effectRepository;
 	@Autowired
 	private InventoryItemRepository inventoryItemRepository;
 
@@ -246,32 +249,34 @@ public class DataInitializer implements CommandLineRunner {
 
 		pawCardEffectRepository.save(pawCardEffect);
 
+		Effect hpEffect = new Effect(EffectType.HP, 10L, false);
+		Effect strengthEffect = new Effect(EffectType.STRENGTH, 10L, false);
+		Effect agilityEffect = new Effect(EffectType.AGILITY, 10L, false);
+		Effect intelligenceEffect = new Effect(EffectType.INTELLIGENCE, 10L, false);
+		Effect focusEffect = new Effect(EffectType.FOCUS, 10L, false);
+		Effect luckEffect = new Effect(EffectType.LUCK, 10L, false);
 
-		Item weapon = new Item(null, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
-			false);
-		Item armor = new Item(null, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
-			false);
-		Item accessory = new Item(null, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L,
-			100, false);
+		effectRepository.save(hpEffect);
+		effectRepository.save(strengthEffect);
+		effectRepository.save(agilityEffect);
+		effectRepository.save(intelligenceEffect);
+		effectRepository.save(focusEffect);
+		effectRepository.save(luckEffect);
 
-		Item hpPotion = new Item(null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000,
-			false);
-		Item mpPotion = new Item(null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000,
-			false);
+		Item weapon = new Item(null, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100, false);
+		Item armor = new Item(null, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100, false);
+		Item accessory = new Item(null, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100, false);
 
-		Item feverRemedy = new Item(null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item somiGun = new Item(null, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L, 50L, 10L, 5L,
-			10000, false);
-		Item fourCard = new Item(null, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 0L, 90L, 89L, 19L, 4L,
-			10000, false);
-		Item airplaneTicket = new Item(null, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 0L, 100L,
-			30L, 10L, 4L, 10000, false);
-		Item wakeUp = new Item(null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
-			false);
-		Item slimeBell = new Item(null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000,
-			false);
-		Item tuxedo = new Item(null, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 0L, 10L, 10L, 3L, 3L, 10000, false);
+		Item hpPotion = new Item(null, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000, false);
+		Item mpPotion = new Item(null, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000, false);
+
+		Item feverRemedy = new Item(null, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000, false);
+		Item somiGun = new Item(null, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L, 50L, 10L, 5L, 10000, false);
+		Item fourCard = new Item(null, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 0L, 90L, 89L, 19L, 4L, 10000, false);
+		Item airplaneTicket = new Item(null, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 0L, 100L, 30L, 10L, 4L, 10000, false);
+		Item wakeUp = new Item(null, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000, false);
+		Item slimeBell = new Item(null, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000, false);
+		Item tuxedo = new Item(null, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 0L, 10L, 10L, 3L, 3L, 10000, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
