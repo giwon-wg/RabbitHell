@@ -1,6 +1,5 @@
 package com.example.rabbithell.domain.clover.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import com.example.rabbithell.domain.auth.domain.MiniAuthUser;
 import com.example.rabbithell.domain.clover.dto.response.CloverNameResponse;
 import com.example.rabbithell.domain.clover.dto.response.CloverPublicResponse;
 import com.example.rabbithell.domain.clover.dto.response.CloverResponse;
-import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.clover.service.CloverService;
 
 import lombok.RequiredArgsConstructor;
