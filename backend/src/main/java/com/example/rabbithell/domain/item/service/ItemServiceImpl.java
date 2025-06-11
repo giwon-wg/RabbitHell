@@ -12,7 +12,9 @@ import com.example.rabbithell.domain.inventory.repository.InventoryItemRepositor
 import com.example.rabbithell.domain.item.dto.request.ItemRequest;
 import com.example.rabbithell.domain.item.dto.response.ItemCountResponse;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
+import com.example.rabbithell.domain.item.entity.Effect;
 import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.item.repository.EffectRepository;
 import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
@@ -26,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
 	private final ItemRepository itemRepository;
 	private final ShopRepository shopRepository;
 	private final InventoryItemRepository inventoryItemRepository;
+	private final EffectRepository effectRepository;
 
 	@Override
 	public ItemResponse createItem(ItemRequest itemRequest) {
@@ -73,9 +76,11 @@ public class ItemServiceImpl implements ItemService {
 	public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
 		Item item = itemRepository.findByIdOrElseThrow(itemId);
 		Shop shop = shopRepository.findByIdOrElseThrow(itemRequest.shopId());
+		Effect effect = effectRepository.findByIdOrElseThrow(itemRequest.effectId());
 
 		item.update(
 			shop,
+			effect,
 			itemRequest.name(),
 			itemRequest.description(),
 			itemRequest.itemType(),
