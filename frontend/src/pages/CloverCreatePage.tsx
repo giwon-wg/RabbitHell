@@ -2,10 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CloverCreatePage = () => {
-	const [nickname, setNickname] = useState('');
 	const [cloverName, setCloverName] = useState('');
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+	const [kingdoms, setKingdoms] = useState([]);
+	const [selectedKingdomId, setSelectedKingdomId] = useState<number | null>(null);
+
+	useEffect(() => {
+		fetch("http://localhost:8080/kingdom/all")
+			.then(res => res.json())
+			.then(data => setKingdoms(data.result))
+			.catch(() => alert("왕국 목록을 불러오지 못했습니다."));
+	}, []);
 
 	useEffect(() => {
 		const miniToken = localStorage.getItem("miniToken");
@@ -33,6 +41,8 @@ const CloverCreatePage = () => {
 			});
 	}, [navigate]);
 
+
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -49,7 +59,8 @@ const CloverCreatePage = () => {
 				"Authorization": `Bearer ${miniToken}`
 			},
 			body: JSON.stringify({
-				cloverName
+				cloverName,
+				kingdomId: selectedKingdomId
 			})
 		});
 
@@ -116,6 +127,25 @@ const CloverCreatePage = () => {
 					onFocus={(e) => (e.currentTarget.style.borderColor = '#4CAF50')}
 					onBlur={(e) => (e.currentTarget.style.borderColor = '#ccc')}
 				/>
+
+				<select
+					value={selectedKingdomId || ''}
+					onChange={(e) => setSelectedKingdomId(Number(e.target.value))}
+					style={{
+						width: '100%',
+						padding: '12px 16px',
+						fontSize: '16px',
+						border: '1px solid #ccc',
+						borderRadius: '8px',
+						outline: 'none',
+						marginBottom: '24px',
+					}}
+				>
+					<option value="" disabled>왕국을 선택하세요</option>
+					{kingdoms.map((k: any) => (
+						<option key={k.id} value={k.id}>{k.kingdomName}</option>
+					))}
+				</select>
 
 				<button
 					type="submit"

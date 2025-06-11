@@ -55,6 +55,21 @@ const MyInfoPage = () => {
 
 			<Section>
 				<h2>내 캐릭터 목록</h2>
+
+				<button
+					onClick={() => navigate('/me/inventory')}
+					style={{
+						marginBottom: 16,
+						padding: '8px 16px',
+						border: '1px solid #aaa',
+						backgroundColor: '#f0f0f0',
+						borderRadius: 6,
+						cursor: 'pointer',
+					}}
+				>
+					내 인벤토리 보기
+				</button>
+
 				<CharacterList>
 					{characters.map(char => (
 						<CharacterCard

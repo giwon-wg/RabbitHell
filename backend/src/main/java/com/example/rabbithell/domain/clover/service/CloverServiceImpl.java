@@ -15,6 +15,8 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.deck.entity.EffectDetail;
 import com.example.rabbithell.domain.deck.entity.PawCardEffect;
 import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
+import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.kingdom.repository.KingdomRepository;
 import com.example.rabbithell.domain.specie.entity.Specie;
@@ -32,6 +34,7 @@ public class CloverServiceImpl implements CloverService {
 	private final UserRepository userRepository;
 	private final KingdomRepository kingdomRepository;
 	private final SpecieRepository specieRepository;
+	private final InventoryRepository inventoryRepository;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -74,13 +77,12 @@ public class CloverServiceImpl implements CloverService {
 
 	public Clover createClover(User user, String cloverName, Long userId, Long kingdomId) {
 
-		Kingdom kingdom = kingdomRepository.findByIdOrElseThrow(kingdomId);
-
-		Specie specie = specieRepository.findByIdOrElseThrow(kingdomId);
 
 		Clover clover = cloverRepository.findByUserId(userId).orElse(null);
 
 		if (clover == null) {
+			Kingdom kingdom = kingdomRepository.findByIdOrElseThrow(kingdomId);
+			Specie specie = specieRepository.findByIdOrElseThrow(kingdomId);
 
 			// Clover 생성
 			clover = Clover.builder()
@@ -89,6 +91,7 @@ public class CloverServiceImpl implements CloverService {
 				.cash(0L)
 				.kingdom(kingdom)
 				.specie(specie)
+				.currentVillage(kingdomId)
 				.saving(0L)
 				.build();
 
@@ -101,10 +104,14 @@ public class CloverServiceImpl implements CloverService {
 			clover.addPawCardEffect(pawCardEffect);
 
 			// 인벤토리 생성
+			Inventory inventory = Inventory.builder()
+				.clover(clover)
+				.capacity(100)
+				.build();
 
-
-			// 저장
 			cloverRepository.save(clover);
+
+			inventoryRepository.save(inventory);
 		}
 		return clover;
 	}
