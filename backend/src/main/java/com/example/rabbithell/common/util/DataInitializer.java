@@ -127,6 +127,7 @@ public class DataInitializer implements CommandLineRunner {
 		villageConnectionRepository.save(villageConnection7);
 		villageConnectionRepository.save(villageConnection8);
 
+
 		Specie LopEared = Specie.builder()
 			.speciesName("롭이어")
 			.speciesDetail("위대한 롭이어! 아래로 늘어진 귀, 평야에서 살아남기 위해 민쳡해 졌다.")
