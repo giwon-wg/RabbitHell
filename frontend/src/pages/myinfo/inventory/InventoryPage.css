@@ -1,6 +1,7 @@
 .inventory-container {
-	display: flex;
-	gap: 16px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 64px); /* 아이템 너비 기준 자동 줄바꿈 */
+	gap: 20px;
 	padding: 20px;
 }
 
@@ -27,3 +28,4 @@
 	height: 100%;
 	object-fit: contain;
 }
+
