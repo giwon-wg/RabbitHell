@@ -34,6 +34,16 @@ public class DeckQueryRepositoryImpl implements DeckQueryRepository {
 	private final QClover clover = QClover.clover;
 
 	@Override
+	public List<Deck> findAllByCloverIdWithLock(Long cloverId) {
+		return queryFactory
+			.selectFrom(deck)
+			.join(deck.pawCard, pawCard).fetchJoin()
+			.where(deck.clover.id.eq(cloverId))
+			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
+			.fetch();
+	}
+
+	@Override
 	public List<Deck> findAllByCondition(Long cloverId, DeckCond cond, Pageable pageable) {
 		return queryFactory
 			.selectFrom(deck)
@@ -97,7 +107,7 @@ public class DeckQueryRepositoryImpl implements DeckQueryRepository {
 	}
 
 	@Override
-	public List<Deck> findEquippedByCloverIdWithLock(Long cloverId) {
+	public List<Deck> findEquippedByCloverId(Long cloverId) {
 		return queryFactory
 			.selectFrom(deck)
 			.join(deck.pawCard, pawCard).fetchJoin()
@@ -106,7 +116,6 @@ public class DeckQueryRepositoryImpl implements DeckQueryRepository {
 				deck.pawCardSlot.isNotNull()
 			)
 			.orderBy(deck.pawCardSlot.asc())
-			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
 			.fetch();
 	}
 
