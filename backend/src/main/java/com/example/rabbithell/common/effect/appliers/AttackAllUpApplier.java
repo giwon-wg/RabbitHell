@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.rabbithell.common.effect.applier.BattleStatApplier;
 import com.example.rabbithell.common.effect.enums.StatType;
-import com.example.rabbithell.domain.util.battleLogic.BattleStatDto;
+import com.example.rabbithell.domain.util.battleLogic.PawCardBattleStatDto;
 
 @Component
 public class AttackAllUpApplier implements BattleStatApplier {
@@ -15,8 +15,8 @@ public class AttackAllUpApplier implements BattleStatApplier {
 	}
 
 	@Override
-	public void apply(Integer ratioPercent, BattleStatDto battleStatDto) {
+	public void apply(Integer ratioPercent, PawCardBattleStatDto pawCardBattleStatDto) {
 
-		battleStatDto.applyAttackBonus(ratioPercent);
+		pawCardBattleStatDto.applyAttackBonus(ratioPercent);
 	}
 }
