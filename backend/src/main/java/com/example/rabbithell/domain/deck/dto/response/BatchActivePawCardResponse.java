@@ -2,17 +2,18 @@ package com.example.rabbithell.domain.deck.dto.response;
 
 import java.util.List;
 
-import com.example.rabbithell.domain.deck.entity.PawCardEffect;
+import com.example.rabbithell.domain.deck.dto.DeckRedisDto;
+import com.example.rabbithell.domain.deck.dto.PawCardEffectDto;
 
 public record BatchActivePawCardResponse(
-	List<DeckResponse> responseList,
-	PawCardEffectResponse pawCardEffectResponse
+	List<DeckRedisDto> deckRedisDtoList,
+	PawCardEffectDto pawCardEffectDto
 ) {
 
 	public static BatchActivePawCardResponse from(
-		List<DeckResponse> responseList,
-		PawCardEffectResponse pawCardEffectResponse
+		List<DeckRedisDto> deckRedisDtoList,
+		PawCardEffectDto pawCardEffectDto
 	) {
-		return new BatchActivePawCardResponse(responseList, pawCardEffectResponse);
+		return new BatchActivePawCardResponse(deckRedisDtoList, pawCardEffectDto);
 	}
 }
