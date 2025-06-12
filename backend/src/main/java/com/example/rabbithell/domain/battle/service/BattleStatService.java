@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.common.effect.applier.BattleStatApplier;
-import com.example.rabbithell.common.effect.applier.StatApplierRegistry;
+import com.example.rabbithell.common.effect.applier.BattleStatApplierRegistry;
 import com.example.rabbithell.common.effect.enums.StatType;
 import com.example.rabbithell.domain.deck.dto.EffectDetailDto;
 import com.example.rabbithell.domain.deck.dto.PawCardEffectDto;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BattleStatService {
 
-	private final StatApplierRegistry statApplierRegistry;
+	private final BattleStatApplierRegistry battleStatApplierRegistry;
 	private final PawCardEffectRedisService pawCardEffectRedisService;
 
 	@Transactional(readOnly = true)
@@ -31,7 +31,7 @@ public class BattleStatService {
 				StatType statType = effectDetailDto.getStatType();
 				Integer value = effectDetailDto.getFinalEffectValue();
 
-				BattleStatApplier applier = statApplierRegistry.get(statType);
+				BattleStatApplier applier = battleStatApplierRegistry.get(statType);
 				applier.apply(value, pawCardBattleStatDto);
 			}
 
