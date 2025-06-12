@@ -32,12 +32,12 @@ public enum BattleFieldType {
 	FORGOTTEN_VAULT("잊혀진 금고", true, 8, 4, 0.01),
 
 	// 특수 필드 (연결형) 희미한 균열, 황혼의 균열, 에테르 균열, 공허의 균열, 꿈의 균열, 균열의 중심
-	DIM_CRACK("희미한 균열", true, 5, 0, 0.02),
-	TWILIGHT_CRACK("황혼의 균열", true, 50, 0, 0.8),
-	ETHER_CRACK("에테르 균열", true, 250, 0, 0.6),
-	NEXUS_CRACK("공허의 균열", true, 1000, 0, 0.4),
-	DREAM_CRACK("꿈의 균열", true, 5000, 0, 0.2),
-	CENTER_CRACK("균열의 중심", true, 50000, 0, 0.01);
+	DIM_CRACK("희미한 균열", true, 5, 100, 0.8),
+	TWILIGHT_CRACK("황혼의 균열", true, 50, 101, 0.8),
+	ETHER_CRACK("에테르 균열", true, 250, 102, 0.6),
+	NEXUS_CRACK("공허의 균열", true, 1000, 103, 0.4),
+	DREAM_CRACK("꿈의 균열", true, 5000, 104, 0.2),
+	CENTER_CRACK("균열의 중심", true, 50000, 105, 0.01);
 
 	private final String name;
 	private final boolean isRare;
