@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
+import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
 import com.example.rabbithell.domain.item.dto.request.ItemRequest;
+import com.example.rabbithell.domain.item.dto.response.ItemCountResponse;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.entity.Effect;
 import com.example.rabbithell.domain.item.entity.Item;
@@ -25,6 +27,7 @@ public class ItemServiceImpl implements ItemService {
 
 	private final ItemRepository itemRepository;
 	private final ShopRepository shopRepository;
+	private final InventoryItemRepository inventoryItemRepository;
 	private final EffectRepository effectRepository;
 
 	@Override
@@ -98,6 +101,12 @@ public class ItemServiceImpl implements ItemService {
 	public void deleteItem(Long itemId) {
 		Item item = itemRepository.findByIdOrElseThrow(itemId);
 		item.markAsDeleted();
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<ItemCountResponse> countItems() {
+		return inventoryItemRepository.countInventoryItemsByItem_Id();
 	}
 
 }

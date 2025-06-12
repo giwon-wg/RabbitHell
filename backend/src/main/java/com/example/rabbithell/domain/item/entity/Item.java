@@ -34,7 +34,7 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "effect_id")
 	private Effect effect;
 

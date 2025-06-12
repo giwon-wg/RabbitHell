@@ -48,14 +48,9 @@ const CharacterCreatePage = () => {
 
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '60px' }}>
-			<h1>국가 및 캐릭터 4명 생성</h1>
+			<h1>캐릭터 생성</h1>
 
 			<form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
-				<select value={nationId} onChange={(e) => setNationId(e.target.value)} required>
-					<option value="">국가 선택</option>
-					<option value="1">롭이어 마을</option>
-					<option value="2">앙고라 마을</option>
-				</select>
 
 				{characters.map((name, idx) => (
 					<input
@@ -68,7 +63,7 @@ const CharacterCreatePage = () => {
 					/>
 				))}
 
-				<button type="submit">4명 생성하기</button>
+				<button type="submit">생성하기</button>
 			</form>
 		</div>
 	);

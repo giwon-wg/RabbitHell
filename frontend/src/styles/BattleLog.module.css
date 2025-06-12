@@ -1,0 +1,119 @@
+.battleLogContainer {
+	padding: 16px;
+}
+
+.logBox {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.turnBlock {
+	border: 1px solid #ccc;
+	padding: 12px;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+}
+
+.turnHeader {
+	margin-bottom: 8px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.logLine {
+	margin: 2px 0;
+}
+
+.left {
+	text-align: left;
+	color: #4caf50;
+}
+
+.right {
+	text-align: right;
+	color: #f44336;
+}
+
+.system {
+	text-align: center;
+	color: #777;
+	font-style: italic;
+}
+
+.statusBars {
+	margin-top: 8px;
+}
+
+.statusItem {
+	margin-bottom: 8px;
+}
+
+.characterName {
+	margin: 0 0 4px 0;
+	font-weight: bold;
+	color: white;
+}
+
+.statusBars {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 8px;
+}
+
+.leftStatusGroup {
+	width: 48%;
+	display: flex;
+	gap: 8px;
+}
+
+.leftStatusItem {
+	flex: 1 1 45%; /* 최소 45% 너비로 2개씩 가로 배치 */
+	background: #222;
+	padding: 4px 8px;
+	border-radius: 4px;
+}
+
+.rightStatusGroup {
+	width: 48%;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.rightStatusItem {
+	background: #222;
+	padding: 4px 8px;
+	border-radius: 4px;
+}
+
+.hpBarContainer,
+.mpBarContainer {
+	background: #444;
+	height: 8px;
+	border-radius: 4px;
+	margin: 2px 0;
+	overflow: hidden;
+}
+
+.hpBar {
+	background: #e74c3c;
+	height: 100%;
+}
+
+.mpBar {
+	background: #3498db;
+	height: 100%;
+}
+
+.characterName {
+	font-size: 0.9rem;
+	margin-bottom: 2px;
+}
+
+
+.critical {
+	color: #ff4040;
+	font-weight: bold;
+	animation: shake 0.2s ease-in-out;
+}

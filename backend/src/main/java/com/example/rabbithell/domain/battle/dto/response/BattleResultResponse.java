@@ -28,12 +28,15 @@ public record BattleResultResponse(
 	List<List<Integer>> increasedStats,
 
 	Set<BattleFieldType> battleFieldTypes,
+	List<String> characterNames,
 	List<ItemDto> weapon,
 	List<ItemDto> armor,
 	List<ItemDto> accessory,
 	List<Integer> playerAttack,
 	List<Integer> playerDefense,
 	List<Integer> playerSpeed,
+
+	String monsterName,
 	int monsterAttack,
 	int monsterDefense,
 	int monsterSpeed,
