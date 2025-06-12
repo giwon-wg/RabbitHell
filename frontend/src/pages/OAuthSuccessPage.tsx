@@ -40,7 +40,6 @@ const OAuthSuccessPage = () => {
 					});
 
 
-					console.log("nickname:", data.result.nickname);
 					console.log("cloverName:", data.result.cloverName);
 
 					const tokenData = await fullTokenRes.json();
