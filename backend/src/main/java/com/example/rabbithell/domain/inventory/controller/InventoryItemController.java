@@ -50,19 +50,18 @@ public class InventoryItemController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItemsBySlot(
+	public ResponseEntity<CommonResponse<PageResponse<InventoryItemResponse>>> getAllInventoryItems(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(required = false) Slot slot
+		@RequestParam(defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
-			"(슬롯 별) 인벤토리 아이템 전체 조회 성공",
-			inventoryItemService.getAllInventoryItemsFilterBySlot(authUser.getUserId(), slot, pageable)
+			"인벤토리 아이템 전체 조회 성공",
+			inventoryItemService.getAllInventoryItems(authUser.getUserId(), pageable)
 		));
 	}
 
