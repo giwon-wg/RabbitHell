@@ -19,7 +19,7 @@ public interface InventoryItemService {
 
 	InventoryItemResponse getInventoryItemById(Long userId, Long inventoryItemId);
 
-	PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot, Pageable pageable);
+	PageResponse<InventoryItemResponse> getAllInventoryItems(Long userId, Pageable pageable);
 
 	PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Slot slot, Pageable pageable);
 

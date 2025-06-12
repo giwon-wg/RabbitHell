@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.kingdom.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,5 +23,16 @@ public class KingdomServiceImpl implements KingdomService {
 		Kingdom kingdom = kingdomRepository.findByIdOrElseThrow(id);
 
 		return KingdomResponse.from(kingdom);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<KingdomResponse> findAllKingdom() {
+
+		List<Kingdom> kingdoms = kingdomRepository.findAll();
+
+		return kingdoms.stream()
+			.map(KingdomResponse::from)
+			.toList();
 	}
 }

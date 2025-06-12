@@ -247,6 +247,7 @@ public class DataInitializer implements CommandLineRunner {
 
 		pawCardEffectRepository.save(pawCardEffect);
 
+
 		Effect hpEffect = new Effect(EffectType.HP, 10L, false);
 		Effect strengthEffect = new Effect(EffectType.STRENGTH, 10L, false);
 		Effect agilityEffect = new Effect(EffectType.AGILITY, 10L, false);
@@ -365,6 +366,12 @@ public class DataInitializer implements CommandLineRunner {
 		// Special Monster
 		Monster goldenToad = createAndSaveMonster(Rating.SPECIAL, "황금 두꺼비", 777, 7, 7, 7, 77);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.PLAIN);
+
+		Monster dragon = createAndSaveMonster(Rating.BOSS, "드래곤", 9999, 999, 999, 999, 999);
+		createMonsterEncounter(10, dragon, BattleFieldType.RIFT);
+
+		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 211);
+		createMonsterEncounter(3, queen, BattleFieldType.MOUNTAIN);
 
 		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
 

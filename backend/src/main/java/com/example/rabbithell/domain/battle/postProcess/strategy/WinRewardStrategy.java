@@ -46,23 +46,9 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 	public BattleRewardResultVo applyReward(Clover clover, List<GameCharacter> team, Monster monster,
 		BattleFieldType fieldType) {
 
-		Clover updatedClover = cloverRepository.findByIdOrElseThrow(clover.getId());
-		updatedClover.clearUnlockedRareMaps();
+		clover.clearUnlockedRareMaps();
 
-		List<GameCharacter> updatedTeam = new ArrayList<>();
-
-		for (GameCharacter character : team) {
-			updatedTeam.add(characterRepository.findByIdOrElseThrow(character.getId()));
-		}
-
-		int earnedSkillPoint = fieldType.getSkillPoints();
-		switch (monster.getRating()) {
-			case RARE -> earnedSkillPoint *= 10;
-			case ELITE -> earnedSkillPoint *= 20;
-			case MINI_BOSS -> earnedSkillPoint *= 30;
-			case BOSS -> earnedSkillPoint *= 100;
-			case SPECIAL -> earnedSkillPoint *= 7;
-		}
+		int earnedSkillPoint = fieldType.calculateSkillPointBy(monster.getRating());
 
 		List<Integer> totalExps = new ArrayList<>();
 		List<Integer> levels = new ArrayList<>();
@@ -74,7 +60,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 
 		BattleRewardExecutor cloverExecutor = new BattleRewardExecutor();
 
-		for (GameCharacter ch : updatedTeam) {
+		for (GameCharacter ch : team) {
 
 			BattleRewardExecutor characterExecutor = new BattleRewardExecutor();
 
@@ -116,7 +102,7 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 		ItemDropCommand itemDropCommand = new ItemDropCommand(dropRates);
 		cloverExecutor.addCommand(itemDropCommand);
 
-		cloverExecutor.cloverExecuteAll(updatedClover);
+		cloverExecutor.cloverExecuteAll(clover);
 
 		List<Item> items = itemDropCommand.getItems();
 
@@ -128,21 +114,21 @@ public class WinRewardStrategy implements BattleRewardStrategy {
 			}
 		}
 
-		characterRepository.saveAll(updatedTeam);
-		cloverRepository.save(updatedClover);
+		characterRepository.saveAll(team);
+		cloverRepository.save(clover);
 
 		return new BattleRewardResultVo(
 			monster.getExp(),
 			fieldType.getSkillPoints(),
 			1000L,
-			updatedClover.getCash(),
+			clover.getCash(),
 			totalExps,
 			levels,
 			levelUpAmounts,
 			totalSkillPoints,
 			increasedStats,
 			items,
-			updatedClover.getUnlockedRareMaps()
+			clover.getUnlockedRareMaps()
 		);
 	}
 
