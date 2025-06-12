@@ -10,13 +10,13 @@ import com.example.rabbithell.domain.deck.exception.code.DeckExceptionCode;
 @Getter
 public class DeckException extends BaseException {
 
-    private final DeckExceptionCode errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
+	private final DeckExceptionCode errorCode;
+	private final HttpStatus httpStatus;
+	private final String message;
 
-    public DeckException(DeckExceptionCode errorCode) {
-        this.errorCode = errorCode;
-        this.httpStatus = errorCode.getStatus();
-        this.message = errorCode.getMessage();
-    }
+	public DeckException(DeckExceptionCode errorCode) {
+		this.errorCode = errorCode;
+		this.httpStatus = errorCode.getStatus();
+		this.message = errorCode.getMessage();
+	}
 }

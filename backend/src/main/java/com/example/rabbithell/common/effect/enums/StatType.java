@@ -1,7 +1,7 @@
 package com.example.rabbithell.common.effect.enums;
 
 public enum StatType {
-	ATTACK_UP(StatCategory.BATTLE_STAT, DomainType.GAME_CHARACTER),
+	ATTACK_All_UP(StatCategory.BATTLE_STAT, DomainType.CLOVER),
 	GOLD_RATE(StatCategory.REWARD_MODIFIER, DomainType.CLOVER),
 	DISCOUNT(StatCategory.META_BUFF, DomainType.CLOVER),
 	STRAIGHT_STAT(StatCategory.BATTLE_STAT, DomainType.CLOVER),

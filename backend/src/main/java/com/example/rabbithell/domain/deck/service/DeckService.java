@@ -11,5 +11,9 @@ public interface DeckService {
 
 	DeckResponse findDeckById(Long deckId, Long cloverId);
 
-	BatchActivePawCardResponse activePawCard(Long cloverId, BatchActivePawCardRequest request);
+	void calculateEffect(Long cloverId);
+
+	void assignSlots(Long cloverId, BatchActivePawCardRequest request);
+
+	BatchActivePawCardResponse getFinalResponse(Long cloverId);
 }

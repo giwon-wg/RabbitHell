@@ -1,6 +1,6 @@
 export const getShopItems = async (shopId: number, page = 0, size = 10) => {
 	const token = localStorage.getItem('accessToken');
-	const res = await fetch(`http://localhost:8080/shops/${shopId}/items?page=${page}&size=${size}`, {
+	const res = await fetch(`http://localhost:8080/villages/shops/${shopId}/items?page=${page}&size=${size}`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
@@ -13,4 +13,15 @@ export const getShopItems = async (shopId: number, page = 0, size = 10) => {
 
 	const json = await res.json();
 	return json.result?.content || [];
+};
+
+export const getMyCash = async (): Promise<number> => {
+	const token = localStorage.getItem('accessToken');
+	const res = await fetch(`http://localhost:8080/clover/me`, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+	const json = await res.json();
+	return json.result.cash;
 };
