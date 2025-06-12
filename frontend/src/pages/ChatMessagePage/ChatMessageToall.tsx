@@ -102,9 +102,9 @@ const ChatMessageToall = () => {
 		try {
 			const res = await fetch(`/api/chat/rooms/${ROOM_ID}/user-count`);
 			const data = await res.json();
-			setUserCount(data.count || 1);
+			setUserCount(data.count || 0);
 		} catch {
-			setUserCount(1);
+			setUserCount(0);
 		}
 	};
 
@@ -185,10 +185,8 @@ const ChatMessageToall = () => {
 		<div style={{ padding: '0.5rem' }}>
 			<div style={{ marginBottom: '0.5rem' }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem' }}>
-          <span style={{ fontWeight: 'bold', color: isConnected ? '#28a745' : '#dc3545' }}>
-            {isConnected ? '🟢 온라인' : '🔴 오프라인'}
-          </span>
-					<span style={{ fontWeight: 'bold', color: '#495057' }}>👥 접속자 수: {userCount}명</span>
+
+					<span style={{ fontWeight: 'bold', color: '#495057', }}>👥 접속자 수: {userCount}명</span>
 				</div>
 			</div>
 

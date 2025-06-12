@@ -34,7 +34,7 @@ public record ChatMessageResponseDto(
 
 
 	public static ChatMessageResponseDto createEnterMessage(String username) {
-		return new ChatMessageResponseDto(MessageType.ENTER, username + "님이 입장하셨습니다.", username, LocalDateTime.now());
+		return new ChatMessageResponseDto(MessageType.ENTER, username + "님이 입ㅇㄴㄹㄴㅇㄹ장하셨습니다.", username, LocalDateTime.now());
 	}
 
 	public static ChatMessageResponseDto createChatMessage(String username, ChatMessage chatMessage) {

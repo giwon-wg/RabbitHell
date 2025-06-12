@@ -1,4 +1,4 @@
-package com.example.rabbithell.domain.chat.redis;
+package com.example.rabbithell.domain.chat.internal;
 
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,11 +21,12 @@ public class ChatRedisWriter {
 
 	public void saveChatMessage(String roomId, ChatMessageResponseDto message) {
 		try {
+			redisTemplate.opsForValue().set("1","sdsdsd");
 			String key = "chat:history:" + roomId;
 			String json = objectMapper.writeValueAsString(message);
 
 			redisTemplate.opsForList().rightPush(key, json);
-
+			log.info(" Redis 저장 성공");
 			// 선택: 최근 100개까지만 유지
 			redisTemplate.opsForList().trim(key, -100, -1);
 

@@ -74,6 +74,8 @@ public class ChatMessageController {
 			chatMessageService.isOnCooldown(Long.valueOf(roomId), userId);
 			ChatMessage filteredmessage = chatMessageService.saveMessage(roomId, userId, dto.message());
 
+			//todo: dto에서 username 변수로 재설정 해주기
+
 			ChatMessageResponseDto responseDto = ChatMessageResponseDto.createChatMessage(username, filteredmessage);
 
 			// ✅ Redis 발행으로 전환

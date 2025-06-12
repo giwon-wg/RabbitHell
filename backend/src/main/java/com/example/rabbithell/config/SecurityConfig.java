@@ -56,7 +56,8 @@ public class SecurityConfig {
 					"/swagger-ui/**",
 					"/v3/api-docs/**",
 					"/ws/**",         // ✅ 반드시 필요
-					"/ws/**/**"
+					"/ws/**/**",
+					"/api/chat/**"
 				).permitAll()
 				.anyRequest().authenticated()
 			)

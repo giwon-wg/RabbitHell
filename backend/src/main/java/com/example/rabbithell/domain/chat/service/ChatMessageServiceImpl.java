@@ -15,7 +15,7 @@ import com.example.rabbithell.domain.chat.repository.ChatRoomRepository;
 import com.example.rabbithell.domain.chat.util.BadWordFilter;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
-import com.example.rabbithell.domain.chat.redis.ChatRedisWriter;
+import com.example.rabbithell.domain.chat.internal.ChatRedisWriter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
