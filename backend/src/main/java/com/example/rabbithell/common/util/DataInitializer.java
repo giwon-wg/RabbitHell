@@ -247,7 +247,6 @@ public class DataInitializer implements CommandLineRunner {
 
 		pawCardEffectRepository.save(pawCardEffect);
 
-
 		Effect hpEffect = new Effect(EffectType.HP, 10L, false);
 		Effect strengthEffect = new Effect(EffectType.STRENGTH, 10L, false);
 		Effect agilityEffect = new Effect(EffectType.AGILITY, 10L, false);
@@ -262,20 +261,32 @@ public class DataInitializer implements CommandLineRunner {
 		effectRepository.save(focusEffect);
 		effectRepository.save(luckEffect);
 
-		Item weapon = new Item(null, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100, false);
-		Item armor = new Item(null, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100, false);
-		Item accessory = new Item(null, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100, false);
+		Item weapon = new Item(null, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L,
+			3L, 100, false);
+		Item armor = new Item(null, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
+			false);
+		Item accessory = new Item(null, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L,
+			20L, 3L, 3L, 100, false);
 
-		Item hpPotion = new Item(null, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000, false);
-		Item mpPotion = new Item(null, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000, false);
+		Item hpPotion = new Item(null, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item mpPotion = new Item(null, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
+			10000, false);
 
-		Item feverRemedy = new Item(null, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L, 10000, false);
-		Item somiGun = new Item(null, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L, 50L, 10L, 5L, 10000, false);
-		Item fourCard = new Item(null, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 0L, 90L, 89L, 19L, 4L, 10000, false);
-		Item airplaneTicket = new Item(null, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 0L, 100L, 30L, 10L, 4L, 10000, false);
-		Item wakeUp = new Item(null, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000, false);
-		Item slimeBell = new Item(null, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L, 10000, false);
-		Item tuxedo = new Item(null, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 0L, 10L, 10L, 3L, 3L, 10000, false);
+		Item feverRemedy = new Item(null, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L,
+			0L, 10000, false);
+		Item somiGun = new Item(null, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L,
+			50L, 10L, 5L, 10000, false);
+		Item fourCard = new Item(null, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 0L,
+			90L, 89L, 19L, 4L, 10000, false);
+		Item airplaneTicket = new Item(null, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER,
+			Rarity.UNIQUE, 0L, 100L, 30L, 10L, 4L, 10000, false);
+		Item wakeUp = new Item(null, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item slimeBell = new Item(null, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item tuxedo = new Item(null, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 0L, 10L, 10L, 3L, 3L, 10000,
+			false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
@@ -290,28 +301,41 @@ public class DataInitializer implements CommandLineRunner {
 		itemRepository.save(slimeBell);
 		itemRepository.save(tuxedo);
 
-		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND, false);
-		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY, false);
-		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, 100, 3L, Slot.HEAD, false);
+		InventoryItem inventoryWeapon1 = new InventoryItem(inventory, weapon, character1, 20L, 100, 100, 3L, Slot.HAND,
+			false);
+		InventoryItem inventoryArmor1 = new InventoryItem(inventory, armor, character1, 20L, 100, 100, 3L, Slot.BODY,
+			false);
+		InventoryItem inventoryAccessory1 = new InventoryItem(inventory, accessory, character1, 20L, 100, 100, 3L,
+			Slot.HEAD, false);
 
-		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, 100, 3L, Slot.HAND, false);
-		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, 100, 3L, Slot.BODY, false);
-		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, 100, 3L, Slot.HEAD, false);
+		InventoryItem inventoryWeapon2 = new InventoryItem(inventory, weapon, character2, 20L, 100, 100, 3L, Slot.HAND,
+			false);
+		InventoryItem inventoryArmor2 = new InventoryItem(inventory, armor, character2, 20L, 100, 100, 3L, Slot.BODY,
+			false);
+		InventoryItem inventoryAccessory2 = new InventoryItem(inventory, accessory, character2, 20L, 100, 100, 3L,
+			Slot.HEAD, false);
 
-		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, 100, 3L, Slot.HAND, false);
-		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, 100, 3L, Slot.BODY, false);
-		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, 100, 3L, Slot.HEAD, false);
+		InventoryItem inventoryWeapon3 = new InventoryItem(inventory, weapon, character3, 20L, 100, 100, 3L, Slot.HAND,
+			false);
+		InventoryItem inventoryArmor3 = new InventoryItem(inventory, armor, character3, 20L, 100, 100, 3L, Slot.BODY,
+			false);
+		InventoryItem inventoryAccessory3 = new InventoryItem(inventory, accessory, character3, 20L, 100, 100, 3L,
+			Slot.HEAD, false);
 
-		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, 100, 3L, Slot.HAND, false);
-		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, 100, 3L, Slot.BODY, false);
-		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, 100, 3L, Slot.HEAD, false);
+		InventoryItem inventoryWeapon4 = new InventoryItem(inventory, weapon, character4, 20L, 100, 100, 3L, Slot.HAND,
+			false);
+		InventoryItem inventoryArmor4 = new InventoryItem(inventory, armor, character4, 20L, 100, 100, 3L, Slot.BODY,
+			false);
+		InventoryItem inventoryAccessory4 = new InventoryItem(inventory, accessory, character4, 20L, 100, 100, 3L,
+			Slot.HEAD, false);
 
 		InventoryItem iHpPotion = new InventoryItem(inventory, hpPotion, null, 0L, 10000, 10000, 0L, null, false);
 		InventoryItem iMpPotion = new InventoryItem(inventory, mpPotion, null, 0L, 10000, 10000, 0L, null, false);
 		InventoryItem iFeverRemedy = new InventoryItem(inventory, feverRemedy, null, 0L, 10000, 10000, 0L, null, false);
 		InventoryItem iSomiGun = new InventoryItem(inventory, somiGun, null, 80L, 10000, 10000, 8L, null, false);
 		InventoryItem iFourCard = new InventoryItem(inventory, fourCard, null, 80L, 10000, 10000, 10L, null, false);
-		InventoryItem iAirplaneTicket = new InventoryItem(inventory, airplaneTicket, null, 0L, 10000, 10000, 0L, null, false);
+		InventoryItem iAirplaneTicket = new InventoryItem(inventory, airplaneTicket, null, 0L, 10000, 10000, 0L, null,
+			false);
 		InventoryItem iWakeUp = new InventoryItem(inventory, wakeUp, null, 0L, 10000, 10000, 0L, null, false);
 		InventoryItem iSlimeBell = new InventoryItem(inventory, slimeBell, null, 0L, 10000, 10000, 0L, null, false);
 		InventoryItem iTuxedo = new InventoryItem(inventory, tuxedo, null, 10L, 10000, 10000, 3L, null, false);

@@ -27,13 +27,13 @@ public class BattleStatService {
 
 		PawCardBattleStatDto pawCardBattleStatDto = PawCardBattleStatDto.create(); // 초기 누적 DTO
 
-			for (EffectDetailDto effectDetailDto : pawCardEffectDto.getEffectDetailDtoList()) {
-				StatType statType = effectDetailDto.getStatType();
-				Integer value = effectDetailDto.getFinalEffectValue();
+		for (EffectDetailDto effectDetailDto : pawCardEffectDto.getEffectDetailDtoList()) {
+			StatType statType = effectDetailDto.getStatType();
+			Integer value = effectDetailDto.getFinalEffectValue();
 
-				BattleStatApplier applier = battleStatApplierRegistry.get(statType);
-				applier.apply(value, pawCardBattleStatDto);
-			}
+			BattleStatApplier applier = battleStatApplierRegistry.get(statType);
+			applier.apply(value, pawCardBattleStatDto);
+		}
 
 		return pawCardBattleStatDto;
 	}

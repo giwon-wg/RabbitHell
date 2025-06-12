@@ -10,22 +10,25 @@ public class PawCardBattleStatDto {
 	private Integer speedBonus = 0;
 	private Integer attackPercent = 0;
 
-
-
-
-	public static PawCardBattleStatDto create () {
+	public static PawCardBattleStatDto create() {
 		return new PawCardBattleStatDto();
 	}
 
 	public void applyAttackBonus(Integer value) {
-		if (value != null) this.attackBonus += value;
+		if (value != null) {
+			this.attackBonus += value;
+		}
 	}
 
 	public void applyDefenseBonus(Integer value) {
-		if (value != null) this.defenseBonus += value;
+		if (value != null) {
+			this.defenseBonus += value;
+		}
 	}
 
 	public void applySpeedBonus(Integer value) {
-		if (value != null) this.speedBonus += value;
+		if (value != null) {
+			this.speedBonus += value;
+		}
 	}
 }

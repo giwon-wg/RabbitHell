@@ -120,8 +120,9 @@ public class DeckQueryRepositoryImpl implements DeckQueryRepository {
 	}
 
 	private BooleanExpression buildSlotCond(Boolean equippedOnly) {
-		if (equippedOnly == null)
+		if (equippedOnly == null) {
 			return null;
+		}
 		return equippedOnly ? deck.pawCardSlot.isNotNull() : deck.pawCardSlot.isNull();
 	}
 

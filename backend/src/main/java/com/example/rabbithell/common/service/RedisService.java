@@ -39,7 +39,8 @@ public class RedisService {
 	public <T> T get(String key, Class<T> clazz) {
 		try {
 			String json = redisTemplate.opsForValue().get(key);
-			if (json == null) return null;
+			if (json == null)
+				return null;
 			return objectMapper.readValue(json, clazz);
 		} catch (RedisConnectionFailureException e) {
 			throw new RedisException(REDIS_CONNECTION_FAIL);
@@ -53,7 +54,8 @@ public class RedisService {
 	public <T> T get(String key, TypeReference<T> typeReference) {
 		try {
 			String json = redisTemplate.opsForValue().get(key);
-			if (json == null) return null;
+			if (json == null)
+				return null;
 			return objectMapper.readValue(json, typeReference);
 		} catch (RedisConnectionFailureException e) {
 			throw new RedisException(REDIS_CONNECTION_FAIL);

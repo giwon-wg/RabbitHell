@@ -24,7 +24,8 @@ public class DeckRedisService {
 
 	public List<DeckRedisDto> getDecks(Long cloverId) {
 		String key = DECK_KEY_PREFIX + cloverId;
-		return redisService.get(key, new TypeReference<List<DeckRedisDto>>() {}); // 타입 안전화하려면 TypeReference 방식도 가능
+		return redisService.get(key, new TypeReference<List<DeckRedisDto>>() {
+		});
 	}
 
 	public void deleteDecks(Long cloverId) {

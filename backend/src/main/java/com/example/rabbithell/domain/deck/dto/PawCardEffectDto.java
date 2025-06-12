@@ -16,7 +16,7 @@ public class PawCardEffectDto {
 	private CardRanking cardRanking;
 	private List<EffectDetailDto> effectDetailDtoList;
 
-	PawCardEffectDto (
+	PawCardEffectDto(
 		Long pawCardEffectId,
 		Long cloverId,
 		CardRanking cardRanking,
@@ -27,6 +27,7 @@ public class PawCardEffectDto {
 		this.cardRanking = cardRanking;
 		this.effectDetailDtoList = effectDetailDtoList;
 	}
+
 	public static PawCardEffectDto from(
 		PawCardEffect pawCardEffect,
 		List<EffectDetailDto> effectDetailDtoList

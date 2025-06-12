@@ -73,8 +73,9 @@ public class DeckServiceImpl implements DeckService {
 
 		// 2. 효과 정보 조회
 		List<EffectDetail> details = effect.getDetails();
-		if (details.size() < 2)
+		if (details.size() < 2) {
 			throw new DeckException(INVALID_EFFECT_STRUCTURE);
+		}
 
 		// 3. 효과 계산
 		deckEffectProcessor.processAllEffects(equippedDecks, effect, details);
@@ -106,8 +107,9 @@ public class DeckServiceImpl implements DeckService {
 			.filter(deck -> {
 				PawCardSlot currentSlot = deck.getPawCardSlot();
 				PawCardSlot requestedSlot = requestedDeckMap.get(deck.getId());
-				return currentSlot != null &&
-					(!requestedDeckMap.containsKey(deck.getId()) || !currentSlot.equals(requestedSlot));
+
+				return currentSlot != null && (!requestedDeckMap.containsKey(deck.getId()) || !currentSlot.equals(
+					requestedSlot));
 			})
 			.toList();
 
