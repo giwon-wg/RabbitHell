@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.battle.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.battle.dto.response.BattleFieldDto;
 import com.example.rabbithell.domain.battle.dto.response.BattleResultResponse;
 import com.example.rabbithell.domain.battle.dto.response.EarnedItemDto;
 import com.example.rabbithell.domain.battle.dto.response.GetBattleFieldsResponse;
@@ -50,9 +52,23 @@ public class BattleService {
 		maps.add(BattleFieldType.CAVE);
 		maps.add(BattleFieldType.RIFT);
 
-		return new GetBattleFieldsResponse(maps);
+		List<BattleFieldDto> battleFieldDtos = convertToDto(maps);
+
+		return new GetBattleFieldsResponse(battleFieldDtos);
 	}
 
+	private List<BattleFieldDto> convertToDto(Set<BattleFieldType> maps) {
+		return Arrays.stream(BattleFieldType.values())
+			.filter(maps::contains)
+			.map(battleFieldType -> new BattleFieldDto(
+				battleFieldType.name(),
+				battleFieldType.getName(),
+				battleFieldType.isRare()
+			))
+			.toList();
+	}
+
+	@Transactional
 	public BattleResultResponse doBattle(AuthUser authUser, BattleFieldType battleFieldType) {
 
 		Monster monster = monsterService.getRandomMonster(battleFieldType);
@@ -63,6 +79,7 @@ public class BattleService {
 
 		List<GameCharacter> team = clover.getMembers();
 		List<Long> characterIds = team.stream().map(GameCharacter::getId).toList();
+		List<String> characterNames = team.stream().map(GameCharacter::getName).toList();
 		List<Job> jobs = team.stream().map(GameCharacter::getJob).toList();
 
 		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
@@ -102,12 +119,14 @@ public class BattleService {
 			.totalSkillPoints(reward.totalSkillPoints())
 			.increasedStats(reward.increasedStat())
 			.battleFieldTypes(reward.unlockedRareMaps())
+			.characterNames(characterNames)
 			.weapon(weapon)
 			.armor(armor)
 			.accessory(accessory)
 			.playerAttack(battleResultVo.getPlayerAttack())
 			.playerDefense(battleResultVo.getPlayerDefense())
 			.playerSpeed(battleResultVo.getPlayerSpeed())
+			.monsterName(monster.getMonsterName())
 			.monsterAttack(battleResultVo.getMonsterAttack())
 			.monsterDefense(battleResultVo.getMonsterDefense())
 			.monsterSpeed(battleResultVo.getMonsterSpeed())

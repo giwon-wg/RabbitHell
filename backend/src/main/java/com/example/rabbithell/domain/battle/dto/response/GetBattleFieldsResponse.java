@@ -1,10 +1,8 @@
 package com.example.rabbithell.domain.battle.dto.response;
 
-import java.util.Set;
-
-import com.example.rabbithell.domain.battle.type.BattleFieldType;
+import java.util.List;
 
 public record GetBattleFieldsResponse(
-    Set<BattleFieldType> unlockedRareMaps
+	List<BattleFieldDto> unlockedRareMaps
 ) {
 }
