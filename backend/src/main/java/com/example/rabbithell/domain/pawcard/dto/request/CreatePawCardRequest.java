@@ -21,7 +21,7 @@ public record CreatePawCardRequest(
 	@Schema(description = "카드 엠블럼", example = "CLUB")
 	@NotNull CardEmblem cardEmblem,
 
-	@Schema(description = "적용 효과", example = "ATTACK_UP")
+	@Schema(description = "적용 효과", example = "ATTACK_All_UP")
 	@NotNull StatType statType
 ) {
 }
