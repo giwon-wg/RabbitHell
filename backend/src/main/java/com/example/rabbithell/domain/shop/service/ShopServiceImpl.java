@@ -168,7 +168,7 @@ public class ShopServiceImpl implements ShopService {
 
 	private int getAvailableSlots(Inventory inventory) {
 		int usedSlots = inventoryItemRepository.countByInventory_Id(inventory.getId());
-		int capacity = inventoryRepository.findCapacityById(inventory.getId());
+		int capacity = inventory.getCapacity();
 		return capacity - usedSlots;
 	}
 

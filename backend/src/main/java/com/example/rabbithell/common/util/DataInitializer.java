@@ -41,6 +41,8 @@ import com.example.rabbithell.domain.monster.enums.Rating;
 import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterEncounterRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterRepository;
+import com.example.rabbithell.domain.shop.entity.Shop;
+import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.specie.repository.SpecieRepository;
 import com.example.rabbithell.domain.user.model.User;
@@ -85,6 +87,9 @@ public class DataInitializer implements CommandLineRunner {
 	private VillageConnectionRepository villageConnectionRepository;
 
 	@Autowired
+	private ShopRepository shopRepository;
+
+	@Autowired
 	private MonsterRepository monsterRepository;
 	@Autowired
 	private MonsterEncounterRepository monsterEncounterRepository;
@@ -122,6 +127,7 @@ public class DataInitializer implements CommandLineRunner {
 		VillageConnection villageConnection6 = new VillageConnection(3L, 4L);
 		VillageConnection villageConnection7 = new VillageConnection(4L, 3L);
 		VillageConnection villageConnection8 = new VillageConnection(4L, 1L);
+
 		villageConnectionRepository.save(villageConnection1);
 		villageConnectionRepository.save(villageConnection2);
 		villageConnectionRepository.save(villageConnection3);
@@ -130,6 +136,16 @@ public class DataInitializer implements CommandLineRunner {
 		villageConnectionRepository.save(villageConnection6);
 		villageConnectionRepository.save(villageConnection7);
 		villageConnectionRepository.save(villageConnection8);
+
+		Shop shop1 = new Shop(village1, "상점1", false);
+		Shop shop2 = new Shop(village2, "상점2", false);
+		Shop shop3 = new Shop(village3, "상점3", false);
+		Shop shop4 = new Shop(village4, "상점4", false);
+
+		shopRepository.save(shop1);
+		shopRepository.save(shop2);
+		shopRepository.save(shop3);
+		shopRepository.save(shop4);
 
 		Specie LopEared = Specie.builder()
 			.speciesName("롭이어")
@@ -265,32 +281,20 @@ public class DataInitializer implements CommandLineRunner {
 		effectRepository.save(focusEffect);
 		effectRepository.save(luckEffect);
 
-		Item weapon = new Item(null, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 0L, 20L, 20L, 3L,
-			3L, 100, false);
-		Item armor = new Item(null, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 0L, 20L, 20L, 3L, 3L, 100,
-			false);
-		Item accessory = new Item(null, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 0L, 20L,
-			20L, 3L, 3L, 100, false);
+		Item weapon = new Item(shop1, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 100L, 20L, 20L, 3L, 3L, 100, false);
+		Item armor = new Item(shop1, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 200L, 20L, 20L, 3L, 3L, 100, false);
+		Item accessory = new Item(shop1, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 300L, 20L, 20L, 3L, 3L, 100, false);
 
-		Item hpPotion = new Item(null, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item mpPotion = new Item(null, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 0L, 0L, 0L, 0L, 0L,
-			10000, false);
+		Item hpPotion = new Item(shop2, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L, 10000, false);
+		Item mpPotion = new Item(shop2, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L, 10000, false);
 
-		Item feverRemedy = new Item(null, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 0L, 0L, 0L, 0L,
-			0L, 10000, false);
-		Item somiGun = new Item(null, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 0L, 100L,
-			50L, 10L, 5L, 10000, false);
-		Item fourCard = new Item(null, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 0L,
-			90L, 89L, 19L, 4L, 10000, false);
-		Item airplaneTicket = new Item(null, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER,
-			Rarity.UNIQUE, 0L, 100L, 30L, 10L, 4L, 10000, false);
-		Item wakeUp = new Item(null, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item slimeBell = new Item(null, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 0L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item tuxedo = new Item(null, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 0L, 10L, 10L, 3L, 3L, 10000,
-			false);
+		Item feverRemedy = new Item(shop3, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 500L, 0L, 0L, 0L, 0L, 10000, false);
+		Item somiGun = new Item(shop3, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 1000L, 100L, 50L, 10L, 5L, 10000, false);
+		Item fourCard = new Item(shop3, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 5000L, 90L, 89L, 19L, 4L, 10000, false);
+		Item airplaneTicket = new Item(shop3, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 8000L, 100L, 30L, 10L, 4L, 10000, false);
+		Item wakeUp = new Item(shop3, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 3000L, 0L, 0L, 0L, 0L, 10000, false);
+		Item slimeBell = new Item(shop4, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 1500L, 0L, 0L, 0L, 0L, 10000, false);
+		Item tuxedo = new Item(shop4, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 4000L, 10L, 10L, 3L, 3L, 10000, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
