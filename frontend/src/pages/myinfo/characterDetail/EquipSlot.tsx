@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { useDrop } from 'react-dnd';
 import { getFolderBySlot } from '../../../util/slotUtils';
+import DraggableItem from './DraggableItem';
+
 
 const getSlotLabel = (slot: string): string => {
 	switch (slot) {
@@ -50,17 +52,7 @@ const EquipSlot = ({ slotType, onDropItem, equippedItem }: any) => {
 				}}
 			>
 				{equippedItem ? (
-					<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-						<img
-							src={`/assets/items/${getFolderBySlot(equippedItem.slot)}/${equippedItem.itemId}.png`}
-							alt={equippedItem.itemName}
-							title={equippedItem.itemName}
-							style={{ width: 48, height: 48 }}
-						/>
-						<span style={{ fontSize: 12, marginTop: 4, textAlign: 'center' }}>
-      						{equippedItem.itemName}
-    					</span>
-					</div>
+					<DraggableItem item={equippedItem} isEquipped />
 				) : (
 					<span style={{ color: '#888' }}>슬롯 비어있음</span>
 				)}

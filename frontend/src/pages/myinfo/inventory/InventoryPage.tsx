@@ -25,7 +25,7 @@ const InventoryPage = () => {
 			const token = localStorage.getItem('accessToken');
 			if (!token) return;
 
-			const query = new URLSearchParams({ page: '0', size: '50' }).toString();
+			const query = new URLSearchParams({ page: '0', size: '200' }).toString();
 			const res = await fetch(`http://localhost:8080/inventory/inventory-items?${query}`, {
 				headers: { Authorization: `Bearer ${token}` },
 			});

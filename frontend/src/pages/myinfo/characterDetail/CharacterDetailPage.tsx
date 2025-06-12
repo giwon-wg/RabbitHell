@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useNavigate } from 'react-router-dom';
 import {
 	Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
@@ -10,6 +11,8 @@ import { CharacterPersonalInfoResponse } from '../../../types/types';
 import DraggableItem from './DraggableItem';
 import EquipSlot from './EquipSlot';
 import UnequipArea from './UnequipArea';
+import { DragLayerProvider } from './DragLayerContext';
+import CustomDragPreview from './CustomDragPreview';
 
 type ExtendedCharacter = CharacterPersonalInfoResponse & { characterId: number };
 
@@ -20,6 +23,8 @@ const CharacterDetailPage = () => {
 	const [weapons, setWeapons] = useState<any[]>([]);
 	const [armors, setArmors] = useState<any[]>([]);
 	const [accessories, setAccessories] = useState<any[]>([]);
+	const [hoveredItem, setHoveredItem] = useState<any | null>(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const token = localStorage.getItem('accessToken');
@@ -45,6 +50,8 @@ const CharacterDetailPage = () => {
 		fetchEquipableItems('BODY', setArmors);
 		fetchEquipableItems('HEAD', setAccessories);
 	}, [character]);
+
+
 
 	const fixSlotFromItemType = (itemType: string): string => {
 		switch (itemType) {
@@ -109,13 +116,24 @@ const CharacterDetailPage = () => {
 	const handleUnequip = async (item: any) => {
 		const token = localStorage.getItem('accessToken');
 		if (!token || !character) return;
-
 		await fetch(
 			`http://localhost:8080/inventory/inventory-items/${item.inventoryItemId}/unequip`,
 			{ method: 'POST', headers: { Authorization: `Bearer ${token}` } }
 		);
 
 		refreshEquipped(character.characterId);
+
+		switch (item.slot) {
+			case 'HAND':
+				fetchEquipableItems('HAND', setWeapons);
+				break;
+			case 'BODY':
+				fetchEquipableItems('BODY', setArmors);
+				break;
+			case 'HEAD':
+				fetchEquipableItems('HEAD', setAccessories);
+				break;
+		}
 	};
 
 	const refreshEquipped = async (characterId: number) => {
@@ -137,87 +155,116 @@ const CharacterDetailPage = () => {
 		{ stat: '집중력', value: character.focus },
 	];
 
+	const handleJobClick = () => {
+		navigate(`/me/${character.characterName}/job`);
+	};
+
 	return (
 		<DndProvider backend={HTML5Backend}>
-			<div style={{ display: 'flex', gap: 24, padding: 24 }}>
-				{/* 캐릭터 정보 */}
-				<div style={{ width: 240, backgroundColor: '#fff', borderRadius: 8, padding: 16, boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}>
-					<img src="/Character.png" alt="캐릭터" width={100} style={{ marginBottom: 12 }} />
-					<h2>{character.characterName}</h2>
-					<p>{character.job}</p>
-					<p>Lv. {character.level}</p>
-					<p>HP: {character.hp} / {character.maxHp}</p>
-					<p>MP: {character.mp} / {character.maxMp}</p>
-					<h4 style={{ marginTop: 16 }}>스탯</h4>
-					<ResponsiveContainer width="100%" height={180}>
-						<RadarChart cx="50%" cy="50%" outerRadius="80%" data={statData}>
-							<PolarGrid radialLines={false} />
-							<PolarAngleAxis dataKey="stat" tick={{ fontSize: 10 }} />
-							<PolarRadiusAxis tick={false} axisLine={false} />
-							<Radar dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-						</RadarChart>
-					</ResponsiveContainer>
-				</div>
+			<DragLayerProvider>
+				<div style={{ display: 'flex', gap: 24, padding: 24 }}>
+					{/* 캐릭터 정보 */}
+					<div style={{ width: 240, backgroundColor: '#fff', borderRadius: 8, padding: 16, boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}>
+						<img src="/Character.png" alt="캐릭터" width={100} style={{ marginBottom: 12 }} />
+						<h2>{character.characterName}</h2>
+						<p>{character.job}</p>
+						<p>Lv. {character.level}</p>
+						<p>HP: {character.hp} / {character.maxHp}</p>
+						<p>MP: {character.mp} / {character.maxMp}</p>
+						<p>strength: {character.strength}</p>
+						<p>agility: {character.agility}</p>
+						<p>intelligence: {character.intelligence}</p>
+						<p>focus: {character.focus}</p>
+						<p>luck: {character.luck}</p>
+						<p>warriorPoint: {character.warriorPoint}</p>
+						<p>thiefPoint: {character.thiefPoint}</p>
+						<p>wizardPoint: {character.wizardPoint}</p>
+						<p>archerPoint: {character.archerPoint}</p>
+						<p>skillPoint: {character.skillPoint}</p>
 
-				{/* 장착 슬롯 */}
-				<div
-					style={{
-						backgroundColor: '#fff',
-						borderRadius: 8,
-						boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-						padding: 16,
-						minWidth: 140,
-					}}
-				>
-					<h3 style={{ marginBottom: 12 }}>장착 슬롯</h3>
-					{['HAND', 'BODY', 'HEAD'].map(slot => (
-						<EquipSlot
-							key={slot}
-							slotType={slot}
-							onDropItem={handleEquip}
-							equippedItem={equippedItems.find(i => i.slot === slot)}
-						/>
-					))}
-				</div>
+						<h4 style={{ marginTop: 16 }}>스탯</h4>
+						<ResponsiveContainer width="100%" height={180}>
+							<RadarChart cx="50%" cy="50%" outerRadius="80%" data={statData}>
+								<PolarGrid radialLines={false} />
+								<PolarAngleAxis dataKey="stat" tick={{ fontSize: 10 }} />
+								<PolarRadiusAxis tick={false} axisLine={false} />
+								<Radar dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+							</RadarChart>
+						</ResponsiveContainer>
+						<button
+							onClick={() =>
+								navigate(`/me/${character.characterName}/job`, {
+									state: { characterId: character.characterId },
+								})
+							}
+						>
+							전직
+						</button>
+					</div>
 
-				{/* 보유 장비 */}
-				<div
-					style={{
-						backgroundColor: '#fff',
-						borderRadius: 8,
-						boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-						padding: 16,
-						flex: 1,
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 24,
-					}}
-				>
-					{/* 착용 가능 장비 */}
-					<div>
-						<h3>착용 가능 장비</h3>
-						{[
-							['무기', weapons],
-							['갑옷', armors],
-							['악세사리', accessories],
-						].map(([label, items]) => (
-							<div key={label as string} style={{ marginBottom: 16 }}>
-								<p style={{ fontWeight: 'bold', marginBottom: 4 }}>{label}</p>
-								<div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-									{(items as any[]).map(item => (
-										<DraggableItem key={item.inventoryItemId} item={item} />
+					{/* 오른쪽 래퍼: 장착 + 보유를 위아래로 */}
+					<div style={{ display: 'flex', flexDirection: 'column', gap: 24, flex: 1 }}>
+						{/* 장착 슬롯 */}
+						<div style={{
+							backgroundColor: '#fff',
+							borderRadius: 8,
+							boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+							padding: 16
+						}}>
+							<h3 style={{ marginBottom: 12 }}>장착 슬롯</h3>
+							<div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
+							{['HAND', 'BODY', 'HEAD'].map(slot => (
+								<EquipSlot
+									key={slot}
+									slotType={slot}
+									onDropItem={handleEquip}
+									equippedItem={equippedItems.find(i => i.slot === slot)}
+								/>
+							))}
+							</div>
+						</div>
+
+						<CustomDragPreview />
+						{/* 보유 장비 */}
+						<div style={{ position: 'relative' }}>
+
+							{/* 해제 슬롯 */}
+							<UnequipArea onDropUnequip={handleUnequip} />
+
+							{/* 착용 가능 장비 */}
+							<div style={{
+								backgroundColor: '#fff',
+								borderRadius: 8,
+								boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+								padding: 16,
+								display: 'flex',
+								flexDirection: 'column',
+								gap: 24,
+								flex: 1
+								}}>
+
+								<div>
+									<h3>착용 가능 장비</h3>
+									{[
+										['무기', weapons],
+										['갑옷', armors],
+										['악세사리', accessories],
+									].map(([label, items]) => (
+										<div key={label as string} style={{ marginBottom: 16 }}>
+											<p style={{ fontWeight: 'bold', marginBottom: 4 }}>{label}</p>
+											<div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+												{(items as any[]).map(item => (
+													<DraggableItem key={item.inventoryItemId} item={item} />
+												))}
+											</div>
+										</div>
 									))}
 								</div>
 							</div>
-						))}
-					</div>
-
-					{/* 해제 슬롯 */}
-					<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-						<UnequipArea onDropUnequip={handleUnequip} />
+						</div>
 					</div>
 				</div>
-			</div>
+			</DragLayerProvider>
 		</DndProvider>
 	);
 };

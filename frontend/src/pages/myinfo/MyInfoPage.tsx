@@ -75,7 +75,11 @@ const MyInfoPage = () => {
 						<CharacterCard
 							key={char.characterName}
 							character={char}
-							onClick={() => navigate(`/me/${char.characterName}`)}
+							onClick={() =>
+								navigate(`/me/${char.characterName}`, {
+									state: { characterId: char.characterId },
+								})
+							}
 						/>
 					))}
 				</CharacterList>
