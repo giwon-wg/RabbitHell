@@ -20,48 +20,48 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(BaseException.class)
-    public ResponseEntity<CommonResponse<?>> handleBaseException(BaseException baseException) {
-        log.error("exception : {}", baseException.getMessage(), baseException);
+	@ExceptionHandler(BaseException.class)
+	public ResponseEntity<CommonResponse<?>> handleBaseException(BaseException baseException) {
+		log.error("exception : {}", baseException.getMessage(), baseException);
 
-        return ResponseEntity.status(baseException.getHttpStatus())
-            .body(CommonResponse.of(false, baseException.getHttpStatus().value(), baseException.getMessage()));
-    }
+		return ResponseEntity.status(baseException.getHttpStatus())
+			.body(CommonResponse.of(false, baseException.getHttpStatus().value(), baseException.getMessage()));
+	}
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<CommonResponse<List<ValidationError>>> inputValidationExceptionHandler(
-        MethodArgumentNotValidException methodArgumentNotValidException
-    ) {
-        log.error("exception : {}", methodArgumentNotValidException.getMessage(), methodArgumentNotValidException);
-        BindingResult result = methodArgumentNotValidException.getBindingResult();
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<CommonResponse<List<ValidationError>>> inputValidationExceptionHandler(
+		MethodArgumentNotValidException methodArgumentNotValidException
+	) {
+		log.error("exception : {}", methodArgumentNotValidException.getMessage(), methodArgumentNotValidException);
+		BindingResult result = methodArgumentNotValidException.getBindingResult();
 
-        List<ValidationError> validationErrors = result.getFieldErrors().stream()
-            .map(fieldError -> ValidationError.builder()
-                .field(fieldError.getField())
-                .message(fieldError.getDefaultMessage())
-                .code(fieldError.getCode())
-                .build())
-            .toList();
+		List<ValidationError> validationErrors = result.getFieldErrors().stream()
+			.map(fieldError -> ValidationError.builder()
+				.field(fieldError.getField())
+				.message(fieldError.getDefaultMessage())
+				.code(fieldError.getCode())
+				.build())
+			.toList();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(CommonResponse.of(false, HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.",
-                validationErrors));
-    }
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(CommonResponse.of(false, HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.",
+				validationErrors));
+	}
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<CommonResponse<?>> handleHttpMessageNotReadableException(
-        HttpMessageNotReadableException httpMessageNotReadableException
-    ) {
-        Throwable cause = httpMessageNotReadableException.getCause();
-        if (cause instanceof ValueInstantiationException && cause.getCause() instanceof BaseException baseException) {
-            log.error("exception : {}", baseException.getMessage(), baseException);
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<CommonResponse<?>> handleHttpMessageNotReadableException(
+		HttpMessageNotReadableException httpMessageNotReadableException
+	) {
+		Throwable cause = httpMessageNotReadableException.getCause();
+		if (cause instanceof ValueInstantiationException && cause.getCause() instanceof BaseException baseException) {
+			log.error("exception : {}", baseException.getMessage(), baseException);
 
-            return ResponseEntity.status(baseException.getHttpStatus())
-                .body(CommonResponse.of(false, baseException.getHttpStatus().value(), baseException.getMessage()));
-        }
+			return ResponseEntity.status(baseException.getHttpStatus())
+				.body(CommonResponse.of(false, baseException.getHttpStatus().value(), baseException.getMessage()));
+		}
 
-        log.error("exception : {}", httpMessageNotReadableException.getMessage(), httpMessageNotReadableException);
-        return ResponseEntity.badRequest()
-            .body(CommonResponse.of(false, HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다."));
-    }
+		log.error("exception : {}", httpMessageNotReadableException.getMessage(), httpMessageNotReadableException);
+		return ResponseEntity.badRequest()
+			.body(CommonResponse.of(false, HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다."));
+	}
 }

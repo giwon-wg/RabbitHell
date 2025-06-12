@@ -9,6 +9,9 @@ import com.example.rabbithell.domain.deck.entity.Deck;
 import com.example.rabbithell.domain.deck.enums.PawCardSlot;
 
 public interface DeckQueryRepository {
+
+	List<Deck> findAllByCloverIdWithLock(Long cloverId);
+
 	List<Deck> findAllByCondition(Long cloverId, DeckCond cond, Pageable pageable);
 
 	long countByCondition(Long cloverId, DeckCond cond);
@@ -19,5 +22,5 @@ public interface DeckQueryRepository {
 
 	List<Deck> lockDecksByCloverIdAndIds(Long cloverId, List<Long> ids);
 
-	List<Deck> findEquippedByCloverIdWithLock(Long cloverId);
+	List<Deck> findEquippedByCloverId(Long cloverId);
 }

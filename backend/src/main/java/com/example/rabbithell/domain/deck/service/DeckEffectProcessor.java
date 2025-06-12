@@ -24,8 +24,9 @@ import lombok.RequiredArgsConstructor;
 public class DeckEffectProcessor {
 
 	public void processAllEffects(List<Deck> equippedDecks, PawCardEffect effect, List<EffectDetail> existingDetails) {
-		if (equippedDecks == null || equippedDecks.isEmpty())
+		if (equippedDecks == null || equippedDecks.isEmpty()) {
 			return;
+		}
 
 		List<Integer> cardNumbers = equippedDecks.stream()
 			.map(deck -> deck.getPawCard().getCardNumber())
@@ -96,14 +97,18 @@ public class DeckEffectProcessor {
 		boolean isStraight = isConsecutive(numbers);
 		boolean isRoyal = new HashSet<>(numbers).equals(Set.of(1, 11, 12, 13));
 
-		if (isRoyal && isFlush)
+		if (isRoyal && isFlush) {
 			return CardRanking.ROYAL_STRAIGHT_FLUSH;
-		if (isFlush && isStraight)
+		}
+		if (isFlush && isStraight) {
 			return CardRanking.STRAIGHT_FLUSH;
-		if (isFlush)
+		}
+		if (isFlush) {
 			return CardRanking.FLUSH;
-		if (isStraight)
+		}
+		if (isStraight) {
 			return CardRanking.STRAIGHT;
+		}
 		return null;
 	}
 
@@ -111,8 +116,10 @@ public class DeckEffectProcessor {
 		List<Integer> sorted = new ArrayList<>(numbers);
 		sorted.sort(Comparator.naturalOrder());
 		for (int i = 0; i < sorted.size() - 1; i++) {
-			if (sorted.get(i + 1) - sorted.get(i) != 1)
+			if (sorted.get(i + 1) - sorted.get(i) != 1) {
 				return false;
+			}
+
 		}
 		return true;
 	}
