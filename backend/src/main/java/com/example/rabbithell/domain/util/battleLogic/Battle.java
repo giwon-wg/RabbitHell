@@ -13,26 +13,23 @@ import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.vo.BattleResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.characterSkill.service.CharacterSkillService;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.ItemType;
-import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
-import com.example.rabbithell.domain.skill.entity.Skill;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class Battle {
 
 	private final InventoryItemService inventoryItemService;
-
-	@Autowired
-	public Battle(InventoryItemService inventoryItemService, ItemRepository itemRepository) {
-		this.inventoryItemService = inventoryItemService;
-	}
+	private final CharacterSkillService characterSkillService;
 
 	@Transactional
 	public BattleResultVo executeBattle(AuthUser authUser, List<GameCharacter> clover, Monster monster) {
@@ -51,8 +48,6 @@ public class Battle {
 		List<InventoryItem> weapons = new ArrayList<>();
 		List<InventoryItem> armors = new ArrayList<>();
 		List<InventoryItem> accessories = new ArrayList<>();
-
-		List<List<Skill>> skills = new ArrayList<>();
 
 		for (GameCharacter rabbit : clover) {
 
