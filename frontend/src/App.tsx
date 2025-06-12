@@ -28,6 +28,7 @@ import ChatMessageToall from "./pages/ChatMessagePage/ChatMessageToall";
 import CharacterCreatePage from './pages/CharacterCreatePage';
 import InventoryPage from "./pages/myinfo/inventory/InventoryPage";
 import Shop from "./pages/villagePage/shop/ShopPage";
+import JobPage from "./pages/myinfo/characterDetail/job/JobPage"
 
 type DecodedToken = {
 	exp: number;
@@ -106,6 +107,7 @@ const RoutesWithLayout = () => {
 				<Route path="/me" element={<MyInfoPage />} />
 				<Route path="/me/inventory" element={<InventoryPage />} />
 				<Route path="/me/:characterName" element={<CharacterDetailPage />} />
+				<Route path="/me/:characterName/job" element={<JobPage />} />
 				<Route path="/main" element={<MainPage />} />
 				<Route path="/battle" element={<BattleMainPage />} />
 				<Route path="/village" element={<VillageMainPage />} />

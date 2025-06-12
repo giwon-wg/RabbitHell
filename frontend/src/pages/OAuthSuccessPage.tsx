@@ -35,13 +35,11 @@ const OAuthSuccessPage = () => {
 							"Content-Type": "application/json",
 						},
 						body: JSON.stringify({
-							nickname: data.result.nickname,
 							cloverName: data.result.cloverName,
 						}),
 					});
 
 
-					console.log("nickname:", data.result.nickname);
 					console.log("cloverName:", data.result.cloverName);
 
 					const tokenData = await fullTokenRes.json();
