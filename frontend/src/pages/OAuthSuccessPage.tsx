@@ -35,7 +35,6 @@ const OAuthSuccessPage = () => {
 							"Content-Type": "application/json",
 						},
 						body: JSON.stringify({
-							nickname: data.result.nickname,
 							cloverName: data.result.cloverName,
 						}),
 					});
