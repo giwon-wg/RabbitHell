@@ -30,7 +30,6 @@ public class PawCardEffectQueryRepositoryImpl implements PawCardEffectQueryRepos
 			.selectFrom(pawCardEffect)
 			.join(pawCardEffect.details, effectDetail).fetchJoin()
 			.where(pawCardEffect.clover.id.eq(cloverId))
-			.setLockMode(LockModeType.PESSIMISTIC_WRITE)
 			.fetchOne()).orElseThrow(() -> new DeckException(PAW_CARD_EFFECT_NOT_FOUND));
 	}
 }

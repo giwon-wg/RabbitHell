@@ -59,16 +59,40 @@ public class DeckController {
 				deckService.findDeckById(deckId, authUser.getCloverId())));
 	}
 
-	@PostMapping()
-	public ResponseEntity<CommonResponse<BatchActivePawCardResponse>> activePawCard(
+	@PostMapping("/calculate-effect")
+	public ResponseEntity<CommonResponse<Void>> calculateEffect(
+		@AuthenticationPrincipal AuthUser authUser
+	) {
+		deckService.calculateEffect(authUser.getCloverId());
+		return ResponseEntity.ok(
+			CommonResponse.of(true,
+				HttpStatus.OK.value(),
+				"PawCard 효과 계산 성공")
+		);
+	}
+
+	@PostMapping("/assign-slots")
+	public ResponseEntity<CommonResponse<Void>> assignSlots(
 		@AuthenticationPrincipal AuthUser authUser,
 		@RequestBody @Valid BatchActivePawCardRequest request
+	) {
+		deckService.assignSlots(authUser.getCloverId(), request);
+		return ResponseEntity.ok(
+			CommonResponse.of(true,
+				HttpStatus.OK.value(),
+				"PawCard 변경 성공")
+		);
+	}
+
+	@GetMapping("/final-response")
+	public ResponseEntity<CommonResponse<BatchActivePawCardResponse>> getFinalResponse(
+		@AuthenticationPrincipal AuthUser authUser
 	) {
 		return ResponseEntity.ok(
 			CommonResponse.of(true,
 				HttpStatus.OK.value(),
 				"PawCard다!! 뀨!!!",
-				deckService.activePawCard(authUser.getCloverId(), request))
+				deckService.getFinalResponse(authUser.getCloverId()))
 		);
 	}
 }
