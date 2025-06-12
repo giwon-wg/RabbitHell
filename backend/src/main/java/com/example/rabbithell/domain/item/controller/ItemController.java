@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.item.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.rabbithell.common.dto.response.PageResponse;
 import com.example.rabbithell.common.response.CommonResponse;
 import com.example.rabbithell.domain.item.dto.request.ItemRequest;
+import com.example.rabbithell.domain.item.dto.response.ItemCountResponse;
 import com.example.rabbithell.domain.item.dto.response.ItemResponse;
 import com.example.rabbithell.domain.item.service.ItemService;
 
@@ -72,7 +75,7 @@ public class ItemController {
 	}
 
 	@PutMapping("/{itemId}")
-	public ResponseEntity<CommonResponse<ItemResponse>> updatItem(
+	public ResponseEntity<CommonResponse<ItemResponse>> updateItem(
 		@PathVariable Long itemId,
 		@Valid @RequestBody ItemRequest itemRequest
 	) {
@@ -92,6 +95,15 @@ public class ItemController {
 			true,
 			HttpStatus.OK.value(),
 			"아이템 삭제 성공"));
+	}
+
+	@GetMapping("/count")
+	public ResponseEntity<CommonResponse<List<ItemCountResponse>>> countItems() {
+		return ResponseEntity.ok(CommonResponse.of(
+			true,
+			HttpStatus.OK.value(),
+			"아이템 집계 성공",
+			itemService.countItems()));
 	}
 
 }
