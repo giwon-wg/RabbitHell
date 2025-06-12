@@ -40,10 +40,16 @@ export type BattleResultResponse = {
 	weapon: ItemDto[];
 	armor: ItemDto[];
 	accessory: ItemDto[];
+	playerHp: number[];
+	maxHp: number[];
+	playerMp: number[];
+	maxMp: number[];
 	playerAttack: number[];
 	playerDefense: number[];
 	playerSpeed: number[];
 	monsterName: string;
+	monsterHp: number;
+	monsterMaxHp: number;
 	monsterAttack: number;
 	monsterDefense: number;
 	monsterSpeed: number;
