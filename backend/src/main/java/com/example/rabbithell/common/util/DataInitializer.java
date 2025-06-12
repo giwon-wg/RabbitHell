@@ -237,11 +237,9 @@ public class DataInitializer implements CommandLineRunner {
 		PawCardEffect pawCardEffect = PawCardEffect.builder().clover(clover).build();
 		EffectDetail effectDetail1 = EffectDetail.builder()
 			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_1)
-			.pawCardEffect(pawCardEffect)
 			.build();
 		EffectDetail effectDetail2 = EffectDetail.builder()
 			.effectDetailSlot(EffectDetailSlot.EFFECT_DETAIL_SLOT_2)
-			.pawCardEffect(pawCardEffect)
 			.build();
 
 		pawCardEffect.addEffectDetail(effectDetail1);
