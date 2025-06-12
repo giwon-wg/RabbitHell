@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useNavigate } from 'react-router-dom';
 import {
 	Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
@@ -23,6 +24,7 @@ const CharacterDetailPage = () => {
 	const [armors, setArmors] = useState<any[]>([]);
 	const [accessories, setAccessories] = useState<any[]>([]);
 	const [hoveredItem, setHoveredItem] = useState<any | null>(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const token = localStorage.getItem('accessToken');
@@ -114,9 +116,6 @@ const CharacterDetailPage = () => {
 	const handleUnequip = async (item: any) => {
 		const token = localStorage.getItem('accessToken');
 		if (!token || !character) return;
-
-		console.log('🪓 해제 요청:', item);
-
 		await fetch(
 			`http://localhost:8080/inventory/inventory-items/${item.inventoryItemId}/unequip`,
 			{ method: 'POST', headers: { Authorization: `Bearer ${token}` } }
@@ -156,6 +155,10 @@ const CharacterDetailPage = () => {
 		{ stat: '집중력', value: character.focus },
 	];
 
+	const handleJobClick = () => {
+		navigate(`/me/${character.characterName}/job`);
+	};
+
 	return (
 		<DndProvider backend={HTML5Backend}>
 			<DragLayerProvider>
@@ -168,6 +171,17 @@ const CharacterDetailPage = () => {
 						<p>Lv. {character.level}</p>
 						<p>HP: {character.hp} / {character.maxHp}</p>
 						<p>MP: {character.mp} / {character.maxMp}</p>
+						<p>strength: {character.strength}</p>
+						<p>agility: {character.agility}</p>
+						<p>intelligence: {character.intelligence}</p>
+						<p>focus: {character.focus}</p>
+						<p>luck: {character.luck}</p>
+						<p>warriorPoint: {character.warriorPoint}</p>
+						<p>thiefPoint: {character.thiefPoint}</p>
+						<p>wizardPoint: {character.wizardPoint}</p>
+						<p>archerPoint: {character.archerPoint}</p>
+						<p>skillPoint: {character.skillPoint}</p>
+
 						<h4 style={{ marginTop: 16 }}>스탯</h4>
 						<ResponsiveContainer width="100%" height={180}>
 							<RadarChart cx="50%" cy="50%" outerRadius="80%" data={statData}>
@@ -177,6 +191,15 @@ const CharacterDetailPage = () => {
 								<Radar dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
 							</RadarChart>
 						</ResponsiveContainer>
+						<button
+							onClick={() =>
+								navigate(`/me/${character.characterName}/job`, {
+									state: { characterId: character.characterId },
+								})
+							}
+						>
+							전직
+						</button>
 					</div>
 
 					{/* 오른쪽 래퍼: 장착 + 보유를 위아래로 */}
