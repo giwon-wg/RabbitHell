@@ -1,27 +1,152 @@
-const ShopItemCard = ({ item }: { item: any }) => {
+// ShopItemCard.tsx
+
+import React, { useState } from 'react';
+
+const ShopItemCard = ({ item, onBuy }: { item: any, onBuy?: (newCash: number) => void }) => {
+	const [isHovered, setIsHovered] = useState(false);
+
 	const handleBuy = async () => {
 		const token = localStorage.getItem('accessToken');
-		await fetch(`http://localhost:8080/shop/buy`, {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${token}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ itemId: item.itemId }),
-		});
-		alert(`${item.itemName}을(를) 구매했습니다.`);
+		const shopId = item.shopId;
+		const itemId = item.itemId;
+		const quantity = 1;
+
+		try {
+			const res = await fetch(`http://localhost:8080/villages/shops/${shopId}/items/${itemId}/buy?quantity=${quantity}`, {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!res.ok) {
+				const errText = await res.text();
+				throw new Error(errText || `구매에 실패했습니다.`);
+			}
+
+			const json = await res.json();
+			alert(`'${item.itemName}' 구매 완료!`);
+
+			if (onBuy) {
+				onBuy(json.result.cash);
+			}
+		} catch (error) {
+			console.error("Purchase error:", error);
+			alert(`구매 실패: ${error instanceof Error ? error.message : String(error)}`);
+		}
+	};
+
+	const rarityColor: { [key: string]: string } = {
+		'COMMON': '#A0A0A0',
+		'RARE': '#61b685',
+		'UNIQUE': '#3498DB',
+		'LEGENDARY': '#F1C40F',
+		'MYTH': '#9B59B6',
+	};
+
+	const styles = {
+		card: {
+			width: '280px',
+			backgroundColor: '#ffffff',
+			borderRadius: '12px',
+			boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+			overflow: 'hidden',
+			display: 'flex',
+			flexDirection: 'column' as 'column',
+			justifyContent: 'space-between',
+			transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+			transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
+		},
+		content: {
+			padding: '1.5rem',
+		},
+		itemName: {
+			margin: '0 0 0.5rem 0',
+			color: '#2d3748',
+			fontSize: '1.25rem',
+		},
+		rarity: {
+			display: 'inline-block',
+			padding: '0.25rem 0.75rem',
+			backgroundColor: rarityColor[item.rarity] || '#cccccc',
+			color: '#ffffff',
+			borderRadius: '12px',
+			fontSize: '0.75rem',
+			fontWeight: 'bold',
+			marginBottom: '1rem',
+		},
+		description: {
+			fontSize: '0.9rem',
+			color: '#718096',
+			marginBottom: '1rem',
+			minHeight: '3.2em', // 2-3줄 높이 확보
+		},
+		stats: {
+			fontSize: '0.85rem',
+			color: '#4a5568',
+			listStyle: 'none',
+			padding: 0,
+			margin: 0,
+		},
+		statItem: {
+			display: 'flex',
+			justifyContent: 'space-between',
+			padding: '0.25rem 0',
+		},
+		footer: {
+			backgroundColor: '#f7fafc',
+			padding: '1rem 1.5rem',
+			borderTop: '1px solid #e2e8f0',
+			display: 'flex',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+		},
+		price: {
+			margin: 0,
+			fontSize: '1.2rem',
+			fontWeight: 'bold',
+			color: '#1a202c',
+		},
+		buyButton: {
+			backgroundColor: '#3182ce',
+			color: 'white',
+			border: 'none',
+			borderRadius: '8px',
+			padding: '0.75rem 1.5rem',
+			fontSize: '1rem',
+			fontWeight: 'bold',
+			cursor: 'pointer',
+			transition: 'background-color 0.2s',
+		},
 	};
 
 	return (
-		<div style={{ border: '1px solid gray', margin: 10, padding: 10, width: 220 }}>
-			<h3>{item.itemName}</h3>
-			<p>{item.description}</p>
-			<p>등급: {item.rarity}</p>
-			<p>공격력: {item.minPower} ~ {item.maxPower}</p>
-			<p>무게: {item.minWeight} ~ {item.maxWeight}</p>
-			<p>내구도: {item.maxDurability}</p>
-			<p>가격: {item.price}G</p>
-			<button onClick={handleBuy}>구매</button>
+		<div
+			style={styles.card}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
+		>
+			<div style={styles.content}>
+				<h3 style={styles.itemName}>{item.itemName}</h3>
+				<span style={styles.rarity}>{item.rarity}</span>
+				<p style={styles.description}>{item.description}</p>
+				<ul style={styles.stats}>
+					<li style={styles.statItem}><span>공격력</span> <span>{item.minPower} ~ {item.maxPower}</span></li>
+					<li style={styles.statItem}><span>무게</span> <span>{item.minWeight} ~ {item.maxWeight}</span></li>
+					<li style={styles.statItem}><span>내구도</span> <span>{item.maxDurability}</span></li>
+				</ul>
+			</div>
+			<div style={styles.footer}>
+				<p style={styles.price}>{item.price.toLocaleString()}G</p>
+				<button
+					style={styles.buyButton}
+					onClick={handleBuy}
+					onMouseOver={e => (e.currentTarget.style.backgroundColor = '#2b6cb0')}
+					onMouseOut={e => (e.currentTarget.style.backgroundColor = '#3182ce')}
+				>
+					구매
+				</button>
+			</div>
 		</div>
 	);
 };

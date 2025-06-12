@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/shops")
+@RequestMapping("/villages/shops")
 public class ShopUserController {
 
 	private final ShopService shopService;
@@ -74,8 +74,8 @@ public class ShopUserController {
 	public ResponseEntity<CommonResponse<BuyItemResponse>> buyItem(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long itemId,
-		@RequestParam int quantity,
-		Principal principal, UserDetails authenticatedPrincipal) {
+		@RequestParam int quantity
+	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
