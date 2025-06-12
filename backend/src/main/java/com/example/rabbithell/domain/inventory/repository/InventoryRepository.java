@@ -22,5 +22,4 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 		return findByClover(clover).orElseThrow(() -> new InventoryException(INVENTORY_NOT_FOUND));
 	}
 
-	int findCapacityById(Long id);
 }
