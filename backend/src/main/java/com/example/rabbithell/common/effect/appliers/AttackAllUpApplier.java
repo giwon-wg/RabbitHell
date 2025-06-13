@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.rabbithell.common.effect.applier.BattleStatApplier;
 import com.example.rabbithell.common.effect.enums.StatType;
-import com.example.rabbithell.domain.util.battleLogic.PawCardBattleStatDto;
+import com.example.rabbithell.domain.util.battlelogic.PawCardBattleStatDto;
 
 @Component
 public class AttackAllUpApplier implements BattleStatApplier {
