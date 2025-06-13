@@ -277,20 +277,32 @@ public class DataInitializer implements CommandLineRunner {
 		effectRepository.save(focusEffect);
 		effectRepository.save(luckEffect);
 
-		Item weapon = new Item(shop1, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 100L, 20L, 20L, 3L, 3L, 100, false);
-		Item armor = new Item(shop1, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 200L, 20L, 20L, 3L, 3L, 100, false);
-		Item accessory = new Item(shop1, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 300L, 20L, 20L, 3L, 3L, 100, false);
+		Item weapon = new Item(shop1, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 100L, 20L, 20L,
+			3L, 3L, 100, false);
+		Item armor = new Item(shop1, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 200L, 20L, 20L, 3L, 3L,
+			100, false);
+		Item accessory = new Item(shop1, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 300L, 20L,
+			20L, 3L, 3L, 100, false);
 
-		Item hpPotion = new Item(shop2, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L, 10000, false);
-		Item mpPotion = new Item(shop2, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L, 10000, false);
+		Item hpPotion = new Item(shop2, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item mpPotion = new Item(shop2, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L,
+			10000, false);
 
-		Item feverRemedy = new Item(shop3, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 500L, 0L, 0L, 0L, 0L, 10000, false);
-		Item somiGun = new Item(shop3, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 1000L, 100L, 50L, 10L, 5L, 10000, false);
-		Item fourCard = new Item(shop3, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 5000L, 90L, 89L, 19L, 4L, 10000, false);
-		Item airplaneTicket = new Item(shop3, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 8000L, 100L, 30L, 10L, 4L, 10000, false);
-		Item wakeUp = new Item(shop3, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 3000L, 0L, 0L, 0L, 0L, 10000, false);
-		Item slimeBell = new Item(shop4, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 1500L, 0L, 0L, 0L, 0L, 10000, false);
-		Item tuxedo = new Item(shop4, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 4000L, 10L, 10L, 3L, 3L, 10000, false);
+		Item feverRemedy = new Item(shop3, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 500L, 0L, 0L,
+			0L, 0L, 10000, false);
+		Item somiGun = new Item(shop3, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 1000L,
+			100L, 50L, 10L, 5L, 10000, false);
+		Item fourCard = new Item(shop3, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH,
+			5000L, 90L, 89L, 19L, 4L, 10000, false);
+		Item airplaneTicket = new Item(shop3, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER,
+			Rarity.UNIQUE, 8000L, 100L, 30L, 10L, 4L, 10000, false);
+		Item wakeUp = new Item(shop3, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 3000L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item slimeBell = new Item(shop4, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 1500L, 0L, 0L, 0L, 0L,
+			10000, false);
+		Item tuxedo = new Item(shop4, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 4000L, 10L, 10L, 3L, 3L,
+			10000, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
@@ -398,7 +410,7 @@ public class DataInitializer implements CommandLineRunner {
 		Monster dragon = createAndSaveMonster(Rating.BOSS, "드래곤", 9999, 999, 999, 999, 999);
 		createMonsterEncounter(10, dragon, BattleFieldType.RIFT);
 
-		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 211);
+		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 3000);
 		createMonsterEncounter(3, queen, BattleFieldType.MOUNTAIN);
 
 		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
@@ -415,6 +427,9 @@ public class DataInitializer implements CommandLineRunner {
 		createMonsterEncounter(3, goldenToad, BattleFieldType.DIM_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.TWILIGHT_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.ETHER_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.NEXUS_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DREAM_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CENTER_CRACK);
 
 		DropRate slimeBellDrop = new DropRate(commonMonsters.get(0), slimeBell, BigDecimal.valueOf(0.5));
 		dropRateRepository.save(slimeBellDrop);
