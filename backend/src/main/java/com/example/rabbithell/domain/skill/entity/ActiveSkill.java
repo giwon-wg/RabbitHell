@@ -3,7 +3,6 @@ package com.example.rabbithell.domain.skill.entity;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.skill.enums.SkillTarget;
-import com.example.rabbithell.domain.skill.enums.SkillType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Skill {
+public class ActiveSkill {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +39,6 @@ public class Skill {
 
 	private int dmg;
 
-	// 직업 카테고리로 변경.
 	@Enumerated(EnumType.STRING)
 	private Job job;
 
@@ -49,12 +47,12 @@ public class Skill {
 
 	private int jobTier;
 
-	private SkillType skillType;
-
 	private SkillTarget skillTarget;
 
+	private String skillType = "ACTIVE";
+
 	@Builder
-	public Skill(
+	public ActiveSkill(
 		String name,
 		String description,
 		int requiredSkillPoint,
@@ -64,8 +62,8 @@ public class Skill {
 		int coolTime,
 		int dmg,
 		Job job,
-        SkillType skillType,
-		SkillTarget skillTarget
+		SkillTarget skillTarget,
+		String skillType
 	) {
 		this.name = name;
 		this.description = description;
@@ -78,8 +76,8 @@ public class Skill {
 		this.job = job;
 		this.jobCategory = job.getJobCategory();
 		this.jobTier = job.getTier().getTier();
-		this.skillType = skillType;
 		this.skillTarget = skillTarget;
+		this.skillType = skillType;
 	}
 
 	public void skillUpdate(
@@ -92,7 +90,6 @@ public class Skill {
 		int coolTime,
 		int dmg,
 		Job job,
-		SkillType skillType,
 		SkillTarget skillTarget
 	) {
 		this.name = name;
@@ -106,7 +103,6 @@ public class Skill {
 		this.job = job;
 		this.jobCategory = job.getJobCategory();
 		this.jobTier = job.getTier().getTier();
-		this.skillType = skillType;
 		this.skillTarget = skillTarget;
 	}
 
