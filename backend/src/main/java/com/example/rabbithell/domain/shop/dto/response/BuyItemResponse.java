@@ -9,17 +9,19 @@ public record BuyItemResponse(
 	String itemName,
 	Integer quantity, // 구매한 개수
 	Integer remainingSlots, // 남은 인벤토리 용량
-	Long cash // 남은 현금
+	Long cash, // 남은 현금
+	Long saving // 남은 저축금
 ) {
 	public static BuyItemResponse of(Inventory inventory, Item item, Integer quantity, Integer remainingSlots,
-		Long cash) {
+		Long cash, Long saving) {
 		return new BuyItemResponse(
 			inventory.getId(),
 			item.getId(),
 			item.getName(),
 			quantity,
 			remainingSlots,
-			cash
+			cash,
+			saving
 		);
 	}
 }
