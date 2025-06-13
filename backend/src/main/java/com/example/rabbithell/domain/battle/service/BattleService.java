@@ -27,7 +27,7 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.service.MonsterService;
-import com.example.rabbithell.domain.util.battleLogic.Battle;
+import com.example.rabbithell.domain.util.battlelogic.Battle;
 
 import lombok.RequiredArgsConstructor;
 
@@ -81,6 +81,8 @@ public class BattleService {
 		List<Long> characterIds = team.stream().map(GameCharacter::getId).toList();
 		List<String> characterNames = team.stream().map(GameCharacter::getName).toList();
 		List<Job> jobs = team.stream().map(GameCharacter::getJob).toList();
+		List<Integer> maxHp = team.stream().map(GameCharacter::getMaxHp).toList();
+		List<Integer> maxMp = team.stream().map(GameCharacter::getMaxMp).toList();
 
 		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
 
@@ -123,10 +125,16 @@ public class BattleService {
 			.weapon(weapon)
 			.armor(armor)
 			.accessory(accessory)
+			.playerHp(battleResultVo.getPlayerHp())
+			.maxHp(maxHp)
+			.playerMp(battleResultVo.getPlayerMp())
+			.maxMp(maxMp)
 			.playerAttack(battleResultVo.getPlayerAttack())
 			.playerDefense(battleResultVo.getPlayerDefense())
 			.playerSpeed(battleResultVo.getPlayerSpeed())
 			.monsterName(monster.getMonsterName())
+			.monsterHp(battleResultVo.getMonsterHp())
+			.monsterMaxHp(monster.getHp())
 			.monsterAttack(battleResultVo.getMonsterAttack())
 			.monsterDefense(battleResultVo.getMonsterDefense())
 			.monsterSpeed(battleResultVo.getMonsterSpeed())
