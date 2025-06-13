@@ -114,6 +114,7 @@ public class ShopServiceImpl implements ShopService {
 		return PageResponse.of(dtoList, page);
 	}
 
+	@SuppressWarnings("checkstyle:RegexpMultiline")
 	@Transactional
 	@Override
 	public BuyItemResponse buyItem(Long userId, Long itemId, int quantity) {
