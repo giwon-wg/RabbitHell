@@ -440,7 +440,7 @@ public class DataInitializer implements CommandLineRunner {
 		Monster dragon = createAndSaveMonster(Rating.BOSS, "드래곤", 9999, 999, 999, 999, 999);
 		createMonsterEncounter(10, dragon, BattleFieldType.RIFT);
 
-		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 211);
+		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 3000);
 		createMonsterEncounter(3, queen, BattleFieldType.MOUNTAIN);
 
 		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
@@ -457,6 +457,9 @@ public class DataInitializer implements CommandLineRunner {
 		createMonsterEncounter(3, goldenToad, BattleFieldType.DIM_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.TWILIGHT_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.ETHER_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.NEXUS_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DREAM_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CENTER_CRACK);
 
 		DropRate slimeBellDrop = new DropRate(commonMonsters.get(0), slimeBell, BigDecimal.valueOf(0.5));
 		dropRateRepository.save(slimeBellDrop);
