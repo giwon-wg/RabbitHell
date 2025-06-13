@@ -127,15 +127,23 @@ public class ShopServiceImpl implements ShopService {
 			throw new ShopException(INVENTORY_FULL);
 		}
 
-		// 현금 확인
+		// 현금 및 저축 확인
 		long cash = clover.getCash();
+		long saving = clover.getSaving();
 		long totalPrice = item.getPrice() * quantity;
-		if (cash < totalPrice) {
-			throw new ShopException(NOT_ENOUGH_CASH);
-		}
 
-		// 현금 차감
-		clover.spendCash((int)totalPrice);
+		if (cash >= totalPrice) {
+			// 현금 차감
+			clover.spendCash((int)totalPrice);
+		} else if (cash + saving >= totalPrice) {
+			// 현금과 저축에서 차감
+			clover.spendCashAndSaving((int)totalPrice);
+		} else if (saving >= totalPrice) {
+			// 저축에서 차감
+			clover.useFromSaving((int)totalPrice);
+		} else {
+			throw new ShopException(NOT_ENOUGH_MONEY);
+		}
 
 		// 인벤토리 아이템 생성 및 저장
 		IntStream.range(0, quantity).forEach(i -> {
@@ -143,7 +151,8 @@ public class ShopServiceImpl implements ShopService {
 			inventoryItemRepository.save(inventoryItem);
 		});
 
-		return BuyItemResponse.of(inventory, item, quantity, getAvailableSlots(inventory), clover.getCash());
+		return BuyItemResponse.of(inventory, item, quantity, getAvailableSlots(inventory), clover.getCash(),
+			clover.getSaving());
 	}
 
 	@Transactional
