@@ -43,6 +43,25 @@ const InventoryPage = () => {
 
 	const filteredItems = items; // 전체 다 보여주되 스타일로 회색 처리
 
+	const handleDiscardItem = async (item: InventoryItem) => {
+		const confirmDiscard = window.confirm(`'${item.itemName}' 아이템을 버리시겠습니까?`);
+		if (!confirmDiscard) return;
+
+		const token = localStorage.getItem('accessToken');
+		if (!token) return;
+
+		const res = await fetch(`http://localhost:8080/inventory/inventory-items/${item.inventoryItemId}/discard`, {
+			method: 'DELETE',
+			headers: { Authorization: `Bearer ${token}` },
+		});
+
+		if (res.ok) {
+			setItems(prev => prev.filter(i => i.inventoryItemId !== item.inventoryItemId));
+		} else {
+			alert('아이템 버리기에 실패했습니다.');
+		}
+	};
+
 	return (
 		<div style={{
 			maxWidth: 960,
@@ -145,6 +164,7 @@ const InventoryPage = () => {
 										textAlign: 'left',
 										fontSize: 13,
 									}}
+									onClick={(e) => e.stopPropagation()}
 								>
 									<strong>{item.itemName}</strong>
 									<p>타입: {item.itemType}</p>
@@ -152,7 +172,27 @@ const InventoryPage = () => {
 									<p>공격력: {item.power}</p>
 									<p>무게: {item.weight}</p>
 									<p>등급: {item.rarity}</p>
+
+									<hr style={{ margin: '8px 0' }} />
+
+									<button
+										onClick={() => handleDiscardItem(item)}
+										style={{
+											width: '100%',
+											backgroundColor: '#ff4d4f',
+											color: '#fff',
+											border: 'none',
+											borderRadius: 6,
+											padding: '6px 0',
+											cursor: 'pointer',
+											fontSize: 13,
+										}}
+									>
+										🗑 버리기
+									</button>
+
 								</div>
+
 							)}
 						</div>
 					);
