@@ -9,7 +9,7 @@ import com.example.rabbithell.common.effect.enums.StatType;
 import com.example.rabbithell.domain.deck.dto.EffectDetailDto;
 import com.example.rabbithell.domain.deck.dto.PawCardEffectDto;
 import com.example.rabbithell.domain.deck.service.PawCardEffectRedisService;
-import com.example.rabbithell.domain.util.battleLogic.PawCardBattleStatDto;
+import com.example.rabbithell.domain.util.battlelogic.PawCardBattleStatDto;
 
 import lombok.RequiredArgsConstructor;
 

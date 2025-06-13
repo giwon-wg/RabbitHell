@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.clover.entity.Clover;
@@ -28,9 +29,10 @@ public class RareMapCommand implements BattleRewardCommand {
 		List<BattleFieldType> candidates = Arrays.stream(BattleFieldType.values())
 			.filter(BattleFieldType::isRare)
 			.filter(b ->
-				b.getLevel() == curBattleFieldType.getLevel() || b.name().contains("DIM_CRACK")
+				(b.getLevel() == curBattleFieldType.getLevel()
+					|| b.name().contains("DIM_CRACK")) && b != curBattleFieldType
 			)
-			.toList();
+			.collect(Collectors.toCollection(ArrayList::new));
 
 		if (curBattleFieldType == BattleFieldType.DIM_CRACK) {
 			candidates.add(BattleFieldType.TWILIGHT_CRACK);

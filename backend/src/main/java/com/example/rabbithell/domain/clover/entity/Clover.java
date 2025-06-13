@@ -166,6 +166,20 @@ public class Clover extends BaseEntity {
 		this.cash += amount;
 	}
 
+	public void spendCashAndSaving(int amount) {
+		if (amount < 0) {
+			throw new IllegalArgumentException("사용 골드는 음수일 수 없습니다.");
+		}
+		if (this.cash + this.saving < amount) {
+			throw new IllegalStateException("보유 골드가 부족합니다.");
+		}
+		int useCash = (int) Math.min(this.cash, amount);
+		this.cash -= useCash;
+
+		int remaining = amount - useCash;
+		this.saving -= remaining;
+	}
+
 	//은행에서 돈 사용 메서드
 	public void useFromSaving(int amount) {
 		if (amount < 0) {
@@ -175,7 +189,6 @@ public class Clover extends BaseEntity {
 			throw new IllegalStateException("은행 잔고가 부족합니다.");
 		}
 		this.saving -= amount;
-		this.cash += amount;
 	}
 
 	public void addMember(GameCharacter character) {
@@ -184,11 +197,6 @@ public class Clover extends BaseEntity {
 		}
 		this.members.add(character);
 	}
-
-	// public void addPawCardEffect(PawCardEffect pawCardEffect) {
-	// 	this.pawCardEffects.add(pawCardEffect);
-	// 	pawCardEffect.assignClover(this);
-	// }
 
 	public boolean isFull() {
 		return members.size() >= 4;

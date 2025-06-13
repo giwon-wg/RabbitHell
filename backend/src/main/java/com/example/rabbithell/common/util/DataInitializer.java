@@ -1,5 +1,8 @@
 package com.example.rabbithell.common.util;
 
+import static com.example.rabbithell.common.effect.enums.StatType.*;
+import static com.example.rabbithell.domain.pawcard.enums.CardEmblem.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,9 +16,11 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.deck.entity.Deck;
 import com.example.rabbithell.domain.deck.entity.EffectDetail;
 import com.example.rabbithell.domain.deck.entity.PawCardEffect;
 import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
+import com.example.rabbithell.domain.deck.repository.DeckRepository;
 import com.example.rabbithell.domain.deck.repository.PawCardEffectRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
@@ -39,6 +44,8 @@ import com.example.rabbithell.domain.monster.enums.Rating;
 import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterEncounterRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterRepository;
+import com.example.rabbithell.domain.pawcard.entity.PawCard;
+import com.example.rabbithell.domain.pawcard.repository.PawCardRepository;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.specie.entity.Specie;
@@ -72,8 +79,10 @@ public class DataInitializer implements CommandLineRunner {
 	private ItemRepository itemRepository;
 	@Autowired
 	private InventoryRepository inventoryRepository;
+
 	@Autowired
 	private EffectRepository effectRepository;
+
 	@Autowired
 	private InventoryItemRepository inventoryItemRepository;
 
@@ -101,6 +110,12 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private PawCardEffectRepository pawCardEffectRepository;
+
+	@Autowired
+	private PawCardRepository pawCardRepository;
+
+	@Autowired
+	private DeckRepository deckRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -277,6 +292,33 @@ public class DataInitializer implements CommandLineRunner {
 		effectRepository.save(focusEffect);
 		effectRepository.save(luckEffect);
 
+		PawCard club1 = new PawCard(100, "클로버 A", 1, CLUB, ATTACK_All_UP, ATTACK_All_UP.getCategory(), ATTACK_All_UP.getDomainType(), false);
+		PawCard club2 = new PawCard(100, "클로버 2", 2, CLUB, ATTACK_All_UP, ATTACK_All_UP.getCategory(), ATTACK_All_UP.getDomainType(), false);
+		PawCard club3 = new PawCard(100, "클로버 3", 3, CLUB, GOLD_RATE, GOLD_RATE.getCategory(), GOLD_RATE.getDomainType(), false);
+		PawCard club4 = new PawCard(100, "클로버 4", 4, CLUB, STRAIGHT_STAT, STRAIGHT_STAT.getCategory(), STRAIGHT_STAT.getDomainType(), false);
+		PawCard club5 = new PawCard(100, "클로버 5", 5, CLUB, FLUSH_STAT, FLUSH_STAT.getCategory(), FLUSH_STAT.getDomainType(), false);
+
+		pawCardRepository.save(club1);
+		pawCardRepository.save(club2);
+		pawCardRepository.save(club3);
+		pawCardRepository.save(club4);
+		pawCardRepository.save(club5);
+
+		Deck deck1 = new Deck(club1, clover);
+		Deck deck2 = new Deck(club2, clover);
+		Deck deck3 = new Deck(club3, clover);
+		Deck deck4 = new Deck(club4, clover);
+		Deck deck5 = new Deck(club5, clover);
+
+
+		deckRepository.save(deck1);
+		deckRepository.save(deck2);
+		deckRepository.save(deck3);
+		deckRepository.save(deck4);
+		deckRepository.save(deck5);
+
+
+
 		Item weapon = new Item(shop1, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 100L, 20L, 20L, 3L, 3L, 100, false);
 		Item armor = new Item(shop1, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 200L, 20L, 20L, 3L, 3L, 100, false);
 		Item accessory = new Item(shop1, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 300L, 20L, 20L, 3L, 3L, 100, false);
@@ -398,7 +440,7 @@ public class DataInitializer implements CommandLineRunner {
 		Monster dragon = createAndSaveMonster(Rating.BOSS, "드래곤", 9999, 999, 999, 999, 999);
 		createMonsterEncounter(10, dragon, BattleFieldType.RIFT);
 
-		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 211);
+		Monster queen = createAndSaveMonster(Rating.BOSS, "퀸", 777, 142, 30, 94, 3000);
 		createMonsterEncounter(3, queen, BattleFieldType.MOUNTAIN);
 
 		createMonsterEncounter(3, goldenToad, BattleFieldType.CAVE);
@@ -415,6 +457,9 @@ public class DataInitializer implements CommandLineRunner {
 		createMonsterEncounter(3, goldenToad, BattleFieldType.DIM_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.TWILIGHT_CRACK);
 		createMonsterEncounter(3, goldenToad, BattleFieldType.ETHER_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.NEXUS_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.DREAM_CRACK);
+		createMonsterEncounter(3, goldenToad, BattleFieldType.CENTER_CRACK);
 
 		DropRate slimeBellDrop = new DropRate(commonMonsters.get(0), slimeBell, BigDecimal.valueOf(0.5));
 		dropRateRepository.save(slimeBellDrop);
