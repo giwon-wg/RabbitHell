@@ -3,9 +3,10 @@ package com.example.rabbithell.domain.deck.service;
 import static com.example.rabbithell.domain.deck.exception.code.DeckExceptionCode.*;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -95,29 +96,61 @@ public class DeckServiceImpl implements DeckService {
 
 		List<ActivePawCardRequest> requestList = request.activePawCardRequestList();
 
-		// 1. 요청을 Map<deckId, slot>으로 변환하여 조회
-		Map<Long, PawCardSlot> requestedDeckMap = requestList.stream()
-			.collect(Collectors.toMap(ActivePawCardRequest::deckId, ActivePawCardRequest::pawCardSlot));
+		// 요청을 slot별로 구분 (deckId == null일 수도 있음)
+		Map<PawCardSlot, Long> slotToDeckIdMap = new LinkedHashMap<>();
+		for (ActivePawCardRequest r : requestList) {
+			if (r.pawCardSlot() != null) {
+				slotToDeckIdMap.put(r.pawCardSlot(), r.deckId());
+			}
+		}
 
-		// 2. 클로버의 모든 덱을 락을 걸고 한 번에 조회
 		List<Deck> allDecks = deckRepository.findAllByCloverIdWithLock(cloverId);
 
-		// 3. 슬롯 해제 대상만 선별
-		List<Deck> decksToUpdate = allDecks.stream()
+		// 1. 해제 대상 처리
+		List<Deck> decksToRelease = allDecks.stream()
 			.filter(deck -> {
 				PawCardSlot currentSlot = deck.getPawCardSlot();
-				PawCardSlot requestedSlot = requestedDeckMap.get(deck.getId());
+				if (currentSlot == null) {
+					return false;
+				}
 
+				if (!slotToDeckIdMap.containsKey(currentSlot)) {
+					return false; // 명시적으로 해제 요청 없음 → 해제
+				}
+
+				Long requestedDeckId = slotToDeckIdMap.get(currentSlot);
+				return !Objects.equals(deck.getId(), requestedDeckId); // 다른 덱이거나 null이면 해제
+			})
+			.toList();
+
+		for (Deck deck : decksToRelease) {
+			deck.equipDeck(null);
+		}
+
+		deckRepository.flush(); // 해제 먼저 반영
+
+		// 2. 장착 대상 처리
+		List<Deck> decksToEquip = allDecks.stream()
+			.filter(deck -> {
+				PawCardSlot requestedSlot = slotToDeckIdMap.entrySet().stream()
+					.filter(e -> Objects.equals(e.getValue(), deck.getId()))
+					.map(Map.Entry::getKey)
+					.findFirst()
+					.orElse(null);
 				return requestedSlot != null && !requestedSlot.equals(deck.getPawCardSlot());
 			})
 			.toList();
 
-		for (Deck deck : decksToUpdate) {
-			PawCardSlot newSlot = requestedDeckMap.get(deck.getId());
-			deck.equipDeck(newSlot); // 새로 장착 or 기존에서 변경
+		for (Deck deck : decksToEquip) {
+			PawCardSlot slot = slotToDeckIdMap.entrySet().stream()
+				.filter(e -> Objects.equals(e.getValue(), deck.getId()))
+				.map(Map.Entry::getKey)
+				.findFirst()
+				.orElse(null);
+			deck.equipDeck(slot);
 		}
 
-		// 5. Redis 캐싱용 최종 장착 상태 조회
+		// 3. Redis 캐싱용 최종 장착 상태 조회
 		List<Deck> equippedDecks = allDecks.stream()
 			.filter(d -> d.getPawCardSlot() != null)
 			.toList();
