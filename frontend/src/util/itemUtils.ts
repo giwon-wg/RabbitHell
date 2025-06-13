@@ -39,3 +39,31 @@ export const mapSlotToFolder = (itemType: string): string => {
 			return 'etc';
 	}
 };
+
+// 타입
+export const getSlotLabel = (slot: string): string => {
+	switch (slot) {
+		case 'HAND': return '무기';
+		case 'BODY': return '갑옷';
+		case 'HEAD': return '악세사리';
+		default: return '기타';
+	}
+};
+
+export const fixSlotFromItemType = (itemType: string): 'HAND' | 'BODY' | 'HEAD' | 'ETC' => {
+	switch (itemType) {
+		case 'SWORD':
+		case 'BOW':
+		case 'DAGGER':
+		case 'WAND':
+			return 'HAND';
+		case 'ARMOR':
+		case 'SHIELD':
+			return 'BODY';
+		case 'ACCESSORY':
+			return 'HEAD';
+		default:
+			return 'ETC';
+	}
+};
+
