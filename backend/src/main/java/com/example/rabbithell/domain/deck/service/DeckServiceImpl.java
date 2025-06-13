@@ -103,28 +103,18 @@ public class DeckServiceImpl implements DeckService {
 		List<Deck> allDecks = deckRepository.findAllByCloverIdWithLock(cloverId);
 
 		// 3. 슬롯 해제 대상만 선별
-		List<Deck> decksToRelease = allDecks.stream()
+		List<Deck> decksToUpdate = allDecks.stream()
 			.filter(deck -> {
 				PawCardSlot currentSlot = deck.getPawCardSlot();
 				PawCardSlot requestedSlot = requestedDeckMap.get(deck.getId());
 
-				return currentSlot != null && (!requestedDeckMap.containsKey(deck.getId()) || !currentSlot.equals(
-					requestedSlot));
+				return requestedSlot != null && !requestedSlot.equals(deck.getPawCardSlot());
 			})
 			.toList();
 
-		for (Deck deck : decksToRelease) {
-			deck.equipDeck(null);
-		}
-
-		// 4. 슬롯 장착 대상만 필터링해서 업데이트
-		List<Deck> decksToEquip = allDecks.stream()
-			.filter(deck -> requestedDeckMap.containsKey(deck.getId()))
-			.toList();
-
-		for (Deck deck : decksToEquip) {
+		for (Deck deck : decksToUpdate) {
 			PawCardSlot newSlot = requestedDeckMap.get(deck.getId());
-			deck.equipDeck(newSlot);
+			deck.equipDeck(newSlot); // 새로 장착 or 기존에서 변경
 		}
 
 		// 5. Redis 캐싱용 최종 장착 상태 조회
