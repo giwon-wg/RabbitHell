@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.inventory.entity;
 
+import java.util.Random;
+
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.inventory.enums.Slot;
@@ -71,10 +73,10 @@ public class InventoryItem extends BaseEntity {
 	public InventoryItem(Inventory inventory, Item item) {
 		this.inventory = inventory;
 		this.item = item;
-		this.power = (item.getMaxPower() + item.getMinPower()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.power = generateSkewedPower(item.getMinPower(), item.getMaxPower());
 		this.maxDurability = item.getMaxDurability();
 		this.durability = item.getMaxDurability();
-		this.weight = (item.getMaxWeight() + item.getMinWeight()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.weight = generateSkewedWeight(item.getMinWeight(), item.getMaxWeight());
 	}
 
 	public void equip(GameCharacter character) {
@@ -96,6 +98,20 @@ public class InventoryItem extends BaseEntity {
 		this.power = power;
 		this.weight = weight;
 		this.isHidden = false;
+	}
+
+	private long generateSkewedPower(double minPower, double maxPower) {
+		// 높은 값은 적게, 낮은 값은 많이 등장
+		double skewedRandom = Math.pow(new Random().nextDouble(), 2);
+		double weightRange = maxPower - minPower;
+		return (long) (minPower + (weightRange * skewedRandom));
+	}
+
+	private long generateSkewedWeight(double minWeight, double maxWeight) {
+		// 낮은 값은 적게, 높은 값은 많이 등장
+		double skewedRandom = 1 - Math.pow(new Random().nextDouble(), 2);
+		double weightRange = maxWeight - minWeight;
+		return (long) (minWeight + (weightRange * skewedRandom));
 	}
 
 }
