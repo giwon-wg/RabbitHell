@@ -1,5 +1,8 @@
 package com.example.rabbithell.common.util;
 
+import static com.example.rabbithell.common.effect.enums.StatType.*;
+import static com.example.rabbithell.domain.pawcard.enums.CardEmblem.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,9 +16,11 @@ import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.deck.entity.Deck;
 import com.example.rabbithell.domain.deck.entity.EffectDetail;
 import com.example.rabbithell.domain.deck.entity.PawCardEffect;
 import com.example.rabbithell.domain.deck.enums.EffectDetailSlot;
+import com.example.rabbithell.domain.deck.repository.DeckRepository;
 import com.example.rabbithell.domain.deck.repository.PawCardEffectRepository;
 import com.example.rabbithell.domain.inventory.entity.Inventory;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
@@ -39,6 +44,8 @@ import com.example.rabbithell.domain.monster.enums.Rating;
 import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterEncounterRepository;
 import com.example.rabbithell.domain.monster.repository.MonsterRepository;
+import com.example.rabbithell.domain.pawcard.entity.PawCard;
+import com.example.rabbithell.domain.pawcard.repository.PawCardRepository;
 import com.example.rabbithell.domain.shop.entity.Shop;
 import com.example.rabbithell.domain.shop.repository.ShopRepository;
 import com.example.rabbithell.domain.specie.entity.Specie;
@@ -72,8 +79,10 @@ public class DataInitializer implements CommandLineRunner {
 	private ItemRepository itemRepository;
 	@Autowired
 	private InventoryRepository inventoryRepository;
+
 	@Autowired
 	private EffectRepository effectRepository;
+
 	@Autowired
 	private InventoryItemRepository inventoryItemRepository;
 
@@ -101,6 +110,12 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private PawCardEffectRepository pawCardEffectRepository;
+
+	@Autowired
+	private PawCardRepository pawCardRepository;
+
+	@Autowired
+	private DeckRepository deckRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -277,32 +292,47 @@ public class DataInitializer implements CommandLineRunner {
 		effectRepository.save(focusEffect);
 		effectRepository.save(luckEffect);
 
-		Item weapon = new Item(shop1, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 100L, 20L, 20L,
-			3L, 3L, 100, false);
-		Item armor = new Item(shop1, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 200L, 20L, 20L, 3L, 3L,
-			100, false);
-		Item accessory = new Item(shop1, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 300L, 20L,
-			20L, 3L, 3L, 100, false);
+		PawCard club1 = new PawCard(100, "클로버 A", 1, CLUB, ATTACK_All_UP, ATTACK_All_UP.getCategory(), ATTACK_All_UP.getDomainType(), false);
+		PawCard club2 = new PawCard(100, "클로버 2", 2, CLUB, ATTACK_All_UP, ATTACK_All_UP.getCategory(), ATTACK_All_UP.getDomainType(), false);
+		PawCard club3 = new PawCard(100, "클로버 3", 3, CLUB, GOLD_RATE, GOLD_RATE.getCategory(), GOLD_RATE.getDomainType(), false);
+		PawCard club4 = new PawCard(100, "클로버 4", 4, CLUB, STRAIGHT_STAT, STRAIGHT_STAT.getCategory(), STRAIGHT_STAT.getDomainType(), false);
+		PawCard club5 = new PawCard(100, "클로버 5", 5, CLUB, FLUSH_STAT, FLUSH_STAT.getCategory(), FLUSH_STAT.getDomainType(), false);
 
-		Item hpPotion = new Item(shop2, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item mpPotion = new Item(shop2, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L,
-			10000, false);
+		pawCardRepository.save(club1);
+		pawCardRepository.save(club2);
+		pawCardRepository.save(club3);
+		pawCardRepository.save(club4);
+		pawCardRepository.save(club5);
 
-		Item feverRemedy = new Item(shop3, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 500L, 0L, 0L,
-			0L, 0L, 10000, false);
-		Item somiGun = new Item(shop3, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 1000L,
-			100L, 50L, 10L, 5L, 10000, false);
-		Item fourCard = new Item(shop3, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH,
-			5000L, 90L, 89L, 19L, 4L, 10000, false);
-		Item airplaneTicket = new Item(shop3, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER,
-			Rarity.UNIQUE, 8000L, 100L, 30L, 10L, 4L, 10000, false);
-		Item wakeUp = new Item(shop3, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 3000L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item slimeBell = new Item(shop4, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 1500L, 0L, 0L, 0L, 0L,
-			10000, false);
-		Item tuxedo = new Item(shop4, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 4000L, 10L, 10L, 3L, 3L,
-			10000, false);
+		Deck deck1 = new Deck(club1, clover);
+		Deck deck2 = new Deck(club2, clover);
+		Deck deck3 = new Deck(club3, clover);
+		Deck deck4 = new Deck(club4, clover);
+		Deck deck5 = new Deck(club5, clover);
+
+
+		deckRepository.save(deck1);
+		deckRepository.save(deck2);
+		deckRepository.save(deck3);
+		deckRepository.save(deck4);
+		deckRepository.save(deck5);
+
+
+
+		Item weapon = new Item(shop1, strengthEffect, "지존킹왕짱당근", "당근쵝오", ItemType.SWORD, Rarity.COMMON, 100L, 20L, 20L, 3L, 3L, 100, false);
+		Item armor = new Item(shop1, hpEffect, "원피스", "예쁜원피스", ItemType.ARMOR, Rarity.COMMON, 200L, 20L, 20L, 3L, 3L, 100, false);
+		Item accessory = new Item(shop1, luckEffect, "토끼풀귀걸이", "행운이깃든귀걸이", ItemType.ACCESSORY, Rarity.COMMON, 300L, 20L, 20L, 3L, 3L, 100, false);
+
+		Item hpPotion = new Item(shop2, null, "HP 포션", "HP를 채워줍니당.", ItemType.HP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L, 10000, false);
+		Item mpPotion = new Item(shop2, null, "MP 포션", "MP를 채워줍니당.", ItemType.MP, Rarity.COMMON, 100L, 0L, 0L, 0L, 0L, 10000, false);
+
+		Item feverRemedy = new Item(shop3, null, "해열제", "기원님 열좀 내리게 해주세요", ItemType.ETC, Rarity.COMMON, 500L, 0L, 0L, 0L, 0L, 10000, false);
+		Item somiGun = new Item(shop3, focusEffect, "소미의 총", "소미님의 총은 백발백중", ItemType.BOW, Rarity.LEGENDARY, 1000L, 100L, 50L, 10L, 5L, 10000, false);
+		Item fourCard = new Item(shop3, intelligenceEffect, "포카드", "효성님은 포카드 하는중", ItemType.ACCESSORY, Rarity.MYTH, 5000L, 90L, 89L, 19L, 4L, 10000, false);
+		Item airplaneTicket = new Item(shop3, agilityEffect, "제주도행 비행기 표", "지윤님 잘 다녀오세요.", ItemType.DAGGER, Rarity.UNIQUE, 8000L, 100L, 30L, 10L, 4L, 10000, false);
+		Item wakeUp = new Item(shop3, null, "잠깨는 약", "전화왔어요 일어나세요!!", ItemType.ETC, Rarity.RARE, 3000L, 0L, 0L, 0L, 0L, 10000, false);
+		Item slimeBell = new Item(shop4, null, "슬라임의 방울", "쫀득하니 맛있어요", ItemType.ETC, Rarity.RARE, 1500L, 0L, 0L, 0L, 0L, 10000, false);
+		Item tuxedo = new Item(shop4, hpEffect, "턱시도", "멋쟁이", ItemType.ARMOR, Rarity.RARE, 4000L, 10L, 10L, 3L, 3L, 10000, false);
 
 		itemRepository.save(weapon);
 		itemRepository.save(armor);
