@@ -71,6 +71,7 @@ const CharacterDetailPage = () => {
 		}
 	}
 
+
 	const fetchEquipableItems = async (
 		slot: 'HAND' | 'BODY' | 'HEAD',
 		setter: React.Dispatch<React.SetStateAction<any[]>>
@@ -225,6 +226,11 @@ const CharacterDetailPage = () => {
 				<p>Lv. {character.level}</p>
 				<p>HP: {character.hp} / {character.maxHp}</p>
 				<p>MP: {character.mp} / {character.maxMp}</p>
+				<p>strength: {character.strength} / {character.strength}</p>
+				<p>agility: {character.agility} / {character.agility}</p>
+				<p>intelligence: {character.intelligence} / {character.intelligence}</p>
+				<p>focus: {character.focus} / {character.focus}</p>
+				<p>luck: {character.luck} / {character.luck}</p>
 				<h4>스탯</h4>
 				<div style={{
 					display: 'flex',
