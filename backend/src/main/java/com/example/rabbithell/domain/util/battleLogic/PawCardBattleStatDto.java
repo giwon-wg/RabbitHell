@@ -1,4 +1,4 @@
-package com.example.rabbithell.domain.util.battleLogic;
+package com.example.rabbithell.domain.util.battlelogic;
 
 import lombok.Getter;
 

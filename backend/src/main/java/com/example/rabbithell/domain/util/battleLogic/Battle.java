@@ -1,4 +1,4 @@
-package com.example.rabbithell.domain.util.battleLogic;
+package com.example.rabbithell.domain.util.battlelogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,6 +170,11 @@ public class Battle {
 					}
 				}
 			}
+
+			if (monsterHp == 0) {
+				log.append("\n").append(monster.getMonsterName()).append("이(가) 죽었습니다.");
+			}
+
 			for (int i = 0; i < clover.size(); i++) {
 				log.append("\n").append(clover.get(i).getName()).append(" ")
 					.append(" HP: ").append(playerHp.get(i)).append("/").append(clover.get(i).getMaxHp())
@@ -191,6 +196,7 @@ public class Battle {
 			.battleResult(battleResult)
 			.playerHp(playerHp)
 			.playerMp(playerMp)
+			.monsterHp(monsterHp)
 			.playerAttack(playerAttack)
 			.playerDefense(playerDefense)
 			.playerSpeed(playerSpeed)
