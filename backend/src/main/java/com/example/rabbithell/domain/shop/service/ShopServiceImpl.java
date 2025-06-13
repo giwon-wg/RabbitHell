@@ -140,7 +140,7 @@ public class ShopServiceImpl implements ShopService {
 			clover.spendCashAndSaving((int)totalPrice);
 		} else if (saving >= totalPrice) {
 			// 저축에서 차감
-			clover.spendSaving((int)totalPrice);
+			clover.useFromSaving((int)totalPrice);
 		} else {
 			throw new ShopException(NOT_ENOUGH_MONEY);
 		}
