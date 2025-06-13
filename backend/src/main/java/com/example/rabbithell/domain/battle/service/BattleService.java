@@ -84,7 +84,7 @@ public class BattleService {
 		List<Integer> maxHp = team.stream().map(GameCharacter::getMaxHp).toList();
 		List<Integer> maxMp = team.stream().map(GameCharacter::getMaxMp).toList();
 
-		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
+		BattleResultVo battleResultVo = battle.executeBattle(authUser, clover, monster);
 
 		BattleRewardStrategy strategy = battleRewardStrategyFactory.getStrategy(battleResultVo.getBattleResult());
 		BattleRewardResultVo reward = strategy.applyReward(clover, team, monster, battleFieldType);
