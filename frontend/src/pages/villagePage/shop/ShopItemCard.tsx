@@ -1,8 +1,11 @@
 // ShopItemCard.tsx
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-const ShopItemCard = ({ item, onBuy }: { item: any, onBuy?: (newCash: number) => void }) => {
+const ShopItemCard = ({item, onBuy}: {
+	item: any,
+	onBuy?: (updatedBalance: { cash: number, saving: number }) => void
+}) => {
 	const [isHovered, setIsHovered] = useState(false);
 
 	const handleBuy = async () => {
@@ -28,7 +31,9 @@ const ShopItemCard = ({ item, onBuy }: { item: any, onBuy?: (newCash: number) =>
 			alert(`'${item.itemName}' 구매 완료!`);
 
 			if (onBuy) {
-				onBuy(json.result.cash);
+				// 서버 응답에 cash와 saving이 모두 포함되어 있다고 가정하고 객체로 전달합니다.
+				// onBuy(json.result) 와 같이 서버 응답 구조에 따라 더 간단하게 작성할 수도 있습니다.
+				onBuy({cash: json.result.cash, saving: json.result.saving});
 			}
 		} catch (error) {
 			console.error("Purchase error:", error);
@@ -38,10 +43,10 @@ const ShopItemCard = ({ item, onBuy }: { item: any, onBuy?: (newCash: number) =>
 
 	const rarityColor: { [key: string]: string } = {
 		'COMMON': '#A0A0A0',
-		'RARE': '#61b685',
-		'UNIQUE': '#3498DB',
+		'UNCOMMON': '#2ECC71',
+		'RARE': '#3498DB',
+		'EPIC': '#9B59B6',
 		'LEGENDARY': '#F1C40F',
-		'MYTH': '#9B59B6',
 	};
 
 	const styles = {
