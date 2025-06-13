@@ -11,9 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.enums.BattleResult;
+import com.example.rabbithell.domain.battle.service.BattleStatService;
 import com.example.rabbithell.domain.battle.vo.BattleResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
-import com.example.rabbithell.domain.characterSkill.service.CharacterSkillService;
+import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 import com.example.rabbithell.domain.item.entity.Item;
@@ -29,10 +30,10 @@ import lombok.RequiredArgsConstructor;
 public class Battle {
 
 	private final InventoryItemService inventoryItemService;
-	private final CharacterSkillService characterSkillService;
+	private final BattleStatService battleStatService;
 
 	@Transactional
-	public BattleResultVo executeBattle(AuthUser authUser, List<GameCharacter> clover, Monster monster) {
+	public BattleResultVo executeBattle(AuthUser authUser, Clover team, Monster monster) {
 
 		List<Integer> playerHp = new ArrayList<>();
 		List<Integer> playerMp = new ArrayList<>();
@@ -45,9 +46,12 @@ public class Battle {
 		int monsterMaxHp = monster.getHp();
 
 		// 아이템 추가부분 포카드
+		List<GameCharacter> clover = team.getMembers();
 		List<InventoryItem> weapons = new ArrayList<>();
 		List<InventoryItem> armors = new ArrayList<>();
 		List<InventoryItem> accessories = new ArrayList<>();
+
+		PawCardBattleStatDto pawCardBattleStatDto = battleStatService.calculatePawCard(team.getId());
 
 		for (GameCharacter rabbit : clover) {
 
@@ -81,24 +85,23 @@ public class Battle {
 				playerAttack.add(rabbit.getStrength());
 				playerMagic.add((int)(rabbit.getIntelligence() + weapon.getPower()));
 			} else {
-				playerAttack.add((int)(rabbit.getStrength() + (weapon != null ? weapon.getPower() : 0)));
+				playerAttack.add((int)(rabbit.getStrength() + (weapon != null ? weapon.getPower() : 0)
+					+ pawCardBattleStatDto.getAttackBonus()) * (pawCardBattleStatDto.getAttackPercent() == 0 ? 100 :
+					pawCardBattleStatDto.getAttackPercent()) / 100);
 				playerMagic.add(rabbit.getIntelligence());
 			}
 
 			playerDefense.add(
-				(int)(30 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() : 0)));
-			playerSpeed.add((int)(rabbit.getAgility()
-				- (weapon != null ? weapon.getWeight() : 0)
-				- (armor != null ? armor.getWeight() : 0)
-				- (accessory != null ? accessory.getWeight() : 0)
-			));
+				(int)(30 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() : 0))
+					+ pawCardBattleStatDto.getDefenseBonus());
+			playerSpeed.add((int)(
+				rabbit.getAgility() - (weapon != null ? weapon.getWeight() : 0) - (armor != null ? armor.getWeight() :
+					0) - (accessory != null ? accessory.getWeight() : 0) + pawCardBattleStatDto.getSpeedBonus()));
 			criticalChances.add(20 + rabbit.getFocus() / 10);
 		}
 
 		List<ActionEntity> turnQueue = buildTurnQueue(clover, monster, playerHp, playerMp, playerAttack, playerMagic,
-			playerDefense,
-			playerSpeed,
-			criticalChances);
+			playerDefense, playerSpeed, criticalChances);
 
 		StringBuilder log = new StringBuilder("Battle Result: ");
 		int monsterHp = monster.getHp();
@@ -159,8 +162,7 @@ public class Battle {
 							.append("회 공격!");
 						for (int i = 0; i < attackCount; i++) {
 							int damage = calculateDamage(actor.attack, playerDefense.get(targetIndex),
-								actor.criticalChance, random,
-								log, monster.getMonsterName());
+								actor.criticalChance, random, log, monster.getMonsterName());
 							playerHp.set(targetIndex, Math.max(0, playerHp.get(targetIndex) - damage));
 							if (playerHp.get(targetIndex) == 0) {
 								log.append("\n").append(clover.get(targetIndex).getName()).append("이(가) 사망하였습니다.");
@@ -176,9 +178,17 @@ public class Battle {
 			}
 
 			for (int i = 0; i < clover.size(); i++) {
-				log.append("\n").append(clover.get(i).getName()).append(" ")
-					.append(" HP: ").append(playerHp.get(i)).append("/").append(clover.get(i).getMaxHp())
-					.append(" MP: ").append(clover.get(i).getMp()).append("/").append(clover.get(i).getMaxMp());
+				log.append("\n")
+					.append(clover.get(i).getName())
+					.append(" ")
+					.append(" HP: ")
+					.append(playerHp.get(i))
+					.append("/")
+					.append(clover.get(i).getMaxHp())
+					.append(" MP: ")
+					.append(clover.get(i).getMp())
+					.append("/")
+					.append(clover.get(i).getMaxMp());
 			}
 			log.append("\n")
 				.append(monster.getMonsterName())
@@ -188,9 +198,8 @@ public class Battle {
 				.append(monsterMaxHp);
 		}
 
-		BattleResult battleResult = (!playerHpCheck(playerHp) && monsterHp <= 0) ? BattleResult.WIN
-			: (playerHpCheck(playerHp) && monsterHp > 0) ? BattleResult.LOSE
-			: BattleResult.DRAW;
+		BattleResult battleResult = (!playerHpCheck(playerHp) && monsterHp <= 0) ? BattleResult.WIN :
+			(playerHpCheck(playerHp) && monsterHp > 0) ? BattleResult.LOSE : BattleResult.DRAW;
 
 		return BattleResultVo.builder()
 			.battleResult(battleResult)
@@ -220,22 +229,20 @@ public class Battle {
 
 	}
 
-	private List<ActionEntity> buildTurnQueue(List<GameCharacter> clover, Monster monster,
-		List<Integer> playerHps, List<Integer> playerMps, List<Integer> attacks, List<Integer> magics,
-		List<Integer> defenses, List<Integer> speeds,
-		List<Integer> crits) {
+	private List<ActionEntity> buildTurnQueue(List<GameCharacter> clover, Monster monster, List<Integer> playerHps,
+		List<Integer> playerMps, List<Integer> attacks, List<Integer> magics, List<Integer> defenses,
+		List<Integer> speeds, List<Integer> crits) {
 
 		List<ActionEntity> queue = new ArrayList<>();
 
 		for (int i = 0; i < clover.size(); i++) {
 			GameCharacter rabbit = clover.get(i);
-			queue.add(new ActionEntity(rabbit.getName(), speeds.get(i), true,
-				playerHps.get(i), playerMps.get(i), attacks.get(i), magics.get(i), defenses.get(i), crits.get(i),
-				rabbit));
+			queue.add(new ActionEntity(rabbit.getName(), speeds.get(i), true, playerHps.get(i), playerMps.get(i),
+				attacks.get(i), magics.get(i), defenses.get(i), crits.get(i), rabbit));
 		}
 
-		queue.add(new ActionEntity(monster.getMonsterName(), monster.getSpeed(), false,
-			monster.getHp(), null, monster.getAttack(), null, monster.getDefense(), 0, null));
+		queue.add(new ActionEntity(monster.getMonsterName(), monster.getSpeed(), false, monster.getHp(), null,
+			monster.getAttack(), null, monster.getDefense(), 0, null));
 
 		queue.sort((a, b) -> Integer.compare(b.speed, a.speed));
 		return queue;
