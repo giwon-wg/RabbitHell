@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.character.repository.CharacterRepository;
-import com.example.rabbithell.domain.chat.entity.ChatRoom;
-import com.example.rabbithell.domain.chat.repository.ChatRoomRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.deck.entity.Deck;
@@ -79,7 +77,6 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private ItemRepository itemRepository;
-
 	@Autowired
 	private InventoryRepository inventoryRepository;
 
@@ -108,7 +105,6 @@ public class DataInitializer implements CommandLineRunner {
 
 	@Autowired
 	private KingdomRepository kingdomRepository;
-
 	@Autowired
 	private DropRateRepository dropRateRepository;
 
