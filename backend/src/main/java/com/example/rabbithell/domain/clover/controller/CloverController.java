@@ -1,6 +1,5 @@
 package com.example.rabbithell.domain.clover.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import com.example.rabbithell.domain.auth.domain.MiniAuthUser;
 import com.example.rabbithell.domain.clover.dto.response.CloverNameResponse;
 import com.example.rabbithell.domain.clover.dto.response.CloverPublicResponse;
 import com.example.rabbithell.domain.clover.dto.response.CloverResponse;
-import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.clover.service.CloverService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,20 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CloverController {
 
-	private final CloverRepository cloverRepository;
 	private final CloverService cloverService;
 
 	@GetMapping("/oauth2/clover/me")
 	public ResponseEntity<CommonResponse<Map<String, Object>>> checkCloverExistence(
 		@AuthenticationPrincipal MiniAuthUser authUser) {
 
-		log.info("미니 인증 유저: {}", authUser);
-
-		Long userId = authUser.getUserId();
-		boolean hasClover = cloverRepository.existsByUserId(userId);
-
-		Map<String, Object> result = new HashMap<>();
-		result.put("hasClover", hasClover);
+		Map<String, Object> result = cloverService.getCloverInfoForMiniToken(authUser.getUserId());
 
 		return ResponseEntity.ok(CommonResponse.of(
 			true,

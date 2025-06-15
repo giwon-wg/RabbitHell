@@ -3,7 +3,9 @@ package com.example.rabbithell.domain.inventory.service;
 import static com.example.rabbithell.domain.inventory.exception.code.InventoryItemExceptionCode.*;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,18 +52,11 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot,
-		Pageable pageable) {
+	public PageResponse<InventoryItemResponse> getAllInventoryItems(Long userId, Pageable pageable) {
 		Inventory inventory = getMyInventory(userId);
 
-		Page<InventoryItem> page;
-
-		// 슬롯 조건이 있으면 적용, 없으면 인벤토리 내 모든 아이템 조회
-		if (slot != null) {
-			page = inventoryItemRepository.findByInventoryAndSlot(inventory, slot, pageable);
-		} else {
-			page = inventoryItemRepository.findAll(pageable);
-		}
+		// 현재 로그인한 유저의 인벤토리 내 모든 아이템 조회
+		Page<InventoryItem> page = inventoryItemRepository.findByInventory(inventory, pageable);
 
 		List<InventoryItemResponse> dtoList = page.getContent().stream()
 			.map(InventoryItemResponse::fromEntity)
@@ -90,12 +85,13 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 	@Override
 	public EquipResponse getEquippedItemsByCharacter(Long userId, Long characterId) {
 		// 현재 로그인한 유저의 캐릭터가 맞는지 검증
-		// characterRepository.validateOwner(characterId, userId);
+		characterRepository.validateOwner(characterId, userId);
 
 		// 캐릭터가 장착한 아이템 반환
 		return inventoryItemRepository.findEquipmentStatusByCharacter(characterId);
 	}
 
+	@Cacheable(key = "#characterId", value = "equippedItems")
 	@Transactional(readOnly = true)
 	@Override
 	public List<Item> getEquippedItemsByCharacter(Long characterId) {
@@ -106,6 +102,7 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 			.toList();
 	}
 
+	@Cacheable(key = "#characterId", value = "equippedInventoryItems")
 	@Transactional(readOnly = true)
 	@Override
 	public List<InventoryItem> getEquippedInventoryItemsByCharacter(Long characterId) {
@@ -180,6 +177,37 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 		// 인벤토리 아이템 삭제
 		inventoryItemRepository.delete(inventoryItem);
+	}
+
+	@Transactional
+	@Override
+	public InventoryItemResponse appraiseItem(Long userId, Long inventoryItemId) {
+		// 인벤토리 아이템 조회 및 유저 검증
+		InventoryItem inventoryItem = inventoryItemRepository.findByIdAndValidateOwner(inventoryItemId, userId);
+
+		// 아이템이 숨겨진 상태가 아니면 예외 발생
+		if (!inventoryItem.getIsHidden()) {
+			throw new InventoryItemException(NOT_HIDDEN);
+		}
+
+		// 아이템 감정 로직 시작
+		Item item = inventoryItem.getItem();
+		Long minPower = item.getMinPower();
+		Long maxPower = item.getMaxPower();
+		Long minWeight = item.getMinWeight();
+		Long maxWeight = item.getMaxWeight();
+
+		double random = ThreadLocalRandom.current().nextDouble(); // 0.0 ~ 1.0 사이
+		double skewedToMin = Math.pow(random, 2); // 낮은 값이 나올 확률이 높게 조정
+		Long power = minPower + (long)((maxPower - minPower + 1) * skewedToMin);
+
+		random = ThreadLocalRandom.current().nextDouble();
+		double skewedToMax = Math.pow(random, 0.5); // 높은 값이 나올 확률이 높게 조정
+		Long weight = minWeight + (long)((maxWeight - minWeight + 1) * skewedToMax);
+
+		// 아이템 스탯 확정
+		inventoryItem.appraise(power, weight);
+		return InventoryItemResponse.fromEntity(inventoryItem);
 	}
 
 	// 나의 인벤토리 조회

@@ -1,9 +1,16 @@
 package com.example.rabbithell.domain.battle.postProcess.command;
 
+import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.clover.entity.Clover;
+
 public interface BattleRewardCommand {
 
-	void execute();
-	// execute...
+	default void execute(GameCharacter ch) {
 
-	// 골드획득 구현체, 경험치 획득구현체, 아이템...
+	}
+
+	default void execute(Clover clover) {
+
+	}
+
 }

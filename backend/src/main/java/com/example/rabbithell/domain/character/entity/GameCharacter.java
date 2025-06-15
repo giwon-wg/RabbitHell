@@ -2,20 +2,16 @@ package com.example.rabbithell.domain.character.entity;
 
 import static com.example.rabbithell.domain.skill.exception.code.SkillExceptionCode.*;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import com.example.rabbithell.common.audit.BaseEntity;
-import com.example.rabbithell.domain.characterSkill.entity.CharacterSkill;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.job.entity.JobCategory;
 import com.example.rabbithell.domain.skill.exception.SkillException;
 import com.example.rabbithell.domain.user.model.User;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -29,7 +25,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyEnumerated;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -146,8 +141,16 @@ public class GameCharacter extends BaseEntity {
 		this.skillPoint = skillPoint;
 	}
 
+	public void updateExp(int value) {
+		this.exp = value;
+	}
+
 	public int totalSkillPoint() {
 		return (warriorPoint + thiefPoint + wizardPoint + archerPoint);
+	}
+
+	public void updateSkillPoint(int value) {
+		this.skillPoint = value;
 	}
 
 	// 스킬 포인트 증가
@@ -188,8 +191,23 @@ public class GameCharacter extends BaseEntity {
 		this.job = newJob;
 	}
 
+	public void updateJobPoint(int value) {
+		if (this.job.getJobCategory() == JobCategory.WARRIOR) {
+			this.warriorPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.THIEF) {
+			this.thiefPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.ARCHER) {
+			this.archerPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.WIZARD) {
+			this.wizardPoint += value;
+		} else if (this.job.getJobCategory() == JobCategory.INCOMPETENT) {
+			this.incompetentPoint += value;
+		}
+	}
+
 	public void updateStrength(int value) {
 		this.strength = value;
+		this.maxHp = value * 10;
 	}
 
 	public void updateAgility(int value) {
@@ -198,10 +216,15 @@ public class GameCharacter extends BaseEntity {
 
 	public void updateIntelligence(int value) {
 		this.intelligence = value;
+		this.maxMp = value * 10;
 	}
 
 	public void updateFocus(int value) {
 		this.focus = value;
+	}
+
+	public void updateLevel(int resultLevel) {
+		this.level = resultLevel;
 	}
 
 	// 전직시 저장
@@ -210,11 +233,6 @@ public class GameCharacter extends BaseEntity {
 		if (tier > currentTier) {
 			jobHistory.put(category, tier);
 		}
-	}
-
-	// 직업군 별로 전직했는지 확인
-	public boolean hasExperienced(JobCategory category, int atLeastTier) {
-		return jobHistory.getOrDefault(category, 0) >= atLeastTier;
 	}
 
 	// 행운

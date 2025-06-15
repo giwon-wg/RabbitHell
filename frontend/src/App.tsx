@@ -11,7 +11,7 @@ import LoginPage from './pages/LoginPage';
 import OAuthSuccessPage from './pages/OAuthSuccessPage';
 import CloverCreatePage from './pages/CloverCreatePage';
 import MyInfoPage from './pages/myinfo/MyInfoPage';
-import CharacterDetailPage from './pages/myinfo/CharacterDetailPage';
+import CharacterDetailPage from './pages/myinfo/characterDetail/CharacterDetailPage';
 import MainPage from './pages/main/MainPage';
 import BattleMainPage from "./pages/battlePage/BattlePage";
 import VillageMainPage from "./pages/villagePage/VillagePage";
@@ -25,6 +25,11 @@ import WordMap from "./pages/WorldMap";
 import Bank from "./pages/villagePage/bank/Bank";
 import HospitalPage from './pages/villagePage/hospital/Hospital';
 import ChatMessageToall from "./pages/ChatMessagePage/ChatMessageToall";
+import CharacterCreatePage from './pages/CharacterCreatePage';
+import InventoryPage from "./pages/myinfo/inventory/InventoryPage";
+import Shop from "./pages/villagePage/shop/ShopPage";
+import JobPage from "./pages/myinfo/characterDetail/job/JobPage";
+import PawCardPage from "./pages/myinfo/pawCrad/PawCardPage";
 
 type DecodedToken = {
 	exp: number;
@@ -96,20 +101,26 @@ const RoutesWithLayout = () => {
 			<Route path="/oauth/success" element={<OAuthSuccessPage />} />
 			<Route path="/create-clover" element={<CloverCreatePage />} />
 			<Route path="/chat" element={<ChatMessageToall/>}/>
+			<Route path="/character/create" element={<CharacterCreatePage />} />
 
 			{/* Layout 적용 대상 경로들 */}
 			<Route element={<LayoutWrapper hide={shouldHideLayout} />}>
 				<Route path="/me" element={<MyInfoPage />} />
+				<Route path="/me/pawCard" element={<PawCardPage />} />
+				<Route path="/me/inventory" element={<InventoryPage />} />
 				<Route path="/me/:characterName" element={<CharacterDetailPage />} />
+				<Route path="/me/:characterName/job" element={<JobPage />} />
 				<Route path="/main" element={<MainPage />} />
 				<Route path="/battle" element={<BattleMainPage />} />
 				<Route path="/village" element={<VillageMainPage />} />
 				<Route path="/village/bank" element={<Bank />} />
+				<Route path="/village/shop/:villageId" element={<Shop />} />
 				<Route path="/hospital" element={<HospitalPage />} />
 				<Route path="/community" element={<CommunityPage />} />
 				<Route path="/community/:postId" element={<PostDetailPage />} />
 				<Route path="/community/write" element={<PostWritePage />} />
 				<Route path="/map" element={<WordMap />} />
+
 			</Route>
 		</Routes>
 	);

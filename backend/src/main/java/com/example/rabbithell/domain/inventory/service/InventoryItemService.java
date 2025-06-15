@@ -19,7 +19,7 @@ public interface InventoryItemService {
 
 	InventoryItemResponse getInventoryItemById(Long userId, Long inventoryItemId);
 
-	PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot, Pageable pageable);
+	PageResponse<InventoryItemResponse> getAllInventoryItems(Long userId, Pageable pageable);
 
 	PageResponse<EquipableItemResponse> getAllEquipableInventoryItems(Long userId, Slot slot, Pageable pageable);
 
@@ -36,5 +36,7 @@ public interface InventoryItemService {
 	UseResponse useItem(Long userId, Long inventoryItemId, UseRequest useRequest);
 
 	void discardItem(Long userId, Long inventoryItemId);
+
+	InventoryItemResponse appraiseItem(Long userId, Long inventoryItemId);
 
 }

@@ -16,7 +16,7 @@ public class BattleResultVo {
 
 	private List<Integer> playerAttack, playerDefense, playerSpeed;
 	private List<InventoryItem> weapon, armor, accessory;
-	private int monsterAttack, monsterDefense, monsterSpeed;
+	private int monsterHp, monsterAttack, monsterDefense, monsterSpeed;
 
 	private String log;
 

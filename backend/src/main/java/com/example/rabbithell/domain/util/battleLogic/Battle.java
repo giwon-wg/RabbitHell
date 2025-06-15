@@ -1,4 +1,4 @@
-package com.example.rabbithell.domain.util.battleLogic;
+package com.example.rabbithell.domain.util.battlelogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,31 +11,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
 import com.example.rabbithell.domain.battle.enums.BattleResult;
+import com.example.rabbithell.domain.battle.service.BattleStatService;
 import com.example.rabbithell.domain.battle.vo.BattleResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.inventory.entity.InventoryItem;
 import com.example.rabbithell.domain.inventory.service.InventoryItemService;
 import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.item.enums.ItemType;
-import com.example.rabbithell.domain.item.repository.ItemRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
-import com.example.rabbithell.domain.skill.entity.Skill;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class Battle {
 
 	private final InventoryItemService inventoryItemService;
-
-	@Autowired
-	public Battle(InventoryItemService inventoryItemService, ItemRepository itemRepository) {
-		this.inventoryItemService = inventoryItemService;
-	}
+	private final BattleStatService battleStatService;
 
 	@Transactional
-	public BattleResultVo executeBattle(AuthUser authUser, List<GameCharacter> clover, Monster monster) {
+	public BattleResultVo executeBattle(AuthUser authUser, Clover team, Monster monster) {
 
 		List<Integer> playerHp = new ArrayList<>();
 		List<Integer> playerMp = new ArrayList<>();
@@ -45,21 +43,22 @@ public class Battle {
 		List<Integer> playerSpeed = new ArrayList<>();
 		List<Integer> criticalChances = new ArrayList<>();
 		List<Job> jobs = new ArrayList<>();
+		int monsterMaxHp = monster.getHp();
 
 		// 아이템 추가부분 포카드
+		List<GameCharacter> clover = team.getMembers();
 		List<InventoryItem> weapons = new ArrayList<>();
 		List<InventoryItem> armors = new ArrayList<>();
 		List<InventoryItem> accessories = new ArrayList<>();
 
-		InventoryItem weapon = null, armor = null, accessory = null;
-
-		List<List<Skill>> skills = new ArrayList<>();
+		PawCardBattleStatDto pawCardBattleStatDto = battleStatService.calculatePawCard(team.getId());
 
 		for (GameCharacter rabbit : clover) {
 
 			jobs.add(rabbit.getJob());
 
-			// skills.add(rabbit.getSkill());
+			// 캐릭터마다 새로운 인벤토리 아이템 선언
+			InventoryItem weapon = null, armor = null, accessory = null;
 
 			List<InventoryItem> items = inventoryItemService.getEquippedInventoryItemsByCharacter(rabbit.getId());
 			for (InventoryItem inventoryItem : items) {
@@ -67,42 +66,42 @@ public class Battle {
 				if (item.getItemType() == ItemType.BOW || item.getItemType() == ItemType.DAGGER
 					|| item.getItemType() == ItemType.SWORD || item.getItemType() == ItemType.WAND) {
 					weapon = inventoryItem;
-					weapons.add(weapon);
 				} else if (item.getItemType() == ItemType.ARMOR) {
 					armor = inventoryItem;
-					armors.add(armor);
-				} else if (item.getItemType() == ItemType.ACCESSORY) {//ACCESSORY
+				} else if (item.getItemType() == ItemType.ACCESSORY) {
 					accessory = inventoryItem;
-					accessories.add(accessory);
 				}
 			}
 
+			// 장착 장비가 null이 아닌 경우에만 추가
+			weapons.add(weapon);
+			armors.add(armor);
+			accessories.add(accessory);
+
+			// 나머지 계산
 			playerHp.add(rabbit.getHp());
 			playerMp.add(rabbit.getMp());
-			if (weapon != null && weapon.getItem().getItemType() == ItemType.WAND) {//WAND
+			if (weapon != null && weapon.getItem().getItemType() == ItemType.WAND) {
 				playerAttack.add(rabbit.getStrength());
 				playerMagic.add((int)(rabbit.getIntelligence() + weapon.getPower()));
 			} else {
-				playerAttack.add((int)(rabbit.getStrength() + (weapon != null ? weapon.getPower() : 0)));
+				playerAttack.add((int)(rabbit.getStrength() + (weapon != null ? weapon.getPower() : 0)
+					+ pawCardBattleStatDto.getAttackBonus()) * (pawCardBattleStatDto.getAttackPercent() == 0 ? 100 :
+					pawCardBattleStatDto.getAttackPercent()) / 100);
 				playerMagic.add(rabbit.getIntelligence());
 			}
 
 			playerDefense.add(
-				(int)(100 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() :
-					0)));
-			playerSpeed.add((int)(rabbit.getAgility() -
-				(weapon != null ? weapon.getWeight() : 0) -
-				(armor != null ? armor.getWeight() : 0) -
-				(accessory != null ? accessory.getWeight() : 0)
-			));
+				(int)(30 + (armor != null ? armor.getPower() : 0) + (accessory != null ? accessory.getPower() : 0))
+					+ pawCardBattleStatDto.getDefenseBonus());
+			playerSpeed.add((int)(
+				rabbit.getAgility() - (weapon != null ? weapon.getWeight() : 0) - (armor != null ? armor.getWeight() :
+					0) - (accessory != null ? accessory.getWeight() : 0) + pawCardBattleStatDto.getSpeedBonus()));
 			criticalChances.add(20 + rabbit.getFocus() / 10);
-
 		}
 
 		List<ActionEntity> turnQueue = buildTurnQueue(clover, monster, playerHp, playerMp, playerAttack, playerMagic,
-			playerDefense,
-			playerSpeed,
-			criticalChances);
+			playerDefense, playerSpeed, criticalChances);
 
 		StringBuilder log = new StringBuilder("Battle Result: ");
 		int monsterHp = monster.getHp();
@@ -138,7 +137,7 @@ public class Battle {
 					for (int i = 0; i < attackCount; i++) {
 						int damage = calculateDamage(actor.attack, monster.getDefense(), actor.criticalChance, random,
 							log, actor.name);
-						monsterHp -= damage;
+						monsterHp = Math.max(monsterHp - damage, 0);
 
 						// 스킬 구현 예정
 					}
@@ -156,15 +155,14 @@ public class Battle {
 
 						log.append("\n")
 							.append(monster.getMonsterName())
-							.append("이 ")
+							.append("이(가) ")
 							.append(clover.get(targetIndex).getName())
 							.append("을(를) ")
 							.append(attackCount)
 							.append("회 공격!");
 						for (int i = 0; i < attackCount; i++) {
 							int damage = calculateDamage(actor.attack, playerDefense.get(targetIndex),
-								actor.criticalChance, random,
-								log, monster.getMonsterName());
+								actor.criticalChance, random, log, monster.getMonsterName());
 							playerHp.set(targetIndex, Math.max(0, playerHp.get(targetIndex) - damage));
 							if (playerHp.get(targetIndex) == 0) {
 								log.append("\n").append(clover.get(targetIndex).getName()).append("이(가) 사망하였습니다.");
@@ -173,24 +171,41 @@ public class Battle {
 						}
 					}
 				}
-
-				for (int i = 0; i < clover.size(); i++) {
-					log.append("\n").append(clover.get(i).getName()).append(" ")
-						.append("\n 현재 HP: ").append(playerHp.get(i)).append("/").append(clover.get(i).getMaxHp())
-						.append(" 현재 MP: ").append(clover.get(i).getMp()).append("/").append(clover.get(i).getMaxMp());
-				}
-				log.append("\n").append(monster.getMonsterName()).append("HP: ").append(monsterHp);
 			}
+
+			if (monsterHp == 0) {
+				log.append("\n").append(monster.getMonsterName()).append("이(가) 죽었습니다.");
+			}
+
+			for (int i = 0; i < clover.size(); i++) {
+				log.append("\n")
+					.append(clover.get(i).getName())
+					.append(" ")
+					.append(" HP: ")
+					.append(playerHp.get(i))
+					.append("/")
+					.append(clover.get(i).getMaxHp())
+					.append(" MP: ")
+					.append(clover.get(i).getMp())
+					.append("/")
+					.append(clover.get(i).getMaxMp());
+			}
+			log.append("\n")
+				.append(monster.getMonsterName())
+				.append(" HP: ")
+				.append(monsterHp)
+				.append("/")
+				.append(monsterMaxHp);
 		}
 
-		BattleResult battleResult = (!playerHpCheck(playerHp) && monsterHp <= 0) ? BattleResult.WIN
-			: (playerHpCheck(playerHp) && monsterHp > 0) ? BattleResult.LOSE
-			: BattleResult.DRAW;
+		BattleResult battleResult = (!playerHpCheck(playerHp) && monsterHp <= 0) ? BattleResult.WIN :
+			(playerHpCheck(playerHp) && monsterHp > 0) ? BattleResult.LOSE : BattleResult.DRAW;
 
 		return BattleResultVo.builder()
 			.battleResult(battleResult)
 			.playerHp(playerHp)
 			.playerMp(playerMp)
+			.monsterHp(monsterHp)
 			.playerAttack(playerAttack)
 			.playerDefense(playerDefense)
 			.playerSpeed(playerSpeed)
@@ -214,22 +229,20 @@ public class Battle {
 
 	}
 
-	private List<ActionEntity> buildTurnQueue(List<GameCharacter> clover, Monster monster,
-		List<Integer> playerHps, List<Integer> playerMps, List<Integer> attacks, List<Integer> magics,
-		List<Integer> defenses, List<Integer> speeds,
-		List<Integer> crits) {
+	private List<ActionEntity> buildTurnQueue(List<GameCharacter> clover, Monster monster, List<Integer> playerHps,
+		List<Integer> playerMps, List<Integer> attacks, List<Integer> magics, List<Integer> defenses,
+		List<Integer> speeds, List<Integer> crits) {
 
 		List<ActionEntity> queue = new ArrayList<>();
 
 		for (int i = 0; i < clover.size(); i++) {
 			GameCharacter rabbit = clover.get(i);
-			queue.add(new ActionEntity(rabbit.getName(), speeds.get(i), true,
-				playerHps.get(i), playerMps.get(i), attacks.get(i), magics.get(i), defenses.get(i), crits.get(i),
-				rabbit));
+			queue.add(new ActionEntity(rabbit.getName(), speeds.get(i), true, playerHps.get(i), playerMps.get(i),
+				attacks.get(i), magics.get(i), defenses.get(i), crits.get(i), rabbit));
 		}
 
-		queue.add(new ActionEntity(monster.getMonsterName(), monster.getSpeed(), false,
-			monster.getHp(), null, monster.getAttack(), null, monster.getDefense(), 0, null));
+		queue.add(new ActionEntity(monster.getMonsterName(), monster.getSpeed(), false, monster.getHp(), null,
+			monster.getAttack(), null, monster.getDefense(), 0, null));
 
 		queue.sort((a, b) -> Integer.compare(b.speed, a.speed));
 		return queue;

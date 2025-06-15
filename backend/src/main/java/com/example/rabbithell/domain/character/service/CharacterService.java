@@ -18,7 +18,7 @@ public interface CharacterService {
 
 	List<AllCharacterResponse> getAllCharacter(Long authUserId);
 
-	boolean canChangeJob(Long authUserId, GameCharacter gameCharacter, Job changeJob);
+	void validateChangeJob(Long authUserId, GameCharacter gameCharacter, Job changeJob);
 
 	CharacterPersonalInfoResponse changeClass(Long authUserId, Long characterId, Job changeJob);
 

@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.example.rabbithell.domain.battle.enums.BattleResult;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
-import com.example.rabbithell.domain.item.entity.Item;
 import com.example.rabbithell.domain.job.entity.Job;
 
 import lombok.Builder;
@@ -26,21 +25,30 @@ public record BattleResultResponse(
 	List<Job> jobs,
 	int earnedSkillPoint,
 	List<Integer> totalSkillPoints,
-	List<Integer> jobSkillPoints,
+	List<List<Integer>> increasedStats,
 
 	Set<BattleFieldType> battleFieldTypes,
+	List<String> characterNames,
 	List<ItemDto> weapon,
 	List<ItemDto> armor,
 	List<ItemDto> accessory,
+	List<Integer> playerHp,
+	List<Integer> maxHp,
+	List<Integer> playerMp,
+	List<Integer> maxMp,
 	List<Integer> playerAttack,
 	List<Integer> playerDefense,
 	List<Integer> playerSpeed,
+
+	String monsterName,
+	int monsterHp,
+	int monsterMaxHp,
 	int monsterAttack,
 	int monsterDefense,
 	int monsterSpeed,
 	BattleResult battleResult,
 	String battleLog,
-	Item earnedItem,
+	List<EarnedItemDto> earnedItems,
 	int usedPotionHp,
 	int usedPotionMp
 ) {

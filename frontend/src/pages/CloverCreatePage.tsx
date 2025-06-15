@@ -2,10 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CloverCreatePage = () => {
-	const [nickname, setNickname] = useState('');
 	const [cloverName, setCloverName] = useState('');
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+	const [kingdoms, setKingdoms] = useState([]);
+	const [selectedKingdomId, setSelectedKingdomId] = useState<number | null>(null);
+
+	useEffect(() => {
+		fetch("http://localhost:8080/kingdom/all")
+			.then(res => res.json())
+			.then(data => setKingdoms(data.result))
+			.catch(() => alert("왕국 목록을 불러오지 못했습니다."));
+	}, []);
 
 	useEffect(() => {
 		const miniToken = localStorage.getItem("miniToken");
@@ -33,6 +41,8 @@ const CloverCreatePage = () => {
 			});
 	}, [navigate]);
 
+
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -42,15 +52,15 @@ const CloverCreatePage = () => {
 			return;
 		}
 
-		const response = await fetch("http://localhost:8080/auth/token/full", {
+		const response = await fetch("http://localhost:8080/auth/full-token", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				"Authorization": `Bearer ${miniToken}`
 			},
 			body: JSON.stringify({
-				nickname,
-				cloverName
+				cloverName,
+				kingdomId: selectedKingdomId
 			})
 		});
 
@@ -60,7 +70,7 @@ const CloverCreatePage = () => {
 			localStorage.setItem("accessToken", data.result.accessToken);
 			localStorage.setItem("refreshToken", data.result.refreshToken);
 			alert("클로버 생성 완료!");
-			navigate("/main");
+			navigate("/character/create");
 		} else {
 			console.error("응답 내용:", data);
 			alert("클로버 생성 실패: " + data.message);
@@ -70,20 +80,97 @@ const CloverCreatePage = () => {
 	if (loading) return <div>로딩 중...</div>;
 
 	return (
-		<div>
-			<h1>클로버 생성</h1>
-			<form onSubmit={handleSubmit}>
-				<input
-					placeholder="닉네임"
-					value={nickname}
-					onChange={(e) => setNickname(e.target.value)}
-				/>
+		<div
+			style={{
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'center',
+				alignItems: 'center',
+				height: '100vh',
+				backgroundColor: '#f9f9f9',
+				padding: '0 16px',
+			}}
+		>
+			<h1 style={{ marginBottom: '24px', fontSize: '28px', color: '#333' }}>
+				클로버 생성
+			</h1>
+
+			<form
+				onSubmit={handleSubmit}
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					backgroundColor: 'white',
+					padding: '32px',
+					borderRadius: '16px',
+					boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+					width: '100%',
+					maxWidth: '400px',
+				}}
+			>
 				<input
 					placeholder="클로버 이름"
 					value={cloverName}
 					onChange={(e) => setCloverName(e.target.value)}
+					style={{
+						width: '100%',
+						padding: '12px 16px',
+						fontSize: '16px',
+						border: '1px solid #ccc',
+						borderRadius: '8px',
+						outline: 'none',
+						boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)',
+						marginBottom: '24px',
+						transition: 'border-color 0.3s ease',
+					}}
+					onFocus={(e) => (e.currentTarget.style.borderColor = '#4CAF50')}
+					onBlur={(e) => (e.currentTarget.style.borderColor = '#ccc')}
 				/>
-				<button type="submit">클로버 생성</button>
+
+				<select
+					value={selectedKingdomId || ''}
+					onChange={(e) => setSelectedKingdomId(Number(e.target.value))}
+					style={{
+						width: '100%',
+						padding: '12px 16px',
+						fontSize: '16px',
+						border: '1px solid #ccc',
+						borderRadius: '8px',
+						outline: 'none',
+						marginBottom: '24px',
+					}}
+				>
+					<option value="" disabled>왕국을 선택하세요</option>
+					{kingdoms.map((k: any) => (
+						<option key={k.id} value={k.id}>{k.kingdomName}</option>
+					))}
+				</select>
+
+				<button
+					type="submit"
+					style={{
+						width: '100%',
+						padding: '12px 24px',
+						backgroundColor: '#4CAF50',
+						color: 'white',
+						border: 'none',
+						borderRadius: '8px',
+						cursor: 'pointer',
+						fontSize: '16px',
+						fontWeight: 'bold',
+						boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+						transition: 'background-color 0.3s ease',
+					}}
+					onMouseEnter={(e) =>
+						(e.currentTarget.style.backgroundColor = '#45a049')
+					}
+					onMouseLeave={(e) =>
+						(e.currentTarget.style.backgroundColor = '#4CAF50')
+					}
+				>
+					클로버 생성
+				</button>
 			</form>
 		</div>
 	);

@@ -1,16 +1,21 @@
 package com.example.rabbithell.domain.battle.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.domain.auth.domain.AuthUser;
+import com.example.rabbithell.domain.battle.dto.response.BattleFieldDto;
 import com.example.rabbithell.domain.battle.dto.response.BattleResultResponse;
+import com.example.rabbithell.domain.battle.dto.response.EarnedItemDto;
 import com.example.rabbithell.domain.battle.dto.response.GetBattleFieldsResponse;
 import com.example.rabbithell.domain.battle.dto.response.ItemDto;
+import com.example.rabbithell.domain.battle.exception.BattleException;
+import com.example.rabbithell.domain.battle.exception.code.BattleExceptionCode;
 import com.example.rabbithell.domain.battle.postProcess.strategy.BattleRewardStrategy;
 import com.example.rabbithell.domain.battle.postProcess.strategy.BattleRewardStrategyFactory;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
@@ -19,9 +24,10 @@ import com.example.rabbithell.domain.battle.vo.BattleRewardResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.clover.entity.Clover;
 import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.service.MonsterService;
-import com.example.rabbithell.domain.util.battleLogic.Battle;
+import com.example.rabbithell.domain.util.battlelogic.Battle;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +40,8 @@ public class BattleService {
 	private final Battle battle;
 	private final BattleRewardStrategyFactory battleRewardStrategyFactory;
 
-	public GetBattleFieldsResponse getBattleFields(AuthUser authUser, Long characterId) {
+	@Transactional
+	public GetBattleFieldsResponse getBattleFields(AuthUser authUser) {
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
@@ -42,27 +49,42 @@ public class BattleService {
 
 		maps.add(BattleFieldType.PLAIN);
 		maps.add(BattleFieldType.MOUNTAIN);
-		maps.add(BattleFieldType.FOREST);
-		maps.add(BattleFieldType.DESERT);
+		maps.add(BattleFieldType.CAVE);
+		maps.add(BattleFieldType.RIFT);
 
-		return new GetBattleFieldsResponse(maps);
+		List<BattleFieldDto> battleFieldDtos = convertToDto(maps);
+
+		return new GetBattleFieldsResponse(battleFieldDtos);
 	}
 
+	private List<BattleFieldDto> convertToDto(Set<BattleFieldType> maps) {
+		return Arrays.stream(BattleFieldType.values())
+			.filter(maps::contains)
+			.map(battleFieldType -> new BattleFieldDto(
+				battleFieldType.name(),
+				battleFieldType.getName(),
+				battleFieldType.isRare()
+			))
+			.toList();
+	}
+
+	@Transactional
 	public BattleResultResponse doBattle(AuthUser authUser, BattleFieldType battleFieldType) {
 
 		Monster monster = monsterService.getRandomMonster(battleFieldType);
 
 		Clover clover = cloverRepository.findByUserIdOrElseThrow(authUser.getUserId());
 
+		verifyField(battleFieldType, clover.getUnlockedRareMaps());
+
 		List<GameCharacter> team = clover.getMembers();
+		List<Long> characterIds = team.stream().map(GameCharacter::getId).toList();
+		List<String> characterNames = team.stream().map(GameCharacter::getName).toList();
+		List<Job> jobs = team.stream().map(GameCharacter::getJob).toList();
+		List<Integer> maxHp = team.stream().map(GameCharacter::getMaxHp).toList();
+		List<Integer> maxMp = team.stream().map(GameCharacter::getMaxMp).toList();
 
-		BattleResultVo battleResultVo = battle.executeBattle(authUser, team, monster);
-
-		Set<BattleFieldType> battleFieldTypes = new HashSet<>();
-		battleFieldTypes.add(BattleFieldType.PLAIN);
-		battleFieldTypes.add(BattleFieldType.MOUNTAIN);
-		battleFieldTypes.add(BattleFieldType.FOREST);
-		battleFieldTypes.add(BattleFieldType.DESERT);
+		BattleResultVo battleResultVo = battle.executeBattle(authUser, clover, monster);
 
 		BattleRewardStrategy strategy = battleRewardStrategyFactory.getStrategy(battleResultVo.getBattleResult());
 		BattleRewardResultVo reward = strategy.applyReward(clover, team, monster, battleFieldType);
@@ -79,37 +101,60 @@ public class BattleService {
 			armor.add(ItemDto.from(battleResultVo.getArmor().get(i)));
 			accessory.add(ItemDto.from(battleResultVo.getAccessory().get(i)));
 		}
-		// DB 업데이트예정?
+
+		List<EarnedItemDto> earnedItemDtos = reward.items().stream()
+			.map(EarnedItemDto::from)
+			.toList();
 
 		return BattleResultResponse.builder()
 			.cloverId(clover.getId())
 			.stamina(clover.getStamina())
+			.characterIds(characterIds)
 			.level(reward.levels())
 			.earnedExp(reward.earnedExp())
 			.totalExp(reward.totalExps())
 			.levelUpAmounts(reward.levelUpAmounts())
 			.lostOrEarnedCash(reward.cashDelta())
 			.totalCash(reward.totalCash())
-			.jobs(null)
+			.jobs(jobs)
 			.earnedSkillPoint(reward.earnedSkillPoints())
 			.totalSkillPoints(reward.totalSkillPoints())
-			.jobSkillPoints(reward.jobSkillPoints())
-			.battleFieldTypes(battleFieldTypes)
+			.increasedStats(reward.increasedStat())
+			.battleFieldTypes(reward.unlockedRareMaps())
+			.characterNames(characterNames)
 			.weapon(weapon)
 			.armor(armor)
 			.accessory(accessory)
+			.playerHp(battleResultVo.getPlayerHp())
+			.maxHp(maxHp)
+			.playerMp(battleResultVo.getPlayerMp())
+			.maxMp(maxMp)
 			.playerAttack(battleResultVo.getPlayerAttack())
 			.playerDefense(battleResultVo.getPlayerDefense())
 			.playerSpeed(battleResultVo.getPlayerSpeed())
+			.monsterName(monster.getMonsterName())
+			.monsterHp(battleResultVo.getMonsterHp())
+			.monsterMaxHp(monster.getHp())
 			.monsterAttack(battleResultVo.getMonsterAttack())
 			.monsterDefense(battleResultVo.getMonsterDefense())
 			.monsterSpeed(battleResultVo.getMonsterSpeed())
 			.battleResult(battleResultVo.getBattleResult())
 			.battleLog(battleResultVo.getLog())
-			.earnedItem(null)
+			.earnedItems(earnedItemDtos)
 			.usedPotionHp(usedHpPotion)
 			.usedPotionMp(usedMpPotion)
 			.build();
+	}
+
+	private void verifyField(BattleFieldType battleFieldType, Set<BattleFieldType> unlockedRareMaps) {
+		if (battleFieldType.isRare()) {
+			for (BattleFieldType map : unlockedRareMaps) {
+				if (map.equals(battleFieldType)) {
+					return;
+				}
+			}
+			throw new BattleException(BattleExceptionCode.UNACCESSIBLE_FIELD);
+		}
 	}
 
 	private int measurePotion(List<Integer> playerStat, List<GameCharacter> team) {

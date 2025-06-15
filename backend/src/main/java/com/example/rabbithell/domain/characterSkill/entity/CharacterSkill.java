@@ -1,9 +1,13 @@
 package com.example.rabbithell.domain.characterSkill.entity;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.characterSkill.enums.SkillEquipType;
 import com.example.rabbithell.domain.skill.entity.Skill;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,21 +34,28 @@ public class CharacterSkill {
 	@JoinColumn(name = "skill_id")
 	private Skill skill;
 
-	private boolean equipped;
-
 	private int skillTier;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private SkillEquipType equipType = SkillEquipType.NONE;
 
 	public CharacterSkill(GameCharacter character, Skill skill) {
 		this.character = character;
 		this.skill = skill;
-		this.equipped = false;
 		this.skillTier = skill.getTier();
 	}
 
-	public CharacterSkill(GameCharacter character, Skill skill, boolean equipped, int skillTier) {
-		this.character = character;
-		this.skill = skill;
-		this.equipped = equipped;
-		this.skillTier = skill.getTier();
+	public boolean isEquipped() {
+		return equipType != SkillEquipType.NONE;
 	}
+
+	public void equip(SkillEquipType type) {
+		this.equipType = type;
+	}
+
+	public void unequip() {
+		this.equipType = SkillEquipType.NONE;
+	}
+
 }

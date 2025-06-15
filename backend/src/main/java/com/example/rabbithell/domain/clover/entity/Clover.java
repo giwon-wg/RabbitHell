@@ -8,6 +8,7 @@ import java.util.Set;
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.deck.entity.PawCardEffect;
 import com.example.rabbithell.domain.kingdom.entity.Kingdom;
 import com.example.rabbithell.domain.specie.entity.Specie;
 import com.example.rabbithell.domain.user.model.User;
@@ -84,6 +85,9 @@ public class Clover extends BaseEntity {
 	@Column(name = "rare_map_type")
 	private Set<BattleFieldType> unlockedRareMaps = new HashSet<>();
 
+	@OneToMany(mappedBy = "clover", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PawCardEffect> pawCardEffects = new ArrayList<>();
+
 	@Builder
 	public Clover(String name, User user, Kingdom kingdom, Specie specie, long cash, long saving, Long currentVillage,
 		Set<BattleFieldType> unlockedRareMaps) {
@@ -95,6 +99,12 @@ public class Clover extends BaseEntity {
 		this.saving = saving;
 		this.currentVillage = currentVillage;
 		this.unlockedRareMaps = unlockedRareMaps;
+	}
+
+	// PawCard 추가
+	public void addPawCardEffect(PawCardEffect pawCardEffect) {
+		this.pawCardEffects.add(pawCardEffect);
+		pawCardEffect.assignClover(this);
 	}
 
 	// 레어맵 컬럼에 추가
@@ -156,6 +166,20 @@ public class Clover extends BaseEntity {
 		this.cash += amount;
 	}
 
+	public void spendCashAndSaving(int amount) {
+		if (amount < 0) {
+			throw new IllegalArgumentException("사용 골드는 음수일 수 없습니다.");
+		}
+		if (this.cash + this.saving < amount) {
+			throw new IllegalStateException("보유 골드가 부족합니다.");
+		}
+		int useCash = (int) Math.min(this.cash, amount);
+		this.cash -= useCash;
+
+		int remaining = amount - useCash;
+		this.saving -= remaining;
+	}
+
 	//은행에서 돈 사용 메서드
 	public void useFromSaving(int amount) {
 		if (amount < 0) {
@@ -165,7 +189,6 @@ public class Clover extends BaseEntity {
 			throw new IllegalStateException("은행 잔고가 부족합니다.");
 		}
 		this.saving -= amount;
-		this.cash += amount;
 	}
 
 	public void addMember(GameCharacter character) {

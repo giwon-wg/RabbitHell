@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.inventory.entity;
 
+import java.util.Random;
+
 import com.example.rabbithell.common.audit.BaseEntity;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.inventory.enums.Slot;
@@ -43,7 +45,7 @@ public class InventoryItem extends BaseEntity {
 
 	private Long power; // Item 엔티티의 maxPower와 minPower 사이
 
-	private Integer maxDurability;
+	private Integer maxDurability; // 초기값은 Item 엔티티의 maxDurability -> 수리 실패 시 점점 줄어듦
 
 	private Integer durability;
 
@@ -52,9 +54,11 @@ public class InventoryItem extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Slot slot; // 장착 부위
 
+	private Boolean isHidden;
+
 	@Builder
 	public InventoryItem(Inventory inventory, Item item, GameCharacter character, Long power, Integer maxDurability,
-		Integer durability, Long weight, Slot slot) {
+		Integer durability, Long weight, Slot slot, Boolean isHidden) {
 		this.inventory = inventory;
 		this.item = item;
 		this.character = character;
@@ -63,20 +67,21 @@ public class InventoryItem extends BaseEntity {
 		this.durability = durability;
 		this.weight = weight;
 		this.slot = slot;
+		this.isHidden = isHidden;
 	}
 
 	public InventoryItem(Inventory inventory, Item item) {
 		this.inventory = inventory;
 		this.item = item;
-		this.power = (item.getMaxPower() + item.getMinPower()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.power = generateSkewedPower(item.getMinPower(), item.getMaxPower());
 		this.maxDurability = item.getMaxDurability();
 		this.durability = item.getMaxDurability();
-		this.weight = (item.getMaxWeight() + item.getMinWeight()) / 2; // 일단 최대값과 최소값의 평균으로 설정
+		this.weight = generateSkewedWeight(item.getMinWeight(), item.getMaxWeight());
 	}
 
 	public void equip(GameCharacter character) {
 		this.character = character;
-		this.slot = Slot.getSlotByItemType(this.getItem().getItemType());
+		this.slot = Slot.getSlotByItemType(item.getItemType());
 	}
 
 	public void unequip() {
@@ -87,6 +92,26 @@ public class InventoryItem extends BaseEntity {
 	// TODO: 나중에 기능 수정 필요: 내구도 닳는 양 필요
 	public void use(int amount) {
 		this.durability -= amount;
+	}
+
+	public void appraise(Long power, Long weight) {
+		this.power = power;
+		this.weight = weight;
+		this.isHidden = false;
+	}
+
+	private long generateSkewedPower(double minPower, double maxPower) {
+		// 높은 값은 적게, 낮은 값은 많이 등장
+		double skewedRandom = Math.pow(new Random().nextDouble(), 2);
+		double weightRange = maxPower - minPower;
+		return (long) (minPower + (weightRange * skewedRandom));
+	}
+
+	private long generateSkewedWeight(double minWeight, double maxWeight) {
+		// 낮은 값은 적게, 높은 값은 많이 등장
+		double skewedRandom = 1 - Math.pow(new Random().nextDouble(), 2);
+		double weightRange = maxWeight - minWeight;
+		return (long) (minWeight + (weightRange * skewedRandom));
 	}
 
 }

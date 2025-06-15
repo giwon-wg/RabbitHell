@@ -11,6 +11,7 @@ export type CloverResponse = {
 
 // 캐릭터 정보 (CharacterPersonalInfoResponse 기준)
 export type CharacterPersonalInfoResponse = {
+	characterId: number;
 	cloverId: number;
 	cloverName: string;
 	kingdomName: string;

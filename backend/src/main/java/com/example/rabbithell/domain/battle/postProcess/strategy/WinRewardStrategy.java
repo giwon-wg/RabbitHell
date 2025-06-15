@@ -6,19 +6,28 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardCommandFactory;
 import com.example.rabbithell.domain.battle.postProcess.command.BattleRewardExecutor;
+import com.example.rabbithell.domain.battle.postProcess.command.CashRewardCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.ExpRewardCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.ItemDropCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.JobPointRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.command.LevelUpCommand;
+import com.example.rabbithell.domain.battle.postProcess.command.RareMapCommand;
 import com.example.rabbithell.domain.battle.postProcess.command.SkillPointRewardCommand;
-import com.example.rabbithell.domain.battle.postProcess.service.BattleRewardUpdateService;
+import com.example.rabbithell.domain.battle.postProcess.command.StatRewardCommand;
 import com.example.rabbithell.domain.battle.type.BattleFieldType;
 import com.example.rabbithell.domain.battle.vo.BattleRewardResultVo;
 import com.example.rabbithell.domain.character.entity.GameCharacter;
+import com.example.rabbithell.domain.character.repository.CharacterRepository;
 import com.example.rabbithell.domain.clover.entity.Clover;
+import com.example.rabbithell.domain.clover.repository.CloverRepository;
+import com.example.rabbithell.domain.inventory.entity.Inventory;
+import com.example.rabbithell.domain.inventory.entity.InventoryItem;
+import com.example.rabbithell.domain.inventory.repository.InventoryItemRepository;
+import com.example.rabbithell.domain.inventory.repository.InventoryRepository;
+import com.example.rabbithell.domain.item.entity.Item;
+import com.example.rabbithell.domain.monster.entity.DropRate;
 import com.example.rabbithell.domain.monster.entity.Monster;
+import com.example.rabbithell.domain.monster.repository.DropRateRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,79 +35,100 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WinRewardStrategy implements BattleRewardStrategy {
 
-	private final BattleRewardCommandFactory commandFactory;
-	private final BattleRewardUpdateService updateService;
+	private final CloverRepository cloverRepository;
+	private final DropRateRepository dropRateRepository;
+	private final CharacterRepository characterRepository;
+	private final InventoryRepository inventoryRepository;
+	private final InventoryItemRepository inventoryItemRepository;
 
 	@Override
 	@Transactional
 	public BattleRewardResultVo applyReward(Clover clover, List<GameCharacter> team, Monster monster,
 		BattleFieldType fieldType) {
 
-		BattleRewardExecutor executor = new BattleRewardExecutor();
-		List<BattleRewardCommand> allCommands = new ArrayList<>();
+		clover.clearUnlockedRareMaps();
+
+		int earnedSkillPoint = fieldType.calculateSkillPointBy(monster.getRating());
+
+		List<Integer> totalExps = new ArrayList<>();
+		List<Integer> levels = new ArrayList<>();
+		List<Integer> levelUpAmounts = new ArrayList<>();
+		List<Integer> totalSkillPoints = new ArrayList<>();
+		List<List<Integer>> increasedStats = new ArrayList<>();
 
 		// 1. 커맨드 생성
-		List<ExpRewardCommand> expCommands = commandFactory.createExpCommands(team, monster.getExp());
-		List<LevelUpCommand> levelCommands = commandFactory.createLevelUpCommands(team, expCommands);
-		List<SkillPointRewardCommand> skillCommands = commandFactory.createSkillPointCommands(team,
-			fieldType.getSkillPoints());
-		List<JobPointRewardCommand> jobCommands = commandFactory.createJobPointCommands(team,
-			fieldType.getSkillPoints());
-		// CashRewardCommand cashCommand = commandFactory.createCashCommand(clover, 1000L);
 
-		// 2. 실행 순서대로 등록
-		expCommands.forEach(cmd -> {
-			executor.addCommand(cmd);
-			allCommands.add(cmd);
-		});
-		executor.executeAll(); // EXP 먼저 처리
+		BattleRewardExecutor cloverExecutor = new BattleRewardExecutor();
 
-		levelCommands.forEach(cmd -> {
-			executor.addCommand(cmd);
-			allCommands.add(cmd);
-		});
-		skillCommands.forEach(cmd -> {
-			executor.addCommand(cmd);
-			allCommands.add(cmd);
-		});
-		jobCommands.forEach(cmd -> {
-			executor.addCommand(cmd);
-			allCommands.add(cmd);
-		});
+		for (GameCharacter ch : team) {
 
-		// executor.addCommand(cashCommand);
-		// allCommands.add(cashCommand);
+			BattleRewardExecutor characterExecutor = new BattleRewardExecutor();
 
-		executor.executeAll(); // 나머지 실행
+			ExpRewardCommand expRewardCommand = new ExpRewardCommand(monster.getExp());
+			expRewardCommand.execute(ch);
 
-		// 3. 결과 수집
-		List<Integer> updatedExps = new ArrayList<>();
-		List<Integer> updatedLevels = new ArrayList<>();
-		List<Integer> levelUps = new ArrayList<>();
-		List<Integer> updatedSkillPoints = new ArrayList<>();
-		List<Integer> updatedJobSkillPoints = new ArrayList<>();
+			SkillPointRewardCommand skillPointRewardCommand = new SkillPointRewardCommand(earnedSkillPoint);
+			characterExecutor.addCommand(skillPointRewardCommand);
 
-		for (int i = 0; i < team.size(); i++) {
-			updatedExps.add(expCommands.get(i).getResultExp());
-			updatedLevels.add(levelCommands.get(i).getResultLevel());
-			levelUps.add(levelCommands.get(i).getLevelUpAmount());
-			updatedSkillPoints.add(skillCommands.get(i).getUpdatedSkillPoints());
-			updatedJobSkillPoints.add(jobCommands.get(i).getUpdatedJobPoints());
+			JobPointRewardCommand jobPointRewardCommand = new JobPointRewardCommand(earnedSkillPoint);
+			characterExecutor.addCommand(jobPointRewardCommand);
+
+			StatRewardCommand statRewardCommand = new StatRewardCommand(expRewardCommand.getLevelUpAmount());
+			characterExecutor.addCommand(statRewardCommand);
+
+			characterExecutor.characterExecuteAll(ch);
+
+			totalExps.add(expRewardCommand.getUpdatedExp());
+			levels.add(expRewardCommand.getUpdatedLevel());
+			levelUpAmounts.add(expRewardCommand.getLevelUpAmount());
+			totalSkillPoints.add(skillPointRewardCommand.getUpdatedSkillPoints());
+
+			List<Integer> increasedStat = new ArrayList<>();
+			increasedStat.add(statRewardCommand.getIStrength());
+			increasedStat.add(statRewardCommand.getIIntelligence());
+			increasedStat.add(statRewardCommand.getIFocus());
+			increasedStat.add(statRewardCommand.getIAgility());
+			increasedStats.add(increasedStat);
+
 		}
 
-		// 4. 결과 업데이트
-		updateService.applyCharacterRewards(allCommands);
+		CashRewardCommand cashRewardCommand = new CashRewardCommand(1000L);
+		cloverExecutor.addCommand(cashRewardCommand);
+
+		RareMapCommand rareMapCommand = new RareMapCommand(fieldType);
+		cloverExecutor.addCommand(rareMapCommand);
+
+		List<DropRate> dropRates = dropRateRepository.findByMonster(monster);
+		ItemDropCommand itemDropCommand = new ItemDropCommand(dropRates);
+		cloverExecutor.addCommand(itemDropCommand);
+
+		cloverExecutor.cloverExecuteAll(clover);
+
+		List<Item> items = itemDropCommand.getItems();
+
+		Inventory inventory = inventoryRepository.findByCloverOrElseThrow(clover);
+		if (items != null) {
+			for (Item item : items) {
+				InventoryItem inventoryItem = new InventoryItem(inventory, item);
+				inventoryItemRepository.save(inventoryItem);
+			}
+		}
+
+		characterRepository.saveAll(team);
+		cloverRepository.save(clover);
 
 		return new BattleRewardResultVo(
 			monster.getExp(),
 			fieldType.getSkillPoints(),
 			1000L,
-			0L, // cashCommand.getResultCash(),
-			updatedExps,
-			updatedLevels,
-			levelUps,
-			updatedSkillPoints,
-			updatedJobSkillPoints
+			clover.getCash(),
+			totalExps,
+			levels,
+			levelUpAmounts,
+			totalSkillPoints,
+			increasedStats,
+			items,
+			clover.getUnlockedRareMaps()
 		);
 	}
 

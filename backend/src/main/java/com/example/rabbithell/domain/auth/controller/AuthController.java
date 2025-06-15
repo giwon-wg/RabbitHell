@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,16 +41,18 @@ public class AuthController {
 		return "카카오 로그인 실패, 잠시 후 다시 시도해주세요.";
 	}
 
-	@PostMapping("/token/full")
+	@PostMapping("/full-token")
 	public ResponseEntity<CommonResponse<TokenResponse>> createFullToken(
 		@AuthenticationPrincipal MiniAuthUser authUser,
 		@RequestBody FullJwtRequest request
 	) {
 		TokenResponse tokenResponse = tokenService.createFullToken(
 			authUser.getUserId(),
-			request.nickname(),
-			request.cloverName()
+			request.cloverName(),
+			request.kingdomId()
 		);
+
+		log.info("authUser = {}", authUser);
 
 		return ResponseEntity.ok(
 			CommonResponse.of(true, HttpStatus.OK.value(), "Full JWT 발급 성공", tokenResponse)
@@ -83,4 +84,13 @@ public class AuthController {
 		authService.logout(authUser.getUserId());
 		return ResponseEntity.ok(CommonResponse.of(true, HttpStatus.OK.value(), "로그아웃 성공"));
 	}
+
+	//회원 탈퇴
+
+
+
+	//강제 탈퇴
+
+
+
 }

@@ -34,6 +34,10 @@ public class Item extends BaseEntity {
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
 
+	@ManyToOne
+	@JoinColumn(name = "effect_id")
+	private Effect effect;
+
 	@Column(nullable = false, length = 20)
 	private String name;
 
@@ -63,9 +67,10 @@ public class Item extends BaseEntity {
 	private boolean isDeleted;
 
 	@Builder
-	public Item(Shop shop, String name, String description, ItemType itemType, Rarity rarity, Long price,
+	public Item(Shop shop, Effect effect, String name, String description, ItemType itemType, Rarity rarity, Long price,
 		Long maxPower, Long minPower, Long maxWeight, Long minWeight, Integer maxDurability, boolean isDeleted) {
 		this.shop = shop;
+		this.effect = effect;
 		this.name = name;
 		this.description = description;
 		this.itemType = itemType;
@@ -79,20 +84,10 @@ public class Item extends BaseEntity {
 		this.isDeleted = isDeleted;
 	}
 
-	public void update(
-		Shop shop,
-		String name,
-		String description,
-		ItemType itemType,
-		Rarity rarity,
-		Long price,
-		Long maxPower,
-		Long minPower,
-		Long maxWeight,
-		Long minWeight,
-		Integer maxDurability
-	) {
+	public void update(Shop shop, Effect effect, String name, String description, ItemType itemType, Rarity rarity,
+		Long price, Long maxPower, Long minPower, Long maxWeight, Long minWeight, Integer maxDurability) {
 		this.shop = shop;
+		this.effect = effect;
 		this.name = name;
 		this.description = description;
 		this.itemType = itemType;
