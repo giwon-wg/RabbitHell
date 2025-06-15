@@ -52,18 +52,11 @@ public class InventoryItemServiceImpl implements InventoryItemService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public PageResponse<InventoryItemResponse> getAllInventoryItemsFilterBySlot(Long userId, Slot slot,
-		Pageable pageable) {
+	public PageResponse<InventoryItemResponse> getAllInventoryItems(Long userId, Pageable pageable) {
 		Inventory inventory = getMyInventory(userId);
 
-		Page<InventoryItem> page;
-
-		// 슬롯 조건이 있으면 적용, 없으면 인벤토리 내 모든 아이템 조회
-		if (slot != null) {
-			page = inventoryItemRepository.findByInventoryAndSlot(inventory, slot, pageable);
-		} else {
-			page = inventoryItemRepository.findAll(pageable);
-		}
+		// 현재 로그인한 유저의 인벤토리 내 모든 아이템 조회
+		Page<InventoryItem> page = inventoryItemRepository.findByInventory(inventory, pageable);
 
 		List<InventoryItemResponse> dtoList = page.getContent().stream()
 			.map(InventoryItemResponse::fromEntity)

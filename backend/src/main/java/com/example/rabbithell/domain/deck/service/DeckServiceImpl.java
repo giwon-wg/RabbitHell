@@ -3,7 +3,10 @@ package com.example.rabbithell.domain.deck.service;
 import static com.example.rabbithell.domain.deck.exception.code.DeckExceptionCode.*;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -12,13 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.rabbithell.common.dto.response.PageResponse;
+import com.example.rabbithell.domain.deck.dto.DeckRedisDto;
+import com.example.rabbithell.domain.deck.dto.EffectDetailDto;
+import com.example.rabbithell.domain.deck.dto.PawCardEffectDto;
 import com.example.rabbithell.domain.deck.dto.request.ActivePawCardRequest;
 import com.example.rabbithell.domain.deck.dto.request.BatchActivePawCardRequest;
 import com.example.rabbithell.domain.deck.dto.request.DeckCond;
 import com.example.rabbithell.domain.deck.dto.response.BatchActivePawCardResponse;
 import com.example.rabbithell.domain.deck.dto.response.DeckResponse;
-import com.example.rabbithell.domain.deck.dto.response.EffectDetailResponse;
-import com.example.rabbithell.domain.deck.dto.response.PawCardEffectResponse;
 import com.example.rabbithell.domain.deck.entity.Deck;
 import com.example.rabbithell.domain.deck.entity.EffectDetail;
 import com.example.rabbithell.domain.deck.entity.PawCardEffect;
@@ -36,6 +40,8 @@ public class DeckServiceImpl implements DeckService {
 	private final DeckRepository deckRepository;
 	private final PawCardEffectRepository pawCardEffectRepository;
 	private final DeckEffectProcessor deckEffectProcessor;
+	private final PawCardEffectRedisService pawCardEffectRedisService;
+	private final DeckRedisService deckRedisService;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -59,71 +65,117 @@ public class DeckServiceImpl implements DeckService {
 		return DeckResponse.fromEntity(deck);
 	}
 
-	@Transactional
 	@Override
-	public BatchActivePawCardResponse activePawCard(Long cloverId, BatchActivePawCardRequest requests) {
+	public void calculateEffect(Long cloverId) {
 
-		// 1. 해당 clover에서 요청된 슬롯을 이미 사용하는 덱을 조회 (락 걸기)
-		List<ActivePawCardRequest> activePawCardRequests = requests.activePawCardRequestList();
-		List<PawCardSlot> pawCardSlots =
-			activePawCardRequests.stream()
-				.map(ActivePawCardRequest::pawCardSlot)
-				.toList();
+		// 1. 장착된 덱 정보 DB에서 조회
+		List<Deck> equippedDecks = deckRepository.findEquippedByCloverId(cloverId);
+		PawCardEffect effect = pawCardEffectRepository.findByCloverIdWithDetails(cloverId);
 
-		List<Deck> occupiedDecks = deckRepository.findLockedByCloverIdAndSlots(cloverId, pawCardSlots);
+		// 2. 효과 정보 조회
+		List<EffectDetail> details = effect.getDetails();
+		if (details.size() < 2) {
+			throw new DeckException(INVALID_EFFECT_STRUCTURE);
+		}
 
-		// 2. 기존 슬롯 null로 해제
-		for (Deck deck : occupiedDecks) {
+		// 3. 효과 계산
+		deckEffectProcessor.processAllEffects(equippedDecks, effect, details);
+
+		// 4. Redis 캐싱
+		PawCardEffectDto effectResponse = PawCardEffectDto.from(
+			effect,
+			details.stream().map(EffectDetailDto::fromEntity).toList()
+		);
+
+		pawCardEffectRedisService.saveEffect(cloverId, effectResponse);
+	}
+
+	@Override
+	@Transactional
+	public void assignSlots(Long cloverId, BatchActivePawCardRequest request) {
+
+		List<ActivePawCardRequest> requestList = request.activePawCardRequestList();
+
+		// 요청을 slot별로 구분 (deckId == null일 수도 있음)
+		Map<PawCardSlot, Long> slotToDeckIdMap = new LinkedHashMap<>();
+		for (ActivePawCardRequest r : requestList) {
+			if (r.pawCardSlot() != null) {
+				slotToDeckIdMap.put(r.pawCardSlot(), r.deckId());
+			}
+		}
+
+		List<Deck> allDecks = deckRepository.findAllByCloverIdWithLock(cloverId);
+
+		// 1. 해제 대상 처리
+		List<Deck> decksToRelease = allDecks.stream()
+			.filter(deck -> {
+				PawCardSlot currentSlot = deck.getPawCardSlot();
+				if (currentSlot == null) {
+					return false;
+				}
+
+				if (!slotToDeckIdMap.containsKey(currentSlot)) {
+					return false; // 명시적으로 해제 요청 없음 → 해제
+				}
+
+				Long requestedDeckId = slotToDeckIdMap.get(currentSlot);
+				return !Objects.equals(deck.getId(), requestedDeckId); // 다른 덱이거나 null이면 해제
+			})
+			.toList();
+
+		for (Deck deck : decksToRelease) {
 			deck.equipDeck(null);
 		}
 
-		// 3. 요청된 deckId들을 조회
-		List<Long> deckIds = activePawCardRequests.stream().map(ActivePawCardRequest::deckId).toList();
-		List<Deck> targetDecks = deckRepository.lockDecksByCloverIdAndIds(cloverId, deckIds);
+		deckRepository.flush(); // 해제 먼저 반영
 
-		// 4. 요청에 따라 슬롯 할당
-		for (Deck deck : targetDecks) {
-			PawCardSlot slot = activePawCardRequests.stream()
-				.filter(req -> req.deckId().equals(deck.getId()))
+		// 2. 장착 대상 처리
+		List<Deck> decksToEquip = allDecks.stream()
+			.filter(deck -> {
+				PawCardSlot requestedSlot = slotToDeckIdMap.entrySet().stream()
+					.filter(e -> Objects.equals(e.getValue(), deck.getId()))
+					.map(Map.Entry::getKey)
+					.findFirst()
+					.orElse(null);
+				return requestedSlot != null && !requestedSlot.equals(deck.getPawCardSlot());
+			})
+			.toList();
+
+		for (Deck deck : decksToEquip) {
+			PawCardSlot slot = slotToDeckIdMap.entrySet().stream()
+				.filter(e -> Objects.equals(e.getValue(), deck.getId()))
+				.map(Map.Entry::getKey)
 				.findFirst()
-				.orElseThrow(() -> new DeckException(INVALID_DECK_REQUEST))
-				.pawCardSlot();
+				.orElse(null);
 			deck.equipDeck(slot);
 		}
 
-		// 4. 현재 장착된 덱 정보로 효과 계산
-		List<Deck> equippedDecks = deckRepository.findEquippedByCloverIdWithLock(cloverId);
-
-		PawCardEffect effect = pawCardEffectRepository.findByCloverIdWithDetails(cloverId);
-
-		List<EffectDetail> details = effect.getDetails();
-		if (details.size() < 2)
-			throw new DeckException(INVALID_EFFECT_STRUCTURE);
-
-		// 5. 효과 계산
-		deckEffectProcessor.processAllEffects(equippedDecks, effect, details);
-
-		// 6. dto 변환
-		return toBatchActivePawCardResponse(equippedDecks, effect, details);
-
-	}
-
-	private BatchActivePawCardResponse toBatchActivePawCardResponse(
-		List<Deck> equippedDecks,
-		PawCardEffect effect,
-		List<EffectDetail> details
-	) {
-		List<DeckResponse> deckResponseList = equippedDecks.stream()
-			.map(DeckResponse::fromEntity)
-			.sorted(Comparator.comparing(DeckResponse::pawCardSlot, Comparator.nullsLast(Comparator.naturalOrder())))
+		// 3. Redis 캐싱용 최종 장착 상태 조회
+		List<Deck> equippedDecks = allDecks.stream()
+			.filter(d -> d.getPawCardSlot() != null)
 			.toList();
 
-		List<EffectDetailResponse> effectDetailResponseList = details.stream()
-			.map(EffectDetailResponse::fromEntity)
+		List<DeckRedisDto> deckRedisDtoList = equippedDecks.stream()
+			.map(DeckRedisDto::fromEntity)
+			.sorted(Comparator.comparing(DeckRedisDto::getPawCardSlot))
 			.toList();
 
-		PawCardEffectResponse pawCardEffectResponse = PawCardEffectResponse.from(effect, effectDetailResponseList);
-
-		return BatchActivePawCardResponse.from(deckResponseList, pawCardEffectResponse);
+		deckRedisService.saveDecks(cloverId, deckRedisDtoList);
 	}
+
+	@Override
+	public BatchActivePawCardResponse getFinalResponse(Long cloverId) {
+		List<DeckRedisDto> deckRedisDtoList = deckRedisService.getDecks(cloverId);
+		PawCardEffectDto pawCardEffectDto = pawCardEffectRedisService.getEffect(cloverId);
+
+		if (deckRedisDtoList == null || deckRedisDtoList.isEmpty()) {
+			throw new DeckException(DECK_CACHE_MISS);
+		}
+
+		if (pawCardEffectDto == null) {
+			throw new DeckException(PAW_CARD_EFFECT_CACHE_MISS);
+		}
+		return BatchActivePawCardResponse.from(deckRedisDtoList, pawCardEffectDto);
+	}
+
 }

@@ -1,14 +1,11 @@
 package com.example.rabbithell.domain.shop.controller;
 
-import java.security.Principal;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/shops")
+@RequestMapping("/villages/shops")
 public class ShopUserController {
 
 	private final ShopService shopService;
@@ -74,8 +71,8 @@ public class ShopUserController {
 	public ResponseEntity<CommonResponse<BuyItemResponse>> buyItem(
 		@AuthenticationPrincipal AuthUser authUser,
 		@PathVariable Long itemId,
-		@RequestParam int quantity,
-		Principal principal, UserDetails authenticatedPrincipal) {
+		@RequestParam int quantity
+	) {
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),

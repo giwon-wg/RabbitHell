@@ -10,6 +10,7 @@ const VillageMap: Record<number, VillageInfo> = {
 	1: { name: '롭이어 마을', img: '/assets/lopeared.png' },
 	2: { name: '앙고라 마을', img: '/assets/angora.png' },
 	3: { name: '드워프 마을', img: '/assets/Dwarf.png' },
+	4: { name: '중립 마을', img: '/assets/Neutral.png' },
 };
 
 interface Clover {
@@ -19,12 +20,12 @@ interface Clover {
 }
 
 const actions = [
-	{ label: '상점', route: '/shop' },
-	{ label: '은행', route: '/village/bank' },
-	{ label: '사냥터', route: '/battlefield' },
-	{ label: '병원', route: '/hospital' },
-	{ label: '창고', route: '/storage' },
-	{ label: '투자', route: '/invest' },
+	{ label: '상점', route: (id: number) => `/village/shop/${id}` },
+	{ label: '은행', route: () => '/village/bank' },
+	// { label: '사냥터', route: () => '/battlefield' },
+	{ label: '병원', route: () => '/hospital' },
+	// { label: '창고', route: () => '/storage' },
+	// { label: '투자', route: () => '/invest' },
 ];
 
 const VillagePage = () => {
@@ -46,6 +47,7 @@ const VillagePage = () => {
 	if (!clover) return <p>로딩 중...</p>;
 
 	const villageInfo = VillageMap[clover.currentVillageId];
+	if (!villageInfo) return <p>존재하지 않는 마을입니다.</p>;
 
 	return (
 		<div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -64,7 +66,7 @@ const VillagePage = () => {
 				{actions.map(action => (
 					<button
 						key={action.label}
-						onClick={() => navigate(action.route)}
+						onClick={() => navigate(action.route(clover.currentVillageId))}
 						style={{
 							width: '300px',
 							padding: '1rem',

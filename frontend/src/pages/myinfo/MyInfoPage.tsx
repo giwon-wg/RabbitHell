@@ -51,7 +51,21 @@ const MyInfoPage = () => {
 				<Section>
 					<CloverCard clover={clover} />
 				</Section>
+
 			)}
+			<button
+				onClick={() => navigate('/me/pawCard')}
+				style={{
+					marginBottom: 16,
+					padding: '8px 16px',
+					border: '1px solid #aaa',
+					backgroundColor: '#f0f0f0',
+					borderRadius: 6,
+					cursor: 'pointer',
+				}}
+			>
+				포 카드 덱
+			</button>
 
 			<Section>
 				<h2>내 캐릭터 목록</h2>
@@ -67,7 +81,7 @@ const MyInfoPage = () => {
 						cursor: 'pointer',
 					}}
 				>
-					내 인벤토리 보기
+					내 인벤토리
 				</button>
 
 				<CharacterList>
@@ -75,7 +89,11 @@ const MyInfoPage = () => {
 						<CharacterCard
 							key={char.characterName}
 							character={char}
-							onClick={() => navigate(`/me/${char.characterName}`)}
+							onClick={() =>
+								navigate(`/me/${char.characterName}`, {
+									state: { characterId: char.characterId },
+								})
+							}
 						/>
 					))}
 				</CharacterList>

@@ -1,0 +1,297 @@
+.battleContainer {
+	display: grid;
+	grid-template-columns: 1fr 2fr 1fr; /* 왼쪽:중앙:오른쪽 비율 조절 가능 */
+	gap: 1rem;
+	margin-top: 2rem;
+}
+
+.sideRight {
+	padding: 1rem;
+	border-radius: 8px;
+	color: white;
+}
+
+.resultContainer {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 1rem;
+}
+
+.resultContainer > * {
+	display: flex;
+	justify-content: center; /* 수평 중앙 */
+	align-items: center; /* 수직 중앙 */
+	text-align: center; /* 텍스트 중앙 */
+	flex-direction: column; /* 내부 요소 세로 정렬 시 사용 */
+	border: 1px solid #ccc; /* 구분선 색상 */
+	padding: 1rem; /* 여백 주기 */
+}
+
+
+.container {
+	padding: 20px;
+}
+
+.fieldContainer {
+	margin-top: 40px;
+	margin-bottom: 40px;
+	width: 100%; /* 필요시 조정 */
+	display: flex;
+	justify-content: center;
+}
+
+.fields {
+	display: flex;
+	flex-direction: column; /* 아래로 나열 */
+	gap: 0.5rem; /* 버튼 간격 */
+	width: 100%; /* 필요시 조정 */
+	max-width: 400px; /* 필요시 버튼 최대 폭 제한 */
+}
+
+.button {
+	width: 100%; /* 가로 길게 */
+	padding: 1rem; /* 여백 */
+	font-size: 1rem; /* 글자 크기 */
+	border-radius: 8px; /* 모서리 둥글게 (선택사항) */
+}
+
+.button:hover {
+	background-color: #2980b9; /* 호버 시 */
+}
+
+.button.rare {
+	background-color: #e74c3c; /* 특수 필드 색상 */
+}
+
+.button.rare:hover {
+	background-color: #c0392b;
+}
+
+.result {
+	margin-top: 16px;
+	padding: 16px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+	align-items: center;
+
+}
+
+
+.charactersContainer {
+	display: flex;
+	gap: 0; /* 간격 없애고 */
+	position: relative;
+}
+
+.character {
+	background-color: #f0f8ff;
+	border: 1px solid #cce4ff;
+	border-radius: 12px;
+	padding: 12px 16px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	width: 220px;
+	position: relative;
+	margin-left: -200px; /* 겹치게 */
+	transition: transform 0.3s, box-shadow 0.3s;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.character:first-child {
+	margin-left: 0;
+}
+
+.monster-info {
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	cursor: pointer; /* 마우스 올렸을 때 손가락 모양 */
+}
+
+.character:hover, .monster-info:hover {
+	transform: translateY(-10px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+	z-index: 10; /* 위로 올라옴 */
+}
+
+
+.character h4 {
+	margin: 0 0 8px 0;
+	color: #00509e; /* 진한 파랑 */
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
+.character p {
+	margin: 4px 0;
+	font-size: 0.95rem;
+	color: #333;
+}
+
+.levelUpBox {
+	margin-top: 8px;
+	padding: 10px 12px;
+	background-color: #e6f9f0; /* 연한 초록 */
+	border: 1px solid #81d4ac; /* 중간 초록 테두리 */
+	border-radius: 6px;
+}
+
+.levelUpTitle {
+	color: #2e8b57; /* 진한 초록 */
+	font-weight: 600;
+	margin-bottom: 6px;
+	font-size: 0.95rem;
+}
+
+.statsGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 6px 6px;
+	font-size: 0.8rem;
+	color: #2c3e50;
+}
+
+.statusBar {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.barLabel {
+	width: 2rem;
+	text-align: right;
+	font-weight: bold;
+}
+
+.barOuter {
+	flex: 1;
+	height: 12px;
+	background-color: #ccc;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.barInner {
+	height: 100%;
+	border-radius: 6px;
+	transition: width 0.3s ease;
+}
+
+.barText {
+	width: 5rem;
+	text-align: left;
+	font-size: 0.8rem;
+}
+
+
+.statItem {
+	display: grid;
+	grid-template-columns: 1fr 1fr; /* 좌우 반씩 분할 */
+	align-items: center; /* 수직 중앙정렬 */
+	background-color: #f9fbfc;
+	padding: 4px 6px;
+	border-radius: 4px;
+	text-align: center;
+}
+
+.label {
+	justify-self: center; /* 좌측 영역 내부 중앙 */
+	font-weight: 500;
+}
+
+.value {
+	justify-self: center; /* 우측 영역 내부 중앙 */
+	font-size: 0.95rem;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums; /* 숫자 균일 간격 */
+}
+
+
+.monster-info {
+	background-color: #fff0f0; /* 연한 빨강색 배경 */
+	border: 1px solid #ffcccc; /* 연한 빨강 테두리 */
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin-top: 24px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	font-size: 0.95rem;
+	color: #333;
+
+	width: 200px;
+}
+
+.monster-info p {
+	margin: 6px 0;
+	font-size: 1rem;
+	color: #b30000; /* 진한 빨강 */
+	font-weight: 600;
+}
+
+.battleLog {
+	background-color: #eee;
+	padding: 8px;
+	border-radius: 4px;
+	white-space: pre-wrap;
+}
+
+.battleResult {
+	display: flex;
+	font-size: 24px;
+	font-weight: bold;
+	padding: 12px;
+	border-radius: 8px;
+	text-align: center;
+	margin: 16px 0;
+	align-items: center;
+	justify-content: center; /* 수평 가운데 */
+
+}
+
+
+.win {
+	color: #27ae60;
+	background-color: #d4efdf;
+	border: 2px solid #27ae60;
+}
+
+.lose {
+	color: #c0392b;
+	background-color: #f9d6d5;
+	border: 2px solid #c0392b;
+}
+
+.draw {
+	color: #7f8c8d;
+	background-color: #ecf0f1;
+	border: 2px solid #7f8c8d;
+}
+
+.gold {
+	display: flex;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 12px;
+	border-radius: 8px;
+	text-align: center;
+	margin: 16px 0;
+	align-items: center;
+	justify-content: center;
+	color: #6c7a01;
+	background-color: #fffea6;
+	border: 2px solid yellow;
+}
+
+.item {
+	display: flex;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 12px;
+	border-radius: 8px;
+	text-align: center;
+	margin: 16px 0;
+	align-items: center;
+	justify-content: center;
+	color: #67008c;
+	background-color: #c17fea;
+	border: 2px solid #67008c;
+}
