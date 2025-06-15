@@ -19,7 +19,7 @@ import com.example.rabbithell.domain.chat.internal.ChatRedisWriter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import static com.example.rabbithell.domain.chat.common.Constants.Chat.MESSAGE_COOLDOWN_MS;
+import static com.example.rabbithell.domain.chat.common.ChatConstants.Chat.MESSAGE_COOLDOWN_MS;
 
 @Slf4j
 @Service

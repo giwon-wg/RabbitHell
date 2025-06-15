@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CloverResponse, CharacterPersonalInfoResponse } from '../../types/types';
+import { sendQuitAndDisconnect } from '../../util/socketUtils';
+import { stompClient } from '../../util/stompRef';
+
+const ROOM_ID = '1'; // 추후 동적으로 바꿀 수 있음
 
 const MainPage = () => {
 	const navigate = useNavigate();
@@ -36,6 +40,15 @@ const MainPage = () => {
 			.finally(() => setLoading(false));
 	}, []);
 
+	const handleLogout = () => {
+		if (stompClient.current?.connected) {
+			sendQuitAndDisconnect(stompClient); // ✅ 퇴장 메시지 없이 disconnect만 -> chatting 관련 웹소켓 종료
+		}
+		localStorage.removeItem('accessToken');
+		navigate('/');
+	};
+
+
 	if (loading) return <p>로딩 중...</p>;
 	if (error) return <p style={{ color: 'red' }}>⚠️ {error}</p>;
 
@@ -52,8 +65,8 @@ const MainPage = () => {
 			<button onClick={() => navigate('/me')} style={{ marginRight: '12px' }}>
 				내 정보 보기
 			</button>
-			<button onClick={() => navigate('/')}>
-				로그아웃 / 홈
+			<button onClick={handleLogout}>
+				로그아웃
 			</button>
 		</div>
 	);

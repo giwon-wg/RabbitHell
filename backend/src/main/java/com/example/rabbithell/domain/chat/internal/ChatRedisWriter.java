@@ -21,7 +21,7 @@ public class ChatRedisWriter {
 
 	public void saveChatMessage(String roomId, ChatMessageResponseDto message) {
 		try {
-			redisTemplate.opsForValue().set("1","sdsdsd");
+
 			String key = "chat:history:" + roomId;
 			String json = objectMapper.writeValueAsString(message);
 
