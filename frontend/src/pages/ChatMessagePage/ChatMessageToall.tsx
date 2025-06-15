@@ -6,6 +6,7 @@ interface ChatMessage {
 	message: string;
 	username: string;
 	messageType: 'CHAT' | 'ENTER' | 'QUIT' | 'ADMIN';
+	createdAt?: string;
 	timestamp?: string;
 	isMe?: boolean;
 }
@@ -19,8 +20,10 @@ const ChatMessageToall = () => {
 	const [isConnected, setIsConnected] = useState(false);
 	const [userCount, setUserCount] = useState(0);
 	const [myUsername, setMyUsername] = useState<string | null>(null);
+	const [initialLoadDone, setInitialLoadDone] = useState(false);
 
 	const stompClient = useRef<Client | null>(null);
+	const messagesContainerRef = useRef<HTMLDivElement>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -40,8 +43,17 @@ const ChatMessageToall = () => {
 	}, [myUsername]);
 
 	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+		if (!initialLoadDone) return;
+		scrollToBottom();
+	}, [initialLoadDone]);
+
+	useEffect(() => {
+		scrollToBottom();
 	}, [messages]);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+	};
 
 	const isTokenExpired = (token: string): boolean => {
 		try {
@@ -70,8 +82,9 @@ const ChatMessageToall = () => {
 			setMessages(data.map((msg) => ({
 				...msg,
 				isMe: msg.username?.toLowerCase() === myUsername?.toLowerCase(),
-				timestamp: formatTime(new Date(msg.timestamp || Date.now())),
+				timestamp: formatTime(new Date(msg.createdAt || Date.now())),
 			})));
+			setInitialLoadDone(true);
 		} catch (e) {
 			console.error('채팅 기록 로딩 실패', e);
 		}
@@ -90,17 +103,13 @@ const ChatMessageToall = () => {
 	};
 
 	const connectWebSocket = (token: string) => {
-		// ✅ 이미 연결된 경우 중복 연결 방지
-		if (stompClient.current?.connected) {
-			console.log("이미 연결되어 있음. 중복 연결 방지");
-			return;
-		}
+		if (stompClient.current?.connected) return;
 
-		// ✅ 이전 클라이언트가 남아있다면 강제 종료
 		if (stompClient.current) {
 			stompClient.current.deactivate();
-			stompClient.current = null; // ✅ 강제로 null 처리해 중복 subscribe 방지
+			stompClient.current = null;
 		}
+
 		const client = new Client({
 			webSocketFactory: () => new SockJS(`${SOCKET_URL}?roomId=${ROOM_ID}`),
 			connectHeaders: { Authorization: `Bearer ${token}`, roomId: ROOM_ID },
@@ -111,17 +120,16 @@ const ChatMessageToall = () => {
 
 				client.subscribe(`/sub/chat/${ROOM_ID}`, (message) => {
 					const chatMessage: ChatMessage = JSON.parse(message.body);
-					console.log("📥 받은 메시지", chatMessage); // ✅ 여기에 로그 추가
 					if (!chatMessage.messageType || !chatMessage.username) return;
 
-					setMessages((prev) => [
+					setMessages((prev) => ([
 						...prev,
 						{
 							...chatMessage,
 							isMe: chatMessage.username?.toLowerCase() === myUsername?.toLowerCase(),
-							timestamp: formatTime(new Date()),
+							timestamp: formatTime(new Date(chatMessage.createdAt || Date.now())),
 						},
-					]);
+					]));
 				});
 
 				client.subscribe(`/sub/user-count/${ROOM_ID}`, (message) => {
@@ -134,14 +142,8 @@ const ChatMessageToall = () => {
 				});
 			},
 			onStompError: scheduleReconnect,
-			onWebSocketClose: () => {
-				setIsConnected(false);
-				scheduleReconnect();
-			},
-			onWebSocketError: () => {
-				setIsConnected(false);
-				scheduleReconnect();
-			},
+			onWebSocketClose: () => { setIsConnected(false); scheduleReconnect(); },
+			onWebSocketError: () => { setIsConnected(false); scheduleReconnect(); },
 		});
 
 		client.activate();
@@ -160,10 +162,7 @@ const ChatMessageToall = () => {
 		if (newMessage.trim() && stompClient.current && isConnected) {
 			stompClient.current.publish({
 				destination: `/pub/chat/${ROOM_ID}`,
-				body: JSON.stringify({
-					message: newMessage,
-					messageType: 'CHAT', // ❌ sender는 보내지 않음
-				}),
+				body: JSON.stringify({ message: newMessage, messageType: 'CHAT' }),
 			});
 			setNewMessage('');
 		}
@@ -185,7 +184,7 @@ const ChatMessageToall = () => {
         </span>
 			</div>
 
-			<div style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '0.25rem', padding: '0.5rem' }}>
+			<div ref={messagesContainerRef} style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '0.25rem', padding: '0.5rem' }}>
 				{messages.map((msg, index) => {
 					if (msg.messageType === 'ENTER') {
 						return <div key={index} style={{ textAlign: 'center', color: '#999', fontSize: '0.5rem', marginBottom: '0.5rem' }}>👋 {msg.username}님이 입장했습니다.</div>;

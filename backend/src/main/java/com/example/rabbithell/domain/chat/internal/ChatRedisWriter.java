@@ -1,5 +1,7 @@
 package com.example.rabbithell.domain.chat.internal;
 
+import java.time.Duration;
+
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,17 +23,21 @@ public class ChatRedisWriter {
 
 	public void saveChatMessage(String roomId, ChatMessageResponseDto message) {
 		try {
-
 			String key = "chat:history:" + roomId;
 			String json = objectMapper.writeValueAsString(message);
 
 			redisTemplate.opsForList().rightPush(key, json);
-			log.info(" Redis 저장 성공");
-			// 선택: 최근 100개까지만 유지
-			redisTemplate.opsForList().trim(key, -100, -1);
+			log.info("Redis 저장 성공: {}", key);
+
+			// ✅ 최근 50개까지만 유지
+			redisTemplate.opsForList().trim(key, -50, -1);
+
+			// ✅ TTL 설정: 6시간 뒤 삭제
+			redisTemplate.expire(key, Duration.ofHours(6));
 
 		} catch (JsonProcessingException e) {
-			log.error(" Redis 저장 실패: 직렬화 에러", e);
+			log.error("Redis 저장 실패: 직렬화 에러", e);
 		}
 	}
+
 }
