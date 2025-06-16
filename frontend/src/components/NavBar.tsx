@@ -3,17 +3,23 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 const NavContainer = styled.nav`
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 70px; // 또는 48px, 64px 등 적절히 조정
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 12px 24px;
-	background-color: #fff;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	font-weight: bold;
+	background-color: #000000;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	z-index: 100;
 `;
 
 const Logo = styled.div`
 	font-size: 20px;
+	color: white;
 `;
 
 const Menu = styled.ul`
@@ -25,7 +31,7 @@ const Menu = styled.ul`
 const MenuItem = styled.li<{ $active: boolean }>`
 	a {
 		text-decoration: none;
-		color: ${(props) => (props.$active ? '#007bff' : '#333')};
+		color: ${(props) => (props.$active ? '#ffcc66' : '#f0f0f0')};
 		font-weight: ${(props) => (props.$active ? 'bold' : 'normal')};
 	}
 `;

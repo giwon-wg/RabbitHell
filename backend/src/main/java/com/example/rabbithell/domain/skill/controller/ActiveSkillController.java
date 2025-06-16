@@ -17,27 +17,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
-import com.example.rabbithell.domain.skill.dto.request.SkillCreateRequest;
-import com.example.rabbithell.domain.skill.dto.request.SkillUpdateRequest;
-import com.example.rabbithell.domain.skill.dto.response.AllSkillResponse;
-import com.example.rabbithell.domain.skill.service.SkillService;
+import com.example.rabbithell.domain.skill.dto.request.ActiveSkillCreateRequest;
+import com.example.rabbithell.domain.skill.dto.request.ActiveSkillUpdateRequest;
+import com.example.rabbithell.domain.skill.dto.response.AllActiveSkillResponse;
+import com.example.rabbithell.domain.skill.service.ActiveSkillService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/skills")
+@RequestMapping("/admin/skills/active")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
-public class AdminSkillController {
+public class ActiveSkillController {
 
-	private final SkillService skillService;
+	private final ActiveSkillService activeSkillService;
 
+	// 액티브
 	@PostMapping
-	public ResponseEntity<CommonResponse<Long>> createSkill(
-		@Valid @RequestBody SkillCreateRequest request
+	public ResponseEntity<CommonResponse<Long>> createActiveSkill(
+		@Valid @RequestBody ActiveSkillCreateRequest request
 	) {
-		Long skillId = skillService.createSkill(request);
+		Long skillId = activeSkillService.createActiveSkill(request);
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
@@ -46,13 +47,13 @@ public class AdminSkillController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CommonResponse<Page<AllSkillResponse>>> getAllSkills(
+	public ResponseEntity<CommonResponse<Page<AllActiveSkillResponse>>> getAllActiveSkills(
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(required = false) String jobName
 	) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<AllSkillResponse> skillsPage = skillService.getAllSkills(pageable, jobName);
+		Page<AllActiveSkillResponse> skillsPage = activeSkillService.getAllActiveSkills(pageable, jobName);
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
@@ -63,11 +64,11 @@ public class AdminSkillController {
 	}
 
 	@PatchMapping("/{skillId}")
-	public ResponseEntity<CommonResponse<Void>> updateSkill(
+	public ResponseEntity<CommonResponse<Void>> updateActiveSkill(
 		@PathVariable Long skillId,
-		@RequestBody @Valid SkillUpdateRequest request
+		@RequestBody @Valid ActiveSkillUpdateRequest request
 	) {
-		skillService.updateSkill(skillId, request);
+		activeSkillService.updateActiveSkill(skillId, request);
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),
@@ -78,8 +79,10 @@ public class AdminSkillController {
 	}
 
 	@DeleteMapping("/{skillId}")
-	public ResponseEntity<CommonResponse<Void>> deleteSkill(@PathVariable Long skillId) {
-		skillService.deleteSkill(skillId);
+	public ResponseEntity<CommonResponse<Void>> deleteActiveSkill(
+		@PathVariable Long skillId
+	) {
+		activeSkillService.deleteActiveSkill(skillId);
 		return ResponseEntity.ok(CommonResponse.of(
 			true,
 			HttpStatus.OK.value(),

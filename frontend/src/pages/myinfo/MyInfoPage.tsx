@@ -45,8 +45,6 @@ const MyInfoPage = () => {
 
 	return (
 		<Container>
-			<h1>내 정보</h1>
-
 			{clover && (
 				<Section>
 					<CloverCard clover={clover} />

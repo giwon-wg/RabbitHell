@@ -25,11 +25,19 @@ public class BattleStatService {
 
 		PawCardEffectDto pawCardEffectDto = pawCardEffectRedisService.getEffect(cloverId);
 
+		if (pawCardEffectDto.getCardRanking() == null) {
+			return PawCardBattleStatDto.create();
+		}
+
 		PawCardBattleStatDto pawCardBattleStatDto = PawCardBattleStatDto.create(); // 초기 누적 DTO
 
 		for (EffectDetailDto effectDetailDto : pawCardEffectDto.getEffectDetailDtoList()) {
 			StatType statType = effectDetailDto.getStatType();
 			Integer value = effectDetailDto.getFinalEffectValue();
+
+			if (effectDetailDto.getStatType() == null) {
+				continue;
+			}
 
 			BattleStatApplier applier = battleStatApplierRegistry.get(statType);
 			applier.apply(value, pawCardBattleStatDto);

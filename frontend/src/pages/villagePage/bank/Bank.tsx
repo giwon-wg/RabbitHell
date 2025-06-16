@@ -74,7 +74,7 @@ const BankPage = () => {
 			<h2 style={{ textAlign: 'center' }}>은행</h2>
 			<p style={{ textAlign: 'center', color: '#888' }}>대륙 제일 은행</p>
 
-			<div style={{ margin: '1rem 0', background: '#f8f8f8', padding: '1rem', borderRadius: 4 }}>
+			<div style={{ margin: '1rem 0', background: '#000000', padding: '1rem', borderRadius: 4 }}>
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					<span>소지금:</span>
 					<strong>{clover.cash.toLocaleString()} Gold</strong>

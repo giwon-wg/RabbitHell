@@ -2,7 +2,7 @@ package com.example.rabbithell.domain.characterSkill.entity;
 
 import com.example.rabbithell.domain.character.entity.GameCharacter;
 import com.example.rabbithell.domain.characterSkill.enums.SkillEquipType;
-import com.example.rabbithell.domain.skill.entity.Skill;
+import com.example.rabbithell.domain.skill.entity.ActiveSkill;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-public class CharacterSkill {
+public class CharacterActiveSkill {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class CharacterSkill {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "skill_id")
-	private Skill skill;
+	private ActiveSkill activeSkill;
 
 	private int skillTier;
 
@@ -40,10 +40,10 @@ public class CharacterSkill {
 	@Column(nullable = false)
 	private SkillEquipType equipType = SkillEquipType.NONE;
 
-	public CharacterSkill(GameCharacter character, Skill skill) {
+	public CharacterActiveSkill(GameCharacter character, ActiveSkill activeSkill) {
 		this.character = character;
-		this.skill = skill;
-		this.skillTier = skill.getTier();
+		this.activeSkill = activeSkill;
+		this.skillTier = activeSkill.getTier();
 	}
 
 	public boolean isEquipped() {

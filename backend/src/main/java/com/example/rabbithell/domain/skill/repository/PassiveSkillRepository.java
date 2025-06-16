@@ -11,23 +11,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.rabbithell.domain.job.entity.JobCategory;
-import com.example.rabbithell.domain.skill.entity.Skill;
+import com.example.rabbithell.domain.skill.entity.ActiveSkill;
+import com.example.rabbithell.domain.skill.entity.PassiveSkill;
 import com.example.rabbithell.domain.skill.exception.SkillException;
 
-public interface SkillRepository extends JpaRepository<Skill, Long> {
+public interface PassiveSkillRepository extends JpaRepository<PassiveSkill, Long> {
 
-	Page<Skill> findByJobNameIgnoreCase(String jobName, Pageable pageable);
+	Page<PassiveSkill> findByJobNameIgnoreCase(String jobName, Pageable pageable);
 
-	default Skill findByIdOrElseThrow(Long id) {
+	default PassiveSkill findByIdOrElseThrow(Long id) {
 		return findById(id)
 			.orElseThrow(() -> new SkillException(SKILL_NOT_FOUND));
 	}
 
-	@Query("SELECT s FROM Skill s " +
+	@Query("SELECT s FROM PassiveSkill s " +
 		"WHERE s.jobCategory = :jobCategory " +
 		"AND s.jobTier <= :tier " +
 		"AND (COALESCE(:learnedSkillIds, NULL) IS NULL OR s.id NOT IN :learnedSkillIds)")
-	Page<Skill> findLearnableSkills(
+	Page<PassiveSkill> findLearnableSkills(
 		@Param("jobCategory") JobCategory jobCategory,
 		@Param("tier") int tier,
 		@Param("learnedSkillIds") List<Long> learnedSkillIds,

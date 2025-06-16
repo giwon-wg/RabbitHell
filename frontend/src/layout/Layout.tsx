@@ -17,7 +17,6 @@ const ContentArea = styled.div`
 
 const MainContent = styled.main`
 	flex: 1;
-	padding: 24px;
 	overflow-y: auto;
 	position: relative; /* ✅ canvas가 자식으로 배치될 수 있게 */
 	min-height: 100vh;  /* ✅ 캔버스 높이 확보 */
