@@ -27,7 +27,7 @@ import com.example.rabbithell.domain.clover.repository.CloverRepository;
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.monster.entity.Monster;
 import com.example.rabbithell.domain.monster.service.MonsterService;
-import com.example.rabbithell.domain.util.battlelogic.Battle;
+import com.example.rabbithell.domain.util.battleLogic.Battle;
 
 import lombok.RequiredArgsConstructor;
 
