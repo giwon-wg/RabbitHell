@@ -73,7 +73,7 @@ const VillagePage = () => {
 							fontSize: '1.1rem',
 							borderRadius: '10px',
 							border: '1px solid #ccc',
-							background: '#fff',
+							background: '#000000',
 							boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
 							cursor: 'pointer',
 						}}

@@ -56,10 +56,10 @@ const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: '100vh',
-		background: 'linear-gradient(to bottom, #000000, #1a237e)',
+		// background: 'linear-gradient(to bottom, #000000, #1a237e)',
 	},
 	card: {
-		backgroundColor: '#fff',
+		backgroundColor: '#100702',
 		padding: '40px',
 		borderRadius: '16px',
 		boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
@@ -69,7 +69,7 @@ const styles = {
 	title: {
 		fontSize: '28px',
 		marginBottom: '12px',
-		color: '#1b387a',
+		color: '#ffffff',
 	},
 	image: {
 		width: '100%',

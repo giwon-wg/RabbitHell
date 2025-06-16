@@ -30,10 +30,50 @@ import InventoryPage from "./pages/myinfo/inventory/InventoryPage";
 import Shop from "./pages/villagePage/shop/ShopPage";
 import JobPage from "./pages/myinfo/characterDetail/job/JobPage";
 import PawCardPage from "./pages/myinfo/pawCrad/PawCardPage";
+import { createGlobalStyle } from 'styled-components';
 
 type DecodedToken = {
 	exp: number;
 }
+
+export const GlobalStyle = createGlobalStyle`
+	html, body {
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #1a0700;
+		font-family: 'Pretendard', sans-serif;
+	}
+
+	#root {
+		width: 100%;
+		height: 100%;
+		background-color: #1a0700;
+	}
+
+	#root > div {
+		padding-top: 69px;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	button {
+		color: #fff;
+		background-color: #333;
+		border: 1px solid #555;
+		border-radius: 6px;
+		padding: 8px 16px;
+		cursor: pointer;
+	}
+
+	button:hover {
+		background-color: #444;
+	}
+`;
+
 
 function scheduleRefresh(accessToken: string) {
 	const decoded: DecodedToken = jwtDecode(accessToken);
@@ -84,6 +124,7 @@ function App() {
 
 	return (
 		<Router>
+			<GlobalStyle />
 			<RoutesWithLayout />
 		</Router>
 	);
