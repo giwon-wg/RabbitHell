@@ -2,13 +2,12 @@ package com.example.rabbithell.domain.skill.dto.request;
 
 import com.example.rabbithell.domain.job.entity.Job;
 import com.example.rabbithell.domain.skill.enums.SkillTarget;
-import com.example.rabbithell.domain.skill.enums.SkillType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record SkillUpdateRequest(
+public record ActiveSkillUpdateRequest(
 	@Schema(description = "스킬명", example = "아도겐")
 	@NotBlank(message = "스킬명 필수로 입력해주세요")
 	String name,
@@ -40,12 +39,8 @@ public record SkillUpdateRequest(
 	@NotNull(message = "데미지 필수입니다")
 	int dmg,
 
-	@Schema(description = "스킬 타입(PASSIVE,ACTIVE)", example = "PASSIVE")
-	@NotNull(message = "스킬 타입 필수입니다")
-	SkillType skillType,
-
 	@Schema(description = "스킬 타겟(PERSONAL,CLOVER)", example = "CLOVER")
-	@NotNull(message = "데미지 필수입니다")
+	@NotNull(message = "스킬 타겟 필수입니다")
 	SkillTarget skillTarget,
 
 	@Schema(description = "스킬이 속한 직업명", example = "전사 1차")
