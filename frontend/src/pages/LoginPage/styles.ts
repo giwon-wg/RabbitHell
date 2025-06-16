@@ -1,94 +1,50 @@
 import styled from 'styled-components';
 
-export const LoginContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+export const Background = styled.div`
+	background-image: url('/game-title.png'); // 실제 경로에 맞게 수정
+	background-size: cover;
+	background-position: center;
+	width: 100vw;
 	height: 100vh;
-	background-color: #f5f5f5;
+	position: relative;
 `;
 
-export const GameTitle = styled.img`
-	width: 300px;
-	margin-bottom: 40px;
-`;
-
-export const LoginForm = styled.form`
+export const Overlay = styled.div`
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0);
 	display: flex;
-	flex-direction: column;
-	width: 300px;
-	margin-bottom: 20px;
+	justify-content: center;
+	align-items: center;
 `;
 
-export const Input = styled.input`
-	height: 40px;
-	margin-bottom: 12px;
-	padding: 8px;
-	font-size: 14px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
+export const LoginContainer = styled.div`
+	position: absolute;
+	left: 6%; // ⭐ 왼쪽 여백
+	bottom: 70%; // ⭐ 아래 여백
+	text-align: center;
 `;
 
-export const SubmitButton = styled.button`
-	height: 45px;
-	background-color: #4caf50;
-	border: none;
-	border-radius: 6px;
-	color: white;
-	font-weight: bold;
-	cursor: pointer;
-
-	&:hover {
-		background-color: #45a049;
-	}
+export const GameTitle = styled.h1`
+	font-size: 64px;
+	color: #ffcc66;
+	text-shadow: 3px 3px 0 #000;
+	font-family: 'Press Start 2P', cursive;
+	margin-bottom: 32px;
 `;
 
 export const KakaoButton = styled.button`
-	width: 300px;
-	height: 50px;
-	background-color: #FEE500;
+	background-color: rgba(0, 0, 0, 0.3);
+	color: #f9d977;
 	border: none;
-	border-radius: 8px;
+	padding: 16px 40px;
+	font-size: 42px;
+	font-family: 'Press Start 2P', cursive;
 	cursor: pointer;
-	font-size: 16px;
-	font-weight: bold;
-	color: #000000;
+	border-radius: 64px;
+	transition: transform 0.1s;
 
 	&:hover {
-		background-color: #E6CF00;
+		transform: scale(1.05);
 	}
 `;
-
-
-// import styled from 'styled-components';
-//
-// export const LoginContainer = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   height: 100vh;
-//   background-color: #f5f5f5;
-// `;
-//
-// export const GameTitle = styled.img`
-//   width: 300px;
-//   margin-bottom: 40px;
-// `;
-//
-// export const KakaoButton = styled.button`
-//   width: 300px;
-//   height: 50px;
-//   background-color: #FEE500;
-//   border: none;
-//   border-radius: 8px;
-//   cursor: pointer;
-//   font-size: 16px;
-//   font-weight: bold;
-//   color: #000000;
-//
-//   &:hover {
-//     background-color: #E6CF00;
-//   }
-// `;

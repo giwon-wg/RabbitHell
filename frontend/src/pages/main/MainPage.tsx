@@ -4,6 +4,15 @@ import { CloverResponse, CharacterPersonalInfoResponse } from '../../types/types
 import { sendQuitAndDisconnect } from '../../util/socketUtils';
 import { stompClient } from '../../util/stompRef';
 
+import {
+	MainContainer,
+	ContentBox,
+	Title,
+	StatText,
+	GameButton,
+	ErrorText, CardColumn, QuestBox, MyInfoBox,
+} from './MainPage.styles';
+
 const ROOM_ID = '1'; // 추후 동적으로 바꿀 수 있음
 
 const MainPage = () => {
@@ -51,24 +60,35 @@ const MainPage = () => {
 
 	if (loading) return <p>로딩 중...</p>;
 	if (error) return <p style={{ color: 'red' }}>⚠️ {error}</p>;
+	if (loading) return <MainContainer><Title>로딩 중...</Title></MainContainer>;
+	if (error) return <MainContainer><ErrorText>⚠️ {error}</ErrorText></MainContainer>;
 
 	return (
-		<div style={{ padding: '24px' }}>
-			<h1>메인 페이지</h1>
-			{clover && (
-				<div>
-					<p>클로버 이름: <strong>{clover.name}</strong></p>
-					<p>스태미나: {clover.stamina}</p>
-				</div>
-			)}
-
-			<button onClick={() => navigate('/me')} style={{ marginRight: '12px' }}>
-				내 정보 보기
-			</button>
-			<button onClick={handleLogout}>
-				로그아웃
-			</button>
-		</div>
+		<MainContainer>
+			<CardColumn>
+			<ContentBox>
+				<Title>
+					{clover && (
+						<>
+							{clover.name}
+						</>
+					)}
+				</Title>
+			</ContentBox>
+				<MyInfoBox>
+				{clover && (
+					<>
+						<StatText>⚡ 스태미나: {clover.stamina}</StatText>
+					</>
+				)}
+				</MyInfoBox>
+			<QuestBox>
+				<text>
+					일일 퀘스트
+				</text>
+			</QuestBox>
+			</CardColumn>
+		</MainContainer>
 	);
 };
 
