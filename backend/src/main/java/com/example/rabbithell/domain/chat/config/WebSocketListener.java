@@ -1,6 +1,5 @@
 package com.example.rabbithell.domain.chat.config;
 
-import java.security.Principal;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
 

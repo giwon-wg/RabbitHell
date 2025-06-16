@@ -186,11 +186,7 @@ const ChatMessageToall = () => {
 
 			<div ref={messagesContainerRef} style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '0.25rem', padding: '0.5rem' }}>
 				{messages.map((msg, index) => {
-					if (msg.messageType === 'ENTER') {
-						return <div key={index} style={{ textAlign: 'center', color: '#999', fontSize: '0.5rem', marginBottom: '0.5rem' }}>👋 {msg.username}님이 입장했습니다.</div>;
-					} else if (msg.messageType === 'QUIT') {
-						return <div key={index} style={{ textAlign: 'center', color: '#999', fontSize: '0.5rem', marginBottom: '0.5rem' }}>❌ {msg.username}님이 퇴장했습니다.</div>;
-					} else if (msg.messageType === 'ADMIN') {
+					if (msg.messageType === 'ADMIN') {
 						return <div key={index} style={{ textAlign: 'center', color: '#888', fontStyle: 'italic', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{msg.message}</div>;
 					} else {
 						return (

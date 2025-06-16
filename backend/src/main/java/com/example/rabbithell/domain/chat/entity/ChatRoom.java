@@ -3,9 +3,6 @@ package com.example.rabbithell.domain.chat.entity;
 import java.util.List;
 import jakarta.persistence.*;
 
-import com.example.rabbithell.domain.user.model.User;
-
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

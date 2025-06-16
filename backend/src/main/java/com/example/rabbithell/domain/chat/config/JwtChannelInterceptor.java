@@ -3,7 +3,6 @@ package com.example.rabbithell.domain.chat.config;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -15,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-
 import com.example.rabbithell.domain.chat.exception.ChatMessageException;
 import com.example.rabbithell.domain.chat.exception.ChatMessageExceptionCode;
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;

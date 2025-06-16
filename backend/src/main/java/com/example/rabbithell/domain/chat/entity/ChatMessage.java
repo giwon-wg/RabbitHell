@@ -1,11 +1,9 @@
 package com.example.rabbithell.domain.chat.entity;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 
 import org.springframework.data.annotation.CreatedDate;
-
 import com.example.rabbithell.domain.user.model.User;
 
 import lombok.Getter;

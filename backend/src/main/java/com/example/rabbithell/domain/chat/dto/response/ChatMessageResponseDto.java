@@ -1,6 +1,7 @@
 package com.example.rabbithell.domain.chat.dto.response;
 
 import java.time.LocalDateTime;
+
 import com.example.rabbithell.domain.chat.dto.MessageType;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
 import com.fasterxml.jackson.annotation.JsonCreator;
