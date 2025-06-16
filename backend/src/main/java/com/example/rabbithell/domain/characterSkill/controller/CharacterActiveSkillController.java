@@ -15,32 +15,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.rabbithell.common.response.CommonResponse;
-import com.example.rabbithell.domain.characterSkill.dto.response.EquippedSkillResponse;
-import com.example.rabbithell.domain.characterSkill.dto.response.LearnedSkillResponse;
+import com.example.rabbithell.domain.characterSkill.dto.response.EquippedActiveSkillResponse;
+import com.example.rabbithell.domain.characterSkill.dto.response.LearnableActiveSkillResponse;
+import com.example.rabbithell.domain.characterSkill.dto.response.LearnedActiveSkillResponse;
 import com.example.rabbithell.domain.characterSkill.enums.SkillEquipType;
-import com.example.rabbithell.domain.characterSkill.service.CharacterSkillService;
+import com.example.rabbithell.domain.characterSkill.service.CharacterActiveSkillService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/characters/{characterId}/skills")
+@RequestMapping("/characters/{characterId}/skills/active")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('USER')")
-public class CharacterSkillController {
+public class CharacterActiveSkillController {
 
-	private final CharacterSkillService characterSkillService;
+	private final CharacterActiveSkillService characterActiveSkillService;
 
 	@PostMapping("/{skillId}/learn")
 	public ResponseEntity<CommonResponse<Void>> learnSkill(
 		@PathVariable Long characterId,
 		@PathVariable Long skillId
 	) {
-		characterSkillService.learnSkill(characterId, skillId);
+		characterActiveSkillService.learnActiveSkill(characterId, skillId);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,
 				200,
-				"스킬 학습 성공"
+				"액티브 스킬 학습 성공"
 			)
 		);
 	}
@@ -50,12 +51,12 @@ public class CharacterSkillController {
 		@PathVariable Long characterId,
 		@PathVariable Long skillId,
 		@RequestParam SkillEquipType slotType) {
-		characterSkillService.equipSkill(characterId, skillId, slotType);
+		characterActiveSkillService.equipActiveSkill(characterId, skillId, slotType);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,
 				200,
-				"스킬 장착 성공"
+				"액티브 스킬 장착 성공"
 			)
 		);
 	}
@@ -65,60 +66,64 @@ public class CharacterSkillController {
 		@PathVariable Long characterId,
 		@PathVariable Long skillId
 	) {
-		characterSkillService.unequipSkill(characterId, skillId);
+		characterActiveSkillService.unequipActiveSkill(characterId, skillId);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,
 				200,
-				"스킬 해제 완료"
+				"액티브 스킬 해제 완료"
 			)
 		);
 	}
 
 	@GetMapping("/learned")
-	public ResponseEntity<CommonResponse<Page<LearnedSkillResponse>>> getLearnedSkills(
+	public ResponseEntity<CommonResponse<Page<LearnedActiveSkillResponse>>> getLearnedSkills(
 		@PathVariable Long characterId,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<LearnedSkillResponse> learnedSkills = characterSkillService.getLearnedSkills(characterId, pageable);
+		Page<LearnedActiveSkillResponse> learnedSkills = characterActiveSkillService.getLearnedActiveSkills(characterId,
+			pageable);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,
 				200,
-				"배운 스킬 목록 조회 성공",
+				"배운 액티브 스킬 목록 조회 성공",
 				learnedSkills
 			)
 		);
 	}
 
 	@GetMapping("/learnable")
-	public ResponseEntity<CommonResponse<Page<LearnedSkillResponse>>> getLearnableSkills(
+	public ResponseEntity<CommonResponse<Page<LearnableActiveSkillResponse>>> getLearnableSkills(
 		@PathVariable Long characterId,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<LearnedSkillResponse> learnableSkills = characterSkillService.getLearnableSkills(characterId, pageable);
+		Page<LearnableActiveSkillResponse> learnableSkills = characterActiveSkillService.getLearnableActiveSkills(
+			characterId, pageable);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,
 				200,
-				"습득 가능한 스킬 목록 조회 성공",
+				"습득 가능한 액티브 스킬 목록 조회 성공",
 				learnableSkills
 			)
 		);
 	}
 
 	@GetMapping("/equipped")
-	public ResponseEntity<CommonResponse<List<EquippedSkillResponse>>> getEquippedSkills(@PathVariable Long characterId) {
-		List<EquippedSkillResponse> equippedSkills = characterSkillService.getEquippedSkills(characterId);
+	public ResponseEntity<CommonResponse<List<EquippedActiveSkillResponse>>> getEquippedSkills(
+		@PathVariable Long characterId) {
+		List<EquippedActiveSkillResponse> equippedSkills = characterActiveSkillService.getEquippedActiveSkills(
+			characterId);
 		return ResponseEntity.ok(
 			CommonResponse.of(
 				true,
 				200,
-				"장착된 스킬 목록 조회 성공",
+				"장착된 액티브 스킬 목록 조회 성공",
 				equippedSkills
 			)
 		);
