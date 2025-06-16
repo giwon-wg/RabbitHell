@@ -9,7 +9,7 @@ import com.example.rabbithell.domain.user.model.User;
 public interface ChatMessageService {
 //	void saveMessage(Long roomId, String message);
 
-	ChatMessage saveMessage(Long roomId, Long userId, String message);
+	ChatMessage saveMessage(Long roomId, Long userId, String cloverName, String message);
 
 	void isOnCooldown(Long roomId, Long userId);
 

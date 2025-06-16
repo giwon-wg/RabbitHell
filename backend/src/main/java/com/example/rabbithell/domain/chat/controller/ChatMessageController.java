@@ -1,10 +1,11 @@
 package com.example.rabbithell.domain.chat.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import com.example.rabbithell.domain.chat.config.messagebroker.RedisPublisher;
@@ -14,6 +15,7 @@ import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
 import com.example.rabbithell.domain.chat.exception.ChatMessageException;
 import com.example.rabbithell.domain.chat.exception.ChatMessageExceptionCode;
+import com.example.rabbithell.domain.chat.internal.ChatRedisWriter;
 import com.example.rabbithell.domain.chat.service.ChatMessageService;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.service.UserService;
@@ -25,19 +27,16 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class ChatMessageController {
 
+	private final JwtTokenExtractor jwtTokenExtractor;
+	private final JwtUtil jwtUtil;
 	private final ChatMessageService chatMessageService;
 	private final UserService userService;
-	private final SimpMessagingTemplate messagingTemplate;
-	private final JwtUtil jwtUtil;
-	private final JwtTokenExtractor jwtTokenExtractor;
-	private final RedisPublisher redisPublisher;
-	private final ObjectMapper objectMapper;
-
 
 	@MessageMapping("/chat/{roomId}")
 	public void handleMessage(
@@ -46,48 +45,39 @@ public class ChatMessageController {
 		@Payload ChatMessageRequestDto dto
 	) {
 		try {
-			log.info("💬 {}님의 메시지: {}", dto.sender(), dto.message());
-			log.info("📌 roomId = {}", roomId);
-			// JWT 토큰 추출 - 여러 방법 시도
+			// 1. JWT 추출
 			String token = jwtTokenExtractor.extractToken(accessor);
-
 			if (!StringUtils.hasText(token)) {
-				log.warn("JWT 토큰이 없습니다. 세션 속성: {}", accessor.getSessionAttributes());
 				throw new ChatMessageException(ChatMessageExceptionCode.UNAUTHORIZED);
 			}
 
+			// 2. JWT 유효성 검사 및 클레임 파싱
 			if (!jwtUtil.validateToken(token)) {
-				log.warn("유효하지 않은 JWT 토큰입니다. 토큰: {}", token.substring(0, Math.min(20, token.length())) + "...");
 				throw new ChatMessageException(ChatMessageExceptionCode.UNAUTHORIZED);
 			}
 
 			Claims claims = jwtUtil.parseClaims(token);
 			Long userId = Long.valueOf(claims.getSubject());
-			String username = claims.get("cloverName", String.class);
+			String cloverName = claims.get("cloverName", String.class);
 
-			log.debug("인증된 사용자: ID={}, Username={}", userId, username);
+			log.info("💬 받은 메시지: {}, roomId={}, cloverName={}", dto.message(), roomId, cloverName);
 
 			if (!StringUtils.hasText(dto.message())) {
 				throw new ChatMessageException(ChatMessageExceptionCode.NULL_MESSAGE);
 			}
 
-			chatMessageService.isOnCooldown(Long.valueOf(roomId), userId);
-			ChatMessage filteredmessage = chatMessageService.saveMessage(roomId, userId, dto.message());
+			chatMessageService.isOnCooldown(roomId, userId);
 
-			ChatMessageResponseDto responseDto = ChatMessageResponseDto.createChatMessage(username, filteredmessage);
-
-			// ✅ Redis 발행으로 전환
-			String json = objectMapper.writeValueAsString(responseDto);
-			redisPublisher.publish(roomId, responseDto); // 또는 "chat-room." + roomId 도 가능
+			// ✅ 메시지 저장과 Redis publish 모두 서비스에서 처리
+			chatMessageService.saveMessage(roomId, userId, cloverName, dto.message());
 
 		} catch (ChatMessageException e) {
-			log.error("채팅 메시지 처리 중 오류 발생: {}", e.getMessage());
-			throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
+			log.error("❗️채팅 메시지 예외 발생: {}", e.getMessage());
+			throw e;
 		} catch (Exception e) {
-			log.error("예상치 못한 오류 발생", e);
+			log.error("❗️예상치 못한 오류 발생", e);
 			throw new ChatMessageException(ChatMessageExceptionCode.MESSAGE_PROCESSING_ERROR);
 		}
-
 	}
 
 	@MessageMapping("/chat/{roomId}/admin/notice")

@@ -61,7 +61,7 @@ const ChatBox = () => {
 			</ChatHeader>
 			<ChatContent>
 				{activeTab === '전체' && (
-					<ChatBodyWrapper>
+					<ChatBodyWrapper style={{ display: activeTab === '전체' ? 'flex' : 'none' }}>
 						<ChatMessageToall />
 					</ChatBodyWrapper>
 				)}

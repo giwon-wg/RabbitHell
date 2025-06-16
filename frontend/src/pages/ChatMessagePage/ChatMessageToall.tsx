@@ -6,6 +6,7 @@ interface ChatMessage {
 	message: string;
 	username: string;
 	messageType: 'CHAT' | 'ENTER' | 'QUIT' | 'ADMIN';
+	createdAt?: string;
 	timestamp?: string;
 	isMe?: boolean;
 }
@@ -19,8 +20,10 @@ const ChatMessageToall = () => {
 	const [isConnected, setIsConnected] = useState(false);
 	const [userCount, setUserCount] = useState(0);
 	const [myUsername, setMyUsername] = useState<string | null>(null);
+	const [initialLoadDone, setInitialLoadDone] = useState(false);
 
 	const stompClient = useRef<Client | null>(null);
+	const messagesContainerRef = useRef<HTMLDivElement>(null);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -34,51 +37,23 @@ const ChatMessageToall = () => {
 
 	useEffect(() => {
 		if (!myUsername) return;
-
-		// Redis 기반 채팅 기록 로딩
-		const fetchInitialChatHistory = async () => {
-			try {
-				const res = await fetch(`/api/chat/${ROOM_ID}/history`);
-				const data: ChatMessage[] = await res.json();
-				const parsed = data.map((msg) => ({
-					...msg,
-					isMe: msg.username?.trim().toLowerCase() === myUsername.trim().toLowerCase(),
-					timestamp: formatTime(new Date(msg.timestamp || Date.now()))
-				}));
-				setMessages(parsed);
-			} catch (e) {
-				console.error('채팅 기록 로딩 실패', e);
-			}
-		};
-
 		fetchInitialChatHistory();
-
 		const token = localStorage.getItem('accessToken');
-		if (token && !isTokenExpired(token)) {
-			connectWebSocket(token);
-		}
+		if (token && !isTokenExpired(token)) connectWebSocket(token);
 	}, [myUsername]);
 
 	useEffect(() => {
-		const handleUnload = () => {
-			stompClient.current?.deactivate();
-		};
-
-		window.addEventListener('beforeunload', handleUnload);
-		window.addEventListener('unload', handleUnload);
-
-		return () => {
-			window.removeEventListener('beforeunload', handleUnload);
-			window.removeEventListener('unload', handleUnload);
-			handleUnload();
-		};
-	}, []);
+		if (!initialLoadDone) return;
+		scrollToBottom();
+	}, [initialLoadDone]);
 
 	useEffect(() => {
-		if (messagesEndRef.current) {
-			messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-		}
+		scrollToBottom();
 	}, [messages]);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+	};
 
 	const isTokenExpired = (token: string): boolean => {
 		try {
@@ -98,21 +73,45 @@ const ChatMessageToall = () => {
 		}
 	};
 
+	const fetchInitialChatHistory = async () => {
+		try {
+			const res = await fetch(`/api/chat/${ROOM_ID}/history`, {
+				headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}` },
+			});
+			const data: ChatMessage[] = await res.json();
+			setMessages(data.map((msg) => ({
+				...msg,
+				isMe: msg.username?.toLowerCase() === myUsername?.toLowerCase(),
+				timestamp: formatTime(new Date(msg.createdAt || Date.now())),
+			})));
+			setInitialLoadDone(true);
+		} catch (e) {
+			console.error('채팅 기록 로딩 실패', e);
+		}
+	};
+
 	const fetchInitialUserCount = async () => {
 		try {
-			const res = await fetch(`/api/chat/rooms/${ROOM_ID}/user-count`);
+			const res = await fetch(`/api/chat/rooms/${ROOM_ID}/user-count`, {
+				headers: { Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}` },
+			});
 			const data = await res.json();
-			setUserCount(data.count || 1);
+			setUserCount(data.count || 0);
 		} catch {
-			setUserCount(1);
+			setUserCount(0);
 		}
 	};
 
 	const connectWebSocket = (token: string) => {
-		if (stompClient.current) stompClient.current.deactivate();
+		if (stompClient.current?.connected) return;
+
+		if (stompClient.current) {
+			stompClient.current.deactivate();
+			stompClient.current = null;
+		}
 
 		const client = new Client({
-			webSocketFactory: () => new SockJS(SOCKET_URL),
+			webSocketFactory: () => new SockJS(`${SOCKET_URL}?roomId=${ROOM_ID}`),
 			connectHeaders: { Authorization: `Bearer ${token}`, roomId: ROOM_ID },
 			reconnectDelay: 3000,
 			onConnect: () => {
@@ -121,14 +120,16 @@ const ChatMessageToall = () => {
 
 				client.subscribe(`/sub/chat/${ROOM_ID}`, (message) => {
 					const chatMessage: ChatMessage = JSON.parse(message.body);
-					setMessages((prev) => [
+					if (!chatMessage.messageType || !chatMessage.username) return;
+
+					setMessages((prev) => ([
 						...prev,
 						{
 							...chatMessage,
-							timestamp: formatTime(new Date()),
-							isMe: chatMessage.username?.trim().toLowerCase() === myUsername?.trim().toLowerCase(),
+							isMe: chatMessage.username?.toLowerCase() === myUsername?.toLowerCase(),
+							timestamp: formatTime(new Date(chatMessage.createdAt || Date.now())),
 						},
-					]);
+					]));
 				});
 
 				client.subscribe(`/sub/user-count/${ROOM_ID}`, (message) => {
@@ -141,14 +142,8 @@ const ChatMessageToall = () => {
 				});
 			},
 			onStompError: scheduleReconnect,
-			onWebSocketClose: () => {
-				setIsConnected(false);
-				scheduleReconnect();
-			},
-			onWebSocketError: () => {
-				setIsConnected(false);
-				scheduleReconnect();
-			},
+			onWebSocketClose: () => { setIsConnected(false); scheduleReconnect(); },
+			onWebSocketError: () => { setIsConnected(false); scheduleReconnect(); },
 		});
 
 		client.activate();
@@ -167,7 +162,7 @@ const ChatMessageToall = () => {
 		if (newMessage.trim() && stompClient.current && isConnected) {
 			stompClient.current.publish({
 				destination: `/pub/chat/${ROOM_ID}`,
-				body: JSON.stringify({ message: newMessage, sender: myUsername, messageType: 'CHAT' }),
+				body: JSON.stringify({ message: newMessage, messageType: 'CHAT' }),
 			});
 			setNewMessage('');
 		}
@@ -184,32 +179,31 @@ const ChatMessageToall = () => {
 	return (
 		<div style={{ padding: '0.5rem' }}>
 			<div style={{ marginBottom: '0.5rem' }}>
-				<div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem' }}>
-          <span style={{ fontWeight: 'bold', color: isConnected ? '#28a745' : '#dc3545' }}>
-            {isConnected ? '🟢 온라인' : '🔴 오프라인'}
-          </span>
-					<span style={{ fontWeight: 'bold', color: '#495057' }}>👥 접속자 수: {userCount}명</span>
-				</div>
+        <span style={{ fontWeight: 'bold', color: '#495057', fontSize: '0.6rem' }}>
+          👥 접속자 수: {userCount}명
+        </span>
 			</div>
 
-			<div style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '0.25rem', padding: '0.5rem' }}>
-				{messages.map((msg, index) => (
-					msg.messageType === 'ENTER' || msg.messageType === 'QUIT' ? (
-						<div key={index} style={{ textAlign: 'center', color: '#999', fontSize: '0.5rem', marginBottom: '0.5rem' }}>
-							{msg.messageType === 'ENTER' ? `👋 ${msg.username}님이 입장했습니다.` : `❌ ${msg.username}님이 퇴장했습니다.`}
-						</div>
-					) : msg.messageType === 'ADMIN' ? (
-						<div key={index} style={{ textAlign: 'center', color: '#888', fontStyle: 'italic', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{msg.message}</div>
-					) : (
-						<div key={index} style={{ display: 'flex', justifyContent: msg.isMe ? 'flex-end' : 'flex-start' }}>
-							<div style={{ maxWidth: '70%', textAlign: msg.isMe ? 'right' : 'left' }}>
-								{!msg.isMe && <div style={{ fontSize: '0.5rem', color: '#666', marginBottom: '0.25rem' }}>{msg.username}</div>}
-								<div style={{ backgroundColor: msg.isMe ? '#4f46e5' : '#e5e7eb', color: msg.isMe ? 'white' : 'black', padding: '0.5rem 1rem', borderRadius: '1rem', marginBottom: '0.25rem' }}>{msg.message}</div>
-								<div style={{ fontSize: '0.6rem', color: '#999' }}>{msg.timestamp}</div>
+			<div ref={messagesContainerRef} style={{ height: '65vh', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '0.25rem', padding: '0.5rem' }}>
+				{messages.map((msg, index) => {
+					if (msg.messageType === 'ENTER') {
+						return <div key={index} style={{ textAlign: 'center', color: '#999', fontSize: '0.5rem', marginBottom: '0.5rem' }}>👋 {msg.username}님이 입장했습니다.</div>;
+					} else if (msg.messageType === 'QUIT') {
+						return <div key={index} style={{ textAlign: 'center', color: '#999', fontSize: '0.5rem', marginBottom: '0.5rem' }}>❌ {msg.username}님이 퇴장했습니다.</div>;
+					} else if (msg.messageType === 'ADMIN') {
+						return <div key={index} style={{ textAlign: 'center', color: '#888', fontStyle: 'italic', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{msg.message}</div>;
+					} else {
+						return (
+							<div key={index} style={{ display: 'flex', justifyContent: msg.isMe ? 'flex-end' : 'flex-start' }}>
+								<div style={{ maxWidth: '70%', textAlign: msg.isMe ? 'right' : 'left' }}>
+									{!msg.isMe && <div style={{ fontSize: '0.5rem', color: '#666', marginBottom: '0.25rem' }}>{msg.username}</div>}
+									<div style={{ backgroundColor: msg.isMe ? '#4f46e5' : '#e5e7eb', color: msg.isMe ? 'white' : 'black', padding: '0.5rem 1rem', borderRadius: '1rem', marginBottom: '0.25rem' }}>{msg.message}</div>
+									<div style={{ fontSize: '0.6rem', color: '#999' }}>{msg.timestamp}</div>
+								</div>
 							</div>
-						</div>
-					)
-				))}
+						);
+					}
+				})}
 				<div ref={messagesEndRef} />
 			</div>
 

@@ -1,16 +1,19 @@
-// WebSocketListener.java
 package com.example.rabbithell.domain.chat.config;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.infrastructure.security.jwt.JwtUtil;
 
@@ -21,116 +24,97 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class WebSocketListener {
+
 	private final SimpMessagingTemplate messagingTemplate;
 	private final JwtUtil jwtUtil;
-
-	private final ConcurrentHashMap<String, String> sessionUserMap = new ConcurrentHashMap<>();
-	private final ConcurrentHashMap<String, String> sessionRoomMap = new ConcurrentHashMap<>();
+	private final RedisTemplate<String, String> redisTemplate;
 
 	@EventListener
 	public void handleSessionConnected(SessionConnectedEvent event) {
 		SimpMessageHeaderAccessor accessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
-		Principal user = accessor.getUser();
 		String sessionId = accessor.getSessionId();
 
-		// JWT에서 cloverName 추출
-		String username = getCloverNameFromToken(accessor);
-		if (username == null) {
-			username = user != null ? user.getName() : "익명"; // fallback with null check
+		// ✅ cloverName을 JWT에서 반드시 추출
+		String cloverName = getCloverNameFromToken(accessor);
+		if (cloverName == null) {
+			log.warn("⚠️ cloverName이 null입니다. 토큰에서 추출 실패!");
+			cloverName = "익명";
 		}
 
-		log.info("🔵 {}님이 입장했습니다", username);
+		String roomId = accessor.getFirstNativeHeader("roomId");
+		if (roomId == null) roomId = "1";
 
-		String roomId = null;
-		if (accessor.getSessionAttributes() != null) {
-			roomId = (String) accessor.getSessionAttributes().get("roomId");
+		// Redis 저장
+		redisTemplate.opsForValue().set("connected:room:" + roomId + ":" + cloverName, "1", Duration.ofMinutes(30));
+		redisTemplate.opsForValue().set("session:" + sessionId, cloverName, Duration.ofMinutes(30));
+		redisTemplate.opsForValue().set("session:room:" + sessionId, roomId, Duration.ofMinutes(30));
+
+		// ✅ 로그 출력 시에도 cloverName 사용
+		log.info("🔵 [입장] cloverName={}, sessionId={}, roomId={}", cloverName, sessionId, roomId);
+
+		sendTotalUserCount(roomId);
+	}
+
+
+	@EventListener
+	public void handleSessionDisconnect(SessionDisconnectEvent event) {
+		String sessionId = event.getSessionId();
+		String cloverName = redisTemplate.opsForValue().get("session:" + sessionId); // ✅ cloverName 그대로 사용
+		String roomId = redisTemplate.opsForValue().get("session:room:" + sessionId);
+
+		if (cloverName != null && roomId != null) {
+			redisTemplate.delete("connected:room:" + roomId + ":" + cloverName);
+			redisTemplate.delete("session:" + sessionId);
+			redisTemplate.delete("session:room:" + sessionId);
+
+			log.info("🔴 {}님이 퇴장했습니다. (sessionId: {}, roomId: {})", cloverName, sessionId, roomId);
+
+			ChatMessageResponseDto quitMessage = ChatMessageResponseDto.createQuitMessage(cloverName);
+			messagingTemplate.convertAndSend("/sub/chat/" + roomId, quitMessage);
+
+			sendTotalUserCount(roomId);
 		}
+	}
 
-		// roomId가 null이면 기본값 "1"로 설정
-		if (roomId == null) {
-			roomId = "1";
-			log.info("🔵 roomId가 null이어서 기본값 '1'로 설정했습니다.");
-		}
+	public int getCurrentUserCount(String roomId) {
+		if (roomId == null) roomId = "1";
+		Set<String> keys = redisTemplate.keys("connected:room:" + roomId + ":*");
+		return keys != null ? keys.size() : 0;
+	}
 
-		// 세션 정보 저장 (user가 null이어도 저장)
-		sessionUserMap.put(sessionId, username);
-		sessionRoomMap.put(sessionId, roomId);
+	private void sendTotalUserCount(String roomId) {
+		Set<String> keys = redisTemplate.keys("connected:room:" + roomId + ":*");
+		int userCount = keys != null ? keys.size() : 0;
 
-		log.info("🔵 {}님이 입장했습니다. (sessionId: {}, roomId: {})", username, sessionId, roomId);
+		Map<String, Object> payload = Map.of("count", userCount);
+		messagingTemplate.convertAndSend("/sub/user-count/" + roomId, payload);
 
-		// 입장 메시지 전송
-		ChatMessageResponseDto enterMessage = ChatMessageResponseDto.createEnterMessage(username);
-		messagingTemplate.convertAndSend("/sub/chat/" + roomId, enterMessage);
+		log.info("현재 채팅방 {}번 접속자 수: {}명", roomId, userCount);
+	}
 
-		// roomId가 "1"인 경우 접속자 수 전송
-		if ("1".equals(roomId)) {
-			sendTotalUserCount();
+	@Scheduled(fixedRate = 60000)
+	public void cleanExpiredSessions() {
+		Set<String> keys = redisTemplate.keys("connected:room:*:*");
+		if (keys != null) {
+			for (String key : keys) {
+				if (redisTemplate.getExpire(key) == -1) {
+					redisTemplate.delete(key);
+					log.info("🧹 TTL 없음 - 유령 세션 제거: {}", key);
+				}
+			}
 		}
 	}
 
 	private String getCloverNameFromToken(SimpMessageHeaderAccessor accessor) {
 		try {
-			// Authorization 헤더에서 토큰 추출
 			String authHeader = accessor.getFirstNativeHeader("Authorization");
 			if (authHeader != null && authHeader.startsWith("Bearer ")) {
 				String token = authHeader.substring(7);
-				return jwtUtil.extractCloverName(token); // 이미 구현된 메서드 사용
+				return jwtUtil.extractCloverName(token);
 			}
 		} catch (Exception e) {
 			log.warn("토큰에서 cloverName 추출 실패: {}", e.getMessage());
 		}
 		return null;
-	}
-
-	@EventListener
-	public void handleSessionDisconnect(SessionDisconnectEvent event) {
-		String sessionId = event.getSessionId();
-		String username = sessionUserMap.remove(sessionId);
-		String roomId = sessionRoomMap.remove(sessionId);
-
-		// null 체크 후 기본값 설정
-		if (username == null) {
-			username = "익명";
-		}
-		if (roomId == null) {
-			roomId = "1";
-		}
-
-		log.info("🔴 {}님이 퇴장했습니다. (sessionId: {}, roomId: {})", username, sessionId, roomId);
-
-		// 퇴장 메시지 전송
-		ChatMessageResponseDto quitMessage = ChatMessageResponseDto.createQuitMessage(username);
-		messagingTemplate.convertAndSend("/sub/chat/" + roomId, quitMessage);
-
-		// roomId가 "1"인 경우 접속자 수 전송
-		if ("1".equals(roomId)) {
-			sendTotalUserCount();
-		}
-	}
-
-	private void sendTotalUserCount() {
-		long count = sessionRoomMap.values().stream()
-			.filter(id -> id != null && "1".equals(id))
-			.count();
-
-		Map<String, Object> payload = Map.of("count", count);
-		messagingTemplate.convertAndSend("/sub/user-count/1", payload);
-
-		log.info("현재 채팅방 1번 접속자 수: {}", count);
-	}
-
-	// 초기 접속자 수를 가져오는 REST API용 메서드 (Controller에서 호출 가능)
-	public long getCurrentUserCount(String roomId) {
-		if (roomId == null) {
-			roomId = "1";
-		}
-
-		final String targetRoomId = roomId;
-		long count = sessionRoomMap.values().stream()
-			.filter(id -> id != null && targetRoomId.equals(id))
-			.count();
-
-		log.info("채팅방 {}번 현재 접속자 수 조회: {}", roomId, count);
-		return count;
 	}
 }

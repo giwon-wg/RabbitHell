@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import com.example.rabbithell.domain.chat.config.messagebroker.RedisPublisher;
 import com.example.rabbithell.domain.chat.dto.response.ChatMessageResponseDto;
 import com.example.rabbithell.domain.chat.entity.ChatMessage;
 import com.example.rabbithell.domain.chat.entity.ChatRoom;
@@ -15,11 +16,11 @@ import com.example.rabbithell.domain.chat.repository.ChatRoomRepository;
 import com.example.rabbithell.domain.chat.util.BadWordFilter;
 import com.example.rabbithell.domain.user.model.User;
 import com.example.rabbithell.domain.user.repository.UserRepository;
-import com.example.rabbithell.domain.chat.redis.ChatRedisWriter;
+import com.example.rabbithell.domain.chat.internal.ChatRedisWriter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import static com.example.rabbithell.domain.chat.common.Constants.Chat.MESSAGE_COOLDOWN_MS;
+import static com.example.rabbithell.domain.chat.common.ChatConstants.Chat.MESSAGE_COOLDOWN_MS;
 
 @Slf4j
 @Service
@@ -33,37 +34,39 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 	private final SimpMessagingTemplate messagingTemplate;
 	private final RedisTemplate<String, String> redisTemplate;
 
+	private final RedisPublisher redisPublisher;
 	private final ChatRedisWriter chatRedisWriter;
 
 
 	//사용자
-	@Override
-	public ChatMessage saveMessage(Long roomId, Long userId, String message) {
+	public ChatMessage saveMessage(Long roomId, Long userId, String cloverName, String message) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("사용자 없음"));
+
 		ChatRoom chatRoom = chatRoomRepository.findById(roomId)
 			.orElseThrow(() -> new RuntimeException("채팅방 없음"));
 
-		log.info("인증된 사용자: ID={}, Username={}", userId, user.getName());
-
-		// 욕설 필터링
 		String filtered = BadWordFilter.filter(message);
 
-		// 메시지 생성 및 저장
 		ChatMessage chatMessage = new ChatMessage();
-		chatMessage.setUser(user);
-		chatMessage.setChatRoom(chatRoom);
-		chatMessage.setContents(filtered);
+		chatMessage.setUser(user); // 🔗 연관관계 매핑 (user_id)
+		chatMessage.setChatRoom(chatRoom); // 🔗 연관관계 매핑 (chat_room_id)
+		chatMessage.setContents(filtered); // 🔥 욕설 필터링된 메시지 저장
+		chatMessage.setClovername(cloverName); // ✅ JWT에서 추출한 clovername 저장
 		chatMessage.setCreatedAt(LocalDateTime.now());
+		chatMessage.setDeleted(false);
 
 		chatMessageRepository.save(chatMessage);
 
-		// 🔽 Redis 저장 위임 (DTO로 변환 후)
-		ChatMessageResponseDto responseDto = ChatMessageResponseDto.createChatMessage(user.getName(), chatMessage);
-		chatRedisWriter.saveChatMessage(roomId.toString(), responseDto);
+		// ✅ Redis 저장 및 발행은 Service 내부에서!
+		ChatMessageResponseDto dto = ChatMessageResponseDto.createChatMessage(cloverName, chatMessage);
+		chatRedisWriter.saveChatMessage(roomId.toString(), dto);
+		redisPublisher.publish(roomId, dto);
 
 		return chatMessage;
 	}
+
+
 
 	@Override
 	public void isOnCooldown(Long roomId, Long userId) {

@@ -57,6 +57,7 @@ public class SecurityConfig {
 					"/v3/api-docs/**",
 					"/ws/**",         // ✅ 반드시 필요
 					"/ws/**/**",
+					"/api/chat/**",
 					"/kingdom/all"
 				).permitAll()
 				.anyRequest().authenticated()

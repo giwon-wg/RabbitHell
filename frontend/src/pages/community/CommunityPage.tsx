@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ← 추가
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import PixelMoonsetBackground from './PixelMoonsetBackground';
 
 interface Post {
 	postId: number;
@@ -17,7 +18,7 @@ const CommunityPage = () => {
 	const [page, setPage] = useState(0);
 	const [hasNext, setHasNext] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const navigate = useNavigate(); // ← 추가
+	const navigate = useNavigate(); // ✅ 컴포넌트 안에서 호출해야 함
 
 	useEffect(() => {
 		const token = localStorage.getItem("accessToken");
@@ -39,7 +40,13 @@ const CommunityPage = () => {
 			});
 	}, [page]);
 
-	if (loading) return <p>불러오는 중...</p>;
+	if (loading) {
+		return (
+			<div className="w-full h-screen flex items-center justify-center">
+				<div className="text-white text-xl">불러오는 중...</div>
+			</div>
+		);
+	}
 
 	return (
 		<div>
